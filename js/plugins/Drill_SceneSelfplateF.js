@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        面板 - 全自定义信息面板F
+ * @plugindesc [v1.1]        面板 - 全自定义信息面板F
  * @author Drill_up
  * 
  * @Drill_LE_param "阶段-%d"
@@ -100,6 +100,9 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修复了修改游戏分辨率时，遮罩挡住字幕的问题。
+ * 遮罩资源会根据游戏分辨率自动缩放。
  * 
  *
  * @param ----杂项----
@@ -785,6 +788,7 @@ Scene_Drill_SSpF.prototype.create = function() {
 Scene_Drill_SSpF.prototype.update = function() { 
 	Scene_MenuBase.prototype.update.call(this);	
 	
+	this.drill_updateMask();			//遮罩缩放
 	this.drill_updateQuit();			//退出监听
 }
 
@@ -800,6 +804,7 @@ Scene_Drill_SSpF.prototype.drill_createLayout = function() {
 //==============================
 Scene_Drill_SSpF.prototype.drill_createContextMask = function() {
 	this._drill_contextMask = new Sprite( ImageManager.load_MenuSelfDef(DrillUp.g_SSpF_contextMask) );
+	this._drill_contextMask_needResize = true;
 	this._drill_field.addChild(this._drill_contextMask);	
 	this._drill_field.mask = this._drill_contextMask;	
 };
@@ -818,6 +823,21 @@ Scene_Drill_SSpF.prototype.drill_createRoller = function() {
 	this._drill_roller.drill_COSR_start();	//启动
 };
 
+
+//==============================
+// * 帧刷新 - 遮罩缩放
+//==============================
+Scene_Drill_SSpF.prototype.drill_updateMask = function() {
+	if( this._drill_contextMask_needResize == true &&
+		this._drill_contextMask.bitmap.isReady() ){
+		this._drill_contextMask_needResize = false;
+		
+		var w = this._drill_contextMask.bitmap.width;
+		var h = this._drill_contextMask.bitmap.height;
+		this._drill_contextMask.scale.x = Graphics.boxWidth / w;
+		this._drill_contextMask.scale.y = Graphics.boxHeight / h;
+	}
+}
 //==============================
 // * 帧刷新 - 退出画面
 //==============================

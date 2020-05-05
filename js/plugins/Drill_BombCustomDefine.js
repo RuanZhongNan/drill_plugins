@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        炸弹人 - 自定义炸弹
+ * @plugindesc [v1.1]        炸弹人 - 自定义炸弹
  * @author Drill_up
  * 
  * 
@@ -28,15 +28,18 @@
  * ----设定注意事项
  * 1.插件的作用域：地图界面。
  *   只作用于事件。
- * 2.插件指令，开启则使用自定义炸弹，关闭则使用标准炸弹。
- *   如果对应的火力没有自定义炸弹，则使用标准炸弹。
- *   自定义炸弹不一定必须匹配对应的火力，你可以把这个火力值直接当成自定
- *   义的炸弹编号。
- * 3.建议将所有炸弹都放在一个专门的模板管理地图中，便于管理。
- * 4.自定义炸弹最好只在最后一段时间爆炸，不要时间分段或者多次爆炸，因为
- *   ai识别不出来。
- * 5.由于放置的炸弹事件可完全自定义，你甚至可以跳出炸弹的局限，制作其它
- *   放置类的游戏。
+ * 模板：
+ *   (1.自定义炸弹即通过事件复制器的方式，把你在模板地图中设置的事件，
+ *      作为炸弹功能放置在玩家脚下。
+ *   (2.建议将所有炸弹都放在一个专门的模板管理地图中，便于管理。
+ *   (3.由于放置的炸弹事件可完全自定义，你甚至可以跳出炸弹的局限，制作
+ *      其它放置类的游戏。
+ * 炸弹细节：
+ *   (1.炸弹人控制台插件指令可以控制，使用 自定义炸弹 或 标准炸弹。
+ *   (2.插件配置的火力值相当于自定义炸弹的编号id。
+ *      如果对应的火力没有自定义炸弹配置，则使用标准炸弹。
+ *   (3.自定义炸弹最好只在最后一段时间爆炸，不要时间分段或者多次爆炸，
+ *      因为ai识别不出来。
  * 
  * -----------------------------------------------------------------------------
  * ----激活条件 - 自定义炸弹属性
@@ -114,6 +117,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 添加了游戏时，对地图id的校验检查功能。
  * 
  * 
  * @param ----自定义玩家炸弹----
@@ -568,9 +573,9 @@
     DrillUp.parameters = PluginManager.parameters('Drill_BombCustomDefine');
 	
 	DrillUp.g_BoCD_a_canPick = String(DrillUp.parameters["玩家标准炸弹是否可举起"] || "true") == "true";
-	DrillUp.g_BoCD_a_throwRange = Number(DrillUp.parameters['玩家标准炸弹投掷距离'] || 1);
+	DrillUp.g_BoCD_a_throwRange = Number(DrillUp.parameters["玩家标准炸弹投掷距离"] || 1);
 	DrillUp.g_BoCD_e_canPick = String(DrillUp.parameters["事件标准炸弹是否可举起"] || "true") == "true";
-	DrillUp.g_BoCD_e_throwRange = Number(DrillUp.parameters['事件标准炸弹投掷距离'] || 1);
+	DrillUp.g_BoCD_e_throwRange = Number(DrillUp.parameters["事件标准炸弹投掷距离"] || 1);
 	
 	DrillUp.g_BoCD_a_enable = String(DrillUp.parameters["玩家初始是否启用"] || "false") == "true";
 	DrillUp.g_BoCD_e_enable = String(DrillUp.parameters["事件初始是否启用"] || "false") == "true";
@@ -690,10 +695,33 @@ Game_Temp.prototype.initialize = function() {
 	// > 初始化时读取地图数据
 	this._drill_BoCD_dataMaps = [];
 	for( var i=0; i < map_ids.length; i++ ){
-		this._drill_BoCD_dataMaps[ map_ids[i] ] = DataManager.drill_getMapData( map_ids[i] );
+		var map_id = map_ids[i];
+		if( this.drill_BoCD_hasMapId( map_id ) ){
+			this._drill_BoCD_dataMaps[ map_ids[i] ] = DataManager.drill_getMapData( map_ids[i] );
+			
+		}else{
+			this._drill_BoCD_dataMaps[ map_ids[i] ] = null;
+			alert(
+				"【Drill_BombCustomDefine.js 炸弹人 - 自定义炸弹】\n" + 
+				"你在插件配置中，配置了模板地图"+ map_ids +"中的自定义炸弹事件id。\n"+
+				"但是系统并没有找到这个地图文件。\n"+
+				"请检查你的地图文件是否存在，或者修改插件配置的内容。"
+			);
+		}
 	}
 };
-
+//==============================
+// ** 检查地图id
+//==============================
+Game_Temp.prototype.drill_BoCD_hasMapId = function( map_id ) {	
+	for( var j=0; j < $dataMapInfos.length; j++ ){
+		var temp_info = $dataMapInfos[j];
+		if( temp_info != undefined && temp_info['id'] == map_id ){
+			return true;
+		}
+	}
+	return false;
+}
 
 //=============================================================================
 // ** 炸弹 - 放置总流程

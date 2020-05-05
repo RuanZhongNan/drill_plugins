@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.4]        战斗 - 多层战斗视频
+ * @plugindesc [v1.5]        战斗 - 多层战斗视频
  * @author Drill_up
  * 
  * @Drill_LE_param "视频-%d"
@@ -96,6 +96,8 @@
  * 重新修改了视频的结构。
  * [v1.4]
  * 将视频变成可以配置多层。
+ * [v1.5]
+ * 修复了在播放视频时，突然暂停播放的问题。
  * 
  *
  * @param ---视频组---
@@ -752,6 +754,8 @@ Drill_BVi_VideoSprite.prototype.drill_BVi_spriteInit = function() {
 Drill_BVi_VideoSprite.prototype.drill_BVi_videoInit = function() {
 	var data = this._drill_data;
 	
+	this._drill_src['preload'] = 'auto';
+	this._drill_src['autoload'] = true;
 	this._drill_src['volume'] = data['volume'] * WebAudio._masterVolume;
 	this._drill_src['muted'] = data['muted'];
 	this._drill_src['loop'] = data['loopEnable'];

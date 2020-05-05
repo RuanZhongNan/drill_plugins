@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        地图 - 自定义照明效果
+ * @plugindesc [v1.1]        地图 - 自定义照明效果
  * @author Drill_up
  * 
  * @Drill_LE_param "光源-%d"
@@ -39,6 +39,9 @@
  *      一般为上层，因为再往上的层级可以挡住ui和图片。
  *   (2.黑暗层的底层原理是滤镜，所以不能修改混合模式。
  *      黑暗层默认是固定黑色"#000000"。
+ *   (3.注意，"默认是否启用"参数是作用到所有地图的。
+ *      如果设置为启用，则所有地图默认使用黑暗层。
+ *      开启/关闭需要使用地图注释。
  * 自画资源：
  *   (1.所有照明的形状、大小都需要你自己画照明素材来提供。
  *      通常为白色和透明为主。
@@ -55,13 +58,16 @@
  * 物体照明：
  *   (1.物体照明的注释跨事件页。
  *      插件指令设置只在当前地图有效，离开地图失效。
+ *      但是玩家的照明设置不会失效。
  *   (2.每个事件只能绑定一个照明效果。
  *      并且这个照明效果可以随着事件的朝向而转向。
+ *   (3.当你切换进入菜单后，立刻离开，你会发现光源会闪一下。
+ *      这属于正常现象，因为切换时，地图必须重新扫描加载全部光源。
  * 限时动态照明：
  *   (1.动态照明只能存在一段时间，时间结束后会被清除。
  *   (2.动态照明不能转向。
  * 设计：
- *   (1.你可以添加地图注释，快速开启/关闭黑暗层，以及设置颜色、透明度。
+ *   (1.你可以在地图注释中，设置颜色、透明度、开关等。
  *      可以实现不同的地图有不同的黑暗效果。
  *   (2.光源是以GIF的模式展现的，你可以制作gif动画的光源效果。
  * 
@@ -169,6 +175,9 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修复了没有插件指令设置后未及时变色的bug。
+ * 修复了添加动态光源时，gif和旋转角度重置的bug。
  *
  *
  *
@@ -180,7 +189,7 @@
  * @type boolean
  * @on 启用
  * @off 关闭
- * @desc true - 启用，false - 关闭
+ * @desc true - 启用，false - 关闭，注意，如果启用，将会对所有地图有效。
  * @default false
  * 
  * @param 整体颜色
@@ -1598,6 +1607,7 @@
 //					->gif光源
 //					->根据事件自旋转
 //					->波动光源
+//					->旋转、gif时间不被重刷
 //				->多颜色光源
 //				->限时动态照明
 //					->突然爆炸的闪亮光源
@@ -1631,7 +1641,8 @@
 //				4). mask + renderable 没有遮罩效果
 //				5). mask + renderable + blendMode 没有遮罩效果
 //				6). blendMode 的child，白色不能叠加
-//				7). blendMode + 绘制bitmap 最终成型方案
+//				7). blendMode + 绘制bitmap
+//				8). blendMode + 绘制texture 最终成型方案（texture比bitmap快一点，不过也没快多少）
 //			  pixi所给的类，有很大的局限性，比如 循环sprite、mask、container等，都没有单纯的sprite那么灵活，
 //			  可能也是基于硬件的限制，功能受限。
 //			3.限时动态照明 是建立了一个假事件，这个事件用于缓冲到gamemap中，
@@ -1946,12 +1957,22 @@ Game_Map.prototype.drill_LIl_setupIllumination = function() {
 //==============================
 // * 初始化
 //==============================
-var _drill_LIl_initialize = Game_Character.prototype.initialize;
-Game_Character.prototype.initialize = function() {
+var _drill_LIl_initialize = Game_CharacterBase.prototype.initialize;
+Game_CharacterBase.prototype.initialize = function() {
 	_drill_LIl_initialize.call(this);
 	this._drill_LIl = {};
 	this._drill_LIl._light_id = -1;					//光源id
-	this._drill_LIl._light_type = "物体照明";		//光源变化因素
+	this._drill_LIl._light_time = -1;				//光源持续时间
+	this._drill_LIl._light_type = "物体照明";		//光源类型
+	this._drill_LIl._light_oType = "";				//光源变化因素
+}
+//==============================
+// * 帧刷新
+//==============================
+var _drill_LIl_c_update = Game_CharacterBase.prototype.update;
+Game_CharacterBase.prototype.update = function() {
+	_drill_LIl_c_update.call(this);
+	this._drill_LIl._light_time += 1;
 }
 //==============================
 // * 注释初始化
@@ -1988,7 +2009,7 @@ Game_Event.prototype.drill_LIl_setupLight = function() {
 //==============================
 // * 事件 - 判断钥匙
 //==============================
-Game_Character.prototype.drill_LIl_hasLights = function() {
+Game_CharacterBase.prototype.drill_LIl_hasLights = function() {
 	if( this._erased == true ){ return false; }
 	return this._drill_LIl._light_id != -1;
 }
@@ -2266,7 +2287,7 @@ Drill_LIl_MaskSprite.prototype.constructor = Drill_LIl_MaskSprite;
 Drill_LIl_MaskSprite.prototype.initialize = function(width, height) {
 	Sprite_Base.prototype.initialize.call(this);
 	
-	this._drill_time = 0;									//时间控制
+	this._drill_time = 0;									//低帧优化
 	this._drill_stage = null;								//场景容器
 	this._drill_main_layer = null;							//主绘制层
 	this.blendMode = 2;										//关键控制，乘积混合
@@ -2316,6 +2337,12 @@ Drill_LIl_MaskSprite.prototype.update = function() {
 		// > 强制渲染
 		//this.renderable = true;
 	}
+	
+	// > 变色控制
+	if( this._drill_curColor != $gameSystem._drill_LIl_color ){
+		this._drill_main_layer.bitmap.fillAll($gameSystem._drill_LIl_color);		
+		this._drill_curColor = $gameSystem._drill_LIl_color;
+	}
 };
 //==============================
 // * 黑暗层遮罩 - 场景初始化
@@ -2331,6 +2358,7 @@ Drill_LIl_MaskSprite.prototype.drill_createStage = function(width, height) {
 	this._drill_stage.addChild(this._drill_main_layer);	
 	this._drill_main_layer.bitmap = new Bitmap(width, height);
 	this._drill_main_layer.bitmap.fillAll($gameSystem._drill_LIl_color);		
+	this._drill_curColor = $gameSystem._drill_LIl_color;
 }
 //==============================
 // * 黑暗层遮罩 - 帧刷新
@@ -2365,7 +2393,7 @@ Drill_LIl_Sprite.prototype.constructor = Drill_LIl_Sprite;
 Drill_LIl_Sprite.prototype.initialize = function( character ) {
 	Sprite_Base.prototype.initialize.call(this);
 	this._character = character;
-	this._drill_time = 0;
+	
 	this._drill_light_id = -1;
 	this._drill_data = null;
 	this._drill_src_bitmaps = [];
@@ -2378,7 +2406,7 @@ Drill_LIl_Sprite.prototype.initialize = function( character ) {
 //==============================
 Drill_LIl_Sprite.prototype.update = function() {
 	Sprite_Base.prototype.update.call(this);
-	this._drill_time += 1;
+	
 	this.drill_LIl_updateSpriteRefresh();	//内容重刷
 	this.drill_LIl_updatePosition();		//刷新位置
 	this.drill_LIl_updateGif();				//刷新gif
@@ -2419,18 +2447,7 @@ Drill_LIl_Sprite.prototype.drill_LIl_updateSpriteRefresh = function() {
 	
 	// > 朝向初始化
 	if( this._character && this._drill_data['dir_mode'] == "根据事件朝向转向" ){
-		if( this._character.direction() === 2 ){	//下
-			this.rotation = 0;
-		}
-		if( this._character.direction() === 4 ){	//左
-			this.rotation = Math.PI / 2;
-		}
-		if( this._character.direction() === 6 ){	//右
-			this.rotation = Math.PI + Math.PI / 2;
-		}
-		if( this._character.direction() === 8 ){	//上
-			this.rotation = Math.PI;
-		}
+		this.rotation = this.drill_LIl_getCurRotation();
 	}
 }
 //==============================
@@ -2457,9 +2474,10 @@ Drill_LIl_Sprite.prototype.drill_LIl_updatePosition = function() {
 // * 光源 - 刷新gif
 //==============================
 Drill_LIl_Sprite.prototype.drill_LIl_updateGif = function() {
+	if( !this._character ){ return; }
 	if( !this._drill_data ){ return; }
 	
-	var inter = this._drill_time ;
+	var inter = this._character._drill_LIl._light_time ;
 	inter = inter / this._drill_data['gif_interval'];
 	inter = inter % this._drill_data['gif_src'].length;
 	if( this._drill_data['gif_back_run'] ){
@@ -2474,28 +2492,16 @@ Drill_LIl_Sprite.prototype.drill_LIl_updateGif = function() {
 Drill_LIl_Sprite.prototype.drill_LIl_updateRotation = function() {
 	if( !this._character ){ return; }
 	if( !this._drill_data ){ return; }
+	var time = this._character._drill_LIl._light_time ;
 	
 	if( this._drill_data['dir_mode'] == "无限自旋转" ){
-		this.rotation += this._drill_data['dir_selfSpeed'] / 180 * Math.PI ;
+		this.rotation = time * this._drill_data['dir_selfSpeed'] / 180 * Math.PI ;
 	}
 	
 	if( this._drill_data['dir_mode'] == "根据事件朝向转向" ){
 		
 		// > 转向判定
-		var target_rotation = 0;
-		if( this._character.direction() === 2 ){	//下
-			target_rotation = 0;
-		}
-		if( this._character.direction() === 4 ){	//左
-			target_rotation = Math.PI / 2;
-		}
-		if( this._character.direction() === 6 ){	//右
-			target_rotation = Math.PI + Math.PI / 2;
-		}
-		if( this._character.direction() === 8 ){	//上
-			target_rotation = Math.PI;
-		}
-		
+		var target_rotation = this.drill_LIl_getCurRotation();
 		
 		if( this._drill_data['dir_type'] == "瞬间转向" ){
 			this.rotation = target_rotation;
@@ -2544,6 +2550,26 @@ Drill_LIl_Sprite.prototype.drill_LIl_updateRotation = function() {
 	
 }
 //==============================
+// * 光源 - 转向判定
+//==============================
+Drill_LIl_Sprite.prototype.drill_LIl_getCurRotation = function() {
+	if( !this._character ){ return 0; }
+	
+	if( this._character.direction() === 2 ){	//下
+		return 0;
+	}
+	if( this._character.direction() === 4 ){	//左
+		return Math.PI / 2;
+	}
+	if( this._character.direction() === 6 ){	//右
+		return Math.PI + Math.PI / 2;
+	}
+	if( this._character.direction() === 8 ){	//上
+		return Math.PI;
+	}
+	return 0;
+}
+//==============================
 // * 数学 - 获得两个角度的最小距离
 //==============================
 Game_Temp.prototype.drill_LIl_getMinDistance = function( a,b ) {
@@ -2585,6 +2611,7 @@ Drill_LIl_Sprite.prototype.drill_LIl_updateOpacity = function() {
 	if( !this._drill_data ){ return; }
 	if( this._drill_light_id == -1 ){ return; } 
 	
+	var time = this._character._drill_LIl._light_time ;
 	if( this._character._drill_LIl._light_type == "物体照明" ){
 		if( this._drill_data['opacity_mode'] == "固定透明度" ){
 			this.opacity = this._drill_data['opacity_fix'];
@@ -2593,7 +2620,7 @@ Drill_LIl_Sprite.prototype.drill_LIl_updateOpacity = function() {
 			var amp = this._drill_data['opacity_max'] - this._drill_data['opacity_min'];
 			var v = this._drill_data['opacity_min'] + amp/2;
 			var period = this._drill_data['opacity_period'];
-			this.opacity = v + amp/2 * Math.sin( this._drill_time / period * Math.PI * 2 );
+			this.opacity = v + amp/2 * Math.sin( time / period * Math.PI * 2 );
 		}
 	}
 	
@@ -2627,8 +2654,10 @@ function Drill_LIl_FakeEvent() {
 Drill_LIl_FakeEvent.prototype.initialize = function( data ) {
 	this._drill_LIl = {};
 	this._drill_LIl._light_id = data['light_id'];			//光源id
+	this._drill_LIl._light_time = 0;						//光源持续时间
 	this._drill_LIl._light_type = data['light_type'];		//光源类型
 	this._drill_LIl._light_oType = data['light_oType'];		//光源变化因素
+	
 	this._drill_life = data['life'];						//持续时间
 	this._drill_cur_life = data['life'];					//当前寿命
 	this._realX = data['realX'];							//x
@@ -2639,6 +2668,7 @@ Drill_LIl_FakeEvent.prototype.initialize = function( data ) {
 //==============================
 Drill_LIl_FakeEvent.prototype.update = function() {
 	this._drill_cur_life -= 1;
+	this._drill_LIl._light_time += 1;
 	if( this.isDead() ){ this._drill_LIl._light_id = -1; }
 }
 //==============================

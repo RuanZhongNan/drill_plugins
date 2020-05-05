@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        物体 - 事件复制器
+ * @plugindesc [v1.4]        物体 - 事件复制器
  * @author Drill_up
  * 
  * @help  
@@ -107,6 +107,9 @@
  * 添加了版本检测。
  * [v1.3]
  * 添加了性能测试说明。
+ * [v1.4]
+ * 添加了游戏时，对地图id的校验检查功能。
+ * 
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -206,27 +209,31 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			
 			if( type == "复制其他图事件" ){
 				if( pos == "指定位置" ){
-					var map_data = DataManager.drill_getMapData(temp1);
-					if( map_data ){
-						var data = JSON.parse(JSON.stringify( map_data.events[temp2] ));
-						data['x'] = temp3;
-						data['y'] = temp4;
-						if( !data['meta'] ){ data['meta'] = {}; }		//镜像错误兼容
-						var e = $gameMap.drill_newEvent_createEvent( data );
-						$gameSystem._drill_EDu_last_id = e._eventId;
-						if($gameSystem._drill_EDu_is_opacity){ e._opacity = 0; }
+					if( $gameTemp.drill_EDu_hasMapId( temp1 ) ){
+						var map_data = DataManager.drill_getMapData(temp1);
+						if( map_data ){
+							var data = JSON.parse(JSON.stringify( map_data.events[temp2] ));
+							data['x'] = temp3;
+							data['y'] = temp4;
+							if( !data['meta'] ){ data['meta'] = {}; }		//镜像错误兼容
+							var e = $gameMap.drill_newEvent_createEvent( data );
+							$gameSystem._drill_EDu_last_id = e._eventId;
+							if($gameSystem._drill_EDu_is_opacity){ e._opacity = 0; }
+						}
 					}
 				}
 				if( pos == "事件位置" ){
-					var map_data = DataManager.drill_getMapData(temp1);
-					if( map_data ){
-						var data = JSON.parse(JSON.stringify( map_data.events[temp2] ));
-						data['x'] = $gameMap.event(temp3)._x;
-						data['y'] = $gameMap.event(temp3)._y;
-						if( !data['meta'] ){ data['meta'] = {}; }		//镜像错误兼容
-						var e = $gameMap.drill_newEvent_createEvent( data );
-						$gameSystem._drill_EDu_last_id = e._eventId;
-						if($gameSystem._drill_EDu_is_opacity){ e._opacity = 0; }
+					if( $gameTemp.drill_EDu_hasMapId( temp1 ) ){
+						var map_data = DataManager.drill_getMapData(temp1);
+						if( map_data ){
+							var data = JSON.parse(JSON.stringify( map_data.events[temp2] ));
+							data['x'] = $gameMap.event(temp3)._x;
+							data['y'] = $gameMap.event(temp3)._y;
+							if( !data['meta'] ){ data['meta'] = {}; }		//镜像错误兼容
+							var e = $gameMap.drill_newEvent_createEvent( data );
+							$gameSystem._drill_EDu_last_id = e._eventId;
+							if($gameSystem._drill_EDu_is_opacity){ e._opacity = 0; }
+						}
 					}
 				}
 			}
@@ -273,11 +280,31 @@ Scene_Map.prototype.onMapLoaded = function() {
 			temp_map[Number(str[1])] = true;
 		}
 		for (var key in temp_map) {
+			if( $gameTemp.drill_EDu_hasMapId( key ) == false ){
+				alert(
+					"【Drill_EventDuplicator.js 物体 - 事件复制器】\n" + 
+					"事件复制器插件指令，指定要复制地图"+ key +"中的某个事件。\n"+
+					"但是系统并没有找到这个地图文件。\n"+
+					"请检查你的地图文件是否存在，或者修改插件指令。"
+				);
+			}
 			DataManager.drill_loadMapData( key );
 		}
 	}
     _drill_EDu_onMapLoaded.call(this);
 };
+//==============================
+// ** 检查地图id
+//==============================
+Game_Temp.prototype.drill_EDu_hasMapId = function( map_id ) {	
+	for( var j=0; j < $dataMapInfos.length; j++ ){
+		var temp_info = $dataMapInfos[j];
+		if( temp_info != undefined && temp_info['id'] == map_id ){
+			return true;
+		}
+	}
+	return false;
+}
 	
 //=============================================================================
 // * 	地图读取器
