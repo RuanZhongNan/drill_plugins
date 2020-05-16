@@ -252,7 +252,11 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 			}
 			if( data['polarDirType'] == "扇形范围方向(线性)"){
 				var degree = data['polarDirSectorDegree'];
-				dir = data['polarDirSectorFace'] + degree * obj_index / (data['movementNum'] - 1) - degree/2;
+				if( data['movementNum'] > 1 ){
+					dir = data['polarDirSectorFace'] + degree * obj_index / (data['movementNum'] - 1) - degree/2;
+				}else{
+					dir = data['polarDirSectorFace'];
+				}
 			}
 			if( data['polarDirType'] == "扇形范围方向(随机)"){		//扇形的线性和随机的配置角度是反的，目前不明原因
 				var degree = data['polarDirSectorDegree'];

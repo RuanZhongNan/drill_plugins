@@ -2,7 +2,7 @@
 // MOG_TimeSystem_Hud.js
 //=============================================================================
 /*:
- * @plugindesc (v1.7)[v1.3]  地图UI - 时间系统固定框
+ * @plugindesc (v1.7)[v1.4]  地图UI - 时间系统固定框
  * @author Moghunter （拾贝猫、Drill_up翻译+优化）
  *
  * @param 是否初始显示
@@ -79,6 +79,22 @@
  * @parent 是否显示指针
  * @desc 以固定框的点为基准，y轴方向平移，单位像素。（可为负数）
  * @default 66 
+ *
+ * @param 分针是否无缝转动
+ * @parent 是否显示指针
+ * @type boolean
+ * @on 无缝转动
+ * @off 间隔转动
+ * @desc true - 无缝转动，false - 间隔转动
+ * @default true
+ *
+ * @param 时针是否无缝转动
+ * @parent 是否显示指针
+ * @type boolean
+ * @on 无缝转动
+ * @off 间隔转动
+ * @desc true - 无缝转动，false - 间隔转动
+ * @default true
  *
  * @param 是否显示计时器
  * @type boolean
@@ -264,6 +280,8 @@
  * 修改了插件分类。
  * [v1.3]
  * 修改了插件关联的资源文件夹。
+ * [v1.4]
+ * 添加了 分针和时针 的无缝移动功能。
  *        
  */
  
@@ -282,6 +300,8 @@
 	Moghunter.timehud_point_visible = String(Moghunter.parameters['是否显示指针'] || "true");
     Moghunter.timehud_point_x = Number(Moghunter.parameters['平移-指针 X'] || 123);
     Moghunter.timehud_point_y = Number(Moghunter.parameters['平移-指针 Y'] || 66);
+	Moghunter.timehud_point_min_seamless = String(Moghunter.parameters['分针是否无缝转动'] || "true") == "true";
+	Moghunter.timehud_point_hour_seamless = String(Moghunter.parameters['时针是否无缝转动'] || "true") == "true";
 	Moghunter.timehud_fontSize = Number(Moghunter.parameters['字体大小'] || 22);
 	Moghunter.timehud_fontItalic = String(Moghunter.parameters['字体是否为斜体'] || "true");
 	Moghunter.timehud_day_visible = String(Moghunter.parameters['是否显示日期数值'] || "true");
@@ -408,6 +428,7 @@ SpriteTimeEngine.prototype.constructor = SpriteTimeEngine;
 //==============================
 SpriteTimeEngine.prototype.initialize = function() {
     Sprite.prototype.initialize.call(this);
+	this._maxSecond = 60 / (Math.PI * 2);
 	this._maxMin = $gameSystem._min_max / (Math.PI * 2);
 	this._maxHour = $gameSystem._hour_max / (Math.PI * 4);
 	this._hud_size = [-1,-1,-1,-1];
@@ -667,6 +688,13 @@ SpriteTimeEngine.prototype.refresh_dayweek = function() {
 };
 
 //==============================
+// * Second
+//==============================
+SpriteTimeEngine.prototype.second = function() {
+    return $gameSystem.second() / this._maxSecond;
+};
+
+//==============================
 // * Min
 //==============================
 SpriteTimeEngine.prototype.min = function() {
@@ -738,8 +766,16 @@ SpriteTimeEngine.prototype.is_hud_visible = function() {
 // * Update Point
 //==============================
 SpriteTimeEngine.prototype.update_point = function() {
-	this._point1.rotation = this.min();
-	this._point2.rotation = this.hour();
+	if( Moghunter.timehud_point_min_seamless ){
+		this._point1.rotation = this.min() + this.second() / 60;
+	}else{
+		this._point1.rotation = this.min();
+	}
+	if( Moghunter.timehud_point_hour_seamless ){
+		this._point2.rotation = this.hour() + this.min() / 12 ;
+	}else{
+		this._point2.rotation = this.hour();
+	}
 };
 
 //==============================

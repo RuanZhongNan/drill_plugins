@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        行走图 - 方块粉碎效果
+ * @plugindesc [v1.1]        行走图 - 方块粉碎效果
  * @author Drill_up
  * 
  * 
@@ -31,6 +31,7 @@
  *   (1.行走图的粉碎效果不支持镜面反射。
  *   (2.行走图的粉碎效果不支持滤镜。
  *   (3.碎片的效果只在当前地图有效，离开地图失效。
+ *   (4.粉碎后，事件的本体还在。你需要手动设置消除或开启独立开关。
  * 设计:
  *   (1.你可以通过插件指令控制碎片不消失，并且隔一段时间执行碎片重组，
  *      以此来设计一个无法击败的怪物。
@@ -96,6 +97,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 优化了内部结构，修改了注释内容。
  * 
  * 
  * @param 默认事件碎片消失方式
@@ -137,14 +140,19 @@
 //					->碎片消失
 //				->6像素偏移修正
 //				->流程中的特殊情况
-//					->空bitmap					-	bitmap_url/frame.x.y.w.h
+//					->贴图框架frame				-	bitmap_url/frame.x.y.w.h
 //					->镜像屏蔽					-	直接屏蔽
 //					->切换菜单时，贴图重建问题	-	贴图同步
 //					->粉碎时图像隐藏			-	setFrame(0,0,0,0)
 //
 //		★必要注意事项：
-//			1.行走图的 frame.x.y.w.h 变动得超级频繁，这里必须要和他们同步。
-//			  并且，要过滤掉 空bitmap 的情况。
+//			1.使用粉碎前，一定要想明白【贴图框架frame】的分配问题，
+//				1) bitmap会不会实时变，是bitmap资源，还是实时bitmap？
+//				2) 如果 frameWidth = 0 怎么办？如果bitmap为空怎么办？
+//				3) 执行粉碎后，保持粉碎状态是一直持续的，除非执行复原。那么是否要锁定sprite的时间轴？
+//				-1- 该插件为资源bitmap，资源变化后，不会立即改变碎片
+//				-2- 该插件要杜绝frameWidth=0，建立了缓冲width，bitmap为空时，不会刷新缓冲。
+//				-3- 该插件使用 this._drill_ESE['shatter_time'] 锁定了时间轴，存储在事件身上。
 //			2.这里的bitmap并没有完全消失，opacity也是255，只是被切割成0了。
 //			
 //		★其它说明细节：
@@ -321,13 +329,8 @@ Sprite_Character.prototype.setCharacter = function(character) {
 	_Drill_ESE_s_setCharacter.call(this,character);
 	if( character ){
 		this._drill_ESE = character._drill_ESE;
-		this._drill_ESE_bitmap = null;			//注意这是个obj对象
-		this._drill_ESE_bitmap_url = "";		//资源路径
 		this._drill_ESE_id = -1;				//
-		this._drill_ESE_frame_x = -1;			//
-		this._drill_ESE_frame_y = -1;			//
-		this._drill_ESE_frame_width = 0;		//
-		this._drill_ESE_frame_height = 0;		//
+		this.drill_ESE_initBitmapFrame();		//贴图框架
 	};
 };
 
@@ -337,27 +340,8 @@ Sprite_Character.prototype.setCharacter = function(character) {
 var _Drill_ESE_s_update = Sprite_Character.prototype.update;
 Sprite_Character.prototype.update = function() {
 	
-	// > bitmap获取（必须放在前面）
-	if( this.bitmap &&
-		this.bitmap.isReady() &&
-		(	this._drill_ESE_bitmap_url != this.bitmap._url ||
-			this._drill_ESE_frame_x != this._realFrame.x ||
-			this._drill_ESE_frame_y != this._realFrame.y ||
-			this._drill_ESE_frame_width != this._realFrame.width ||
-			this._drill_ESE_frame_height != this._realFrame.height )
-		){
-		this._drill_ESE_bitmap_url = this.bitmap._url;
-		
-		if( this._drill_ESE_bitmap_url != "" && 
-			this._realFrame.width != 0 &&
-			this._realFrame.height != 0 ){
-			this._drill_ESE_bitmap = this.bitmap;				//记录行走图数据，确保变成空行走图时，不会丢失bitmap
-			this._drill_ESE_frame_x = this._realFrame.x;		//与行走图类型无关
-			this._drill_ESE_frame_y = this._realFrame.y;
-			this._drill_ESE_frame_width = this._realFrame.width;
-			this._drill_ESE_frame_height = this._realFrame.height;
-		}
-	}
+	// > bitmap识别（必须放前面）
+	this.drill_ESE_updateBitmapFrame();
 	
 	// > 帧刷新
 	_Drill_ESE_s_update.call(this);
@@ -410,7 +394,7 @@ Sprite_Character.prototype.update = function() {
 	
 	// > 粉碎时图像隐藏
 	if( this.drill_COSE_isShattering() ){
-		this.setFrame(0,0,0,0);
+		this.setFrame(0,0,0,0);		//由于行走图会实时控制frame，所以不需要考虑粉碎结束后的复原
 	}
 	
 	// > 复原指令
@@ -431,13 +415,52 @@ Sprite_Character.prototype.drill_ESE_createShatterSprite = function() {
 		"bitmap":this._drill_ESE_bitmap,
 		"frameX":this._drill_ESE_frame_x,		//与行走图类型无关
 		"frameY":this._drill_ESE_frame_y,
-		"frameW":this._drill_ESE_frame_width,
-		"frameH":this._drill_ESE_frame_height,
+		"frameW":this._drill_ESE_frame_w,
+		"frameH":this._drill_ESE_frame_h,
 		"shatter_id":this._drill_ESE['shatter_id'],							//粉碎样式
 		"shatter_converted":this._drill_ESE['shatter_converted'],			//反向弹道
 		"shatter_opacityType":$gameSystem._drill_ESE_opacityType,			//透明度变化方式
 	};
 	this.drill_COSE_setShatter( data );										//方块粉碎核心 - 初始化
+}
+//=============================================================================
+// ** 贴图框架
+//=============================================================================
+//==============================
+// * 贴图框架 - 初始化
+//==============================
+Sprite_Character.prototype.drill_ESE_initBitmapFrame = function() {
+	this._drill_ESE_bitmap = null;			//框架 - obj对象
+	this._drill_ESE_bitmap_url = "";		//框架 - 资源路径
+	this._drill_ESE_frame_x = -1;			//框架 - x
+	this._drill_ESE_frame_y = -1;			//框架 - y
+	this._drill_ESE_frame_w = 0;			//框架 - w
+	this._drill_ESE_frame_h = 0;			//框架 - h
+}
+//==============================
+// * 贴图框架 - bitmap识别（必须放前面）
+//==============================
+Sprite_Character.prototype.drill_ESE_updateBitmapFrame = function() {
+	if( this.bitmap &&
+		this.bitmap.isReady() &&
+		(	this._drill_ESE_bitmap_url != this.bitmap._url ||
+			this._drill_ESE_frame_x != this._realFrame.x ||
+			this._drill_ESE_frame_y != this._realFrame.y ||
+			this._drill_ESE_frame_w != this._realFrame.width ||
+			this._drill_ESE_frame_h != this._realFrame.height )
+		){
+		this._drill_ESE_bitmap_url = this.bitmap._url;
+		
+		if( this._drill_ESE_bitmap_url != "" && 
+			this._realFrame.width != 0 &&
+			this._realFrame.height != 0 ){
+			this._drill_ESE_bitmap = this.bitmap;				//记录行走图数据，确保变成空行走图时，不会丢失bitmap
+			this._drill_ESE_frame_x = this._realFrame.x;		//与行走图类型无关
+			this._drill_ESE_frame_y = this._realFrame.y;
+			this._drill_ESE_frame_w = this._realFrame.width;
+			this._drill_ESE_frame_h = this._realFrame.height;
+		}
+	}
 }
 
 

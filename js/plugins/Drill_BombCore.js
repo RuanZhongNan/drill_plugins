@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.4]        炸弹人 - 游戏核心
+ * @plugindesc [v1.5]        炸弹人 - 游戏核心
  * @author Drill_up
  * 
  * @param ----能力----
@@ -187,6 +187,7 @@
  *      第一次在爆炸动画开始播放的第1帧。第二次触发在14帧后。
  *   (7.如果你担心太多爆炸动画严重影响性能，你可以制作极其简单的爆炸动画，
  *      或者直接设置爆炸动画为空。
+ *   (8.跳跃过程中可以放置炸弹，并且放的是玩家当前位置的正下方。
  * AI决策：
  *   (1.通过移动路线的设置，决定了事件该如何放置炸弹、躲避炸弹的思维。
  *      "关于炸弹人游戏.docx"中有AI决策的详细解读。
@@ -315,6 +316,9 @@
  * 注意，该版本修改了大部分指令的格式，旧版本指令不再支持。
  * [v1.4]
  * 给炸弹添加了自定义照明效果。
+ * [v1.5]
+ * 添加了与鼠标操作面板的交互内容。
+ * 
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -371,13 +375,12 @@
 //			暂无（依附于各个类，作为扩展函数使用）
 //
 //		★必要注意事项：
-//			1.互动之间如果有较复杂的接口，最好遵循下面的格式：
-//				drill_canXxxx_Normal		面板-静态限制条件（无提示音，面板不收回）
-//				drill_canXxxx_Conditional	面板-特殊限制条件（有提示音，面板收回）
-//				drill_doXxxx				面板-执行操作
-//				drill_isXxxxControl			按键-按下即可操作
-//			  注意，面板和按键只做自己的事情，不额外调用插件的其它函数、变量。
-//			  除了以上接口，其他函数放心改名/改动。
+//			1.互动之间如果有较复杂的接口，必须遵循下面的格式：
+//				drill_canXxxx_Normal()			静态约束条件（无提示音）
+//				drill_canXxxx_Conditional()		外力限制条件（有提示音）
+//				drill_doXxxx()					执行操作
+//				drill_isXxxxControl()			键盘按键条件
+//			  面板通过上述四个接口 主动调用 能力插件中的函数。
 //			2.【该插件使用了事件容器】，必须考虑三种情况：初始化、切换地图时、切换贴图时，不然会出现指针错误！
 //				只要是装事件的容器，都需要考虑指针问题，不管是放在$gameMap还是$gameTemp中。
 //				另外，帧刷新判断时，最好每次变化直接【重刷容器】。
@@ -857,19 +860,10 @@ Game_Player.prototype.initialize = function() {
 var _drill_BoC_moveByInput = Game_Player.prototype.moveByInput;
 Game_Player.prototype.moveByInput = function() {
 	if( this.drill_isBombControl() ){			//放置炸弹按钮按下
-		var b_id = this.drill_BoC_characterPutBomb();
-		if( b_id == -1 ){
-			SoundManager.playBuzzer();
-		}
+		this.drill_doBomb();
 	}
 	_drill_BoC_moveByInput.call(this);
 };
-//==============================
-// * 玩家输入监听（Drill_OperateKeys来覆写）
-//==============================
-Game_Player.prototype.drill_isBombControl = function() {
-	return false;
-}
 //==============================
 // * 玩家 - 切换地图时，刷新炸弹
 //==============================
@@ -879,6 +873,40 @@ Game_Map.prototype.setup = function(mapId) {
 	$gamePlayer._drill_BoC.attr['bombTank'] = [];
 }
 
+//==============================
+// * 放置炸弹 - 静态约束条件
+//				
+//				程序执行流程中，必须禁止该能力的条件，一般不播放错误音。
+//==============================
+Game_Player.prototype.drill_canBomb_Normal = function() {
+	if( !this.drill_BoC_hasBomb() ){ return false };			//没有炸弹可以放置
+    return true;
+}
+//==============================
+// * 放置炸弹 - 外力限制条件
+//				
+//				由能力关闭、封印、数量限制等因素造成的，一般会播放错误提示音。
+//==============================
+Game_Player.prototype.drill_canBomb_Conditional = function() {
+	if( !$gameSystem._drill_BoC_canPutBomb ){ return false };					//能力被关闭
+	if( !$gameMap.drill_BoC_isBombCanPut( this.x,this.y ) ){ return false };	//禁止放置炸弹
+    return true;
+};
+//==============================
+// * 放置炸弹 - 执行操作
+//==============================
+Game_Player.prototype.drill_doBomb = function() {
+	var b_id = this.drill_BoC_characterPutBomb();
+	if( b_id == -1 ){
+		SoundManager.playBuzzer();
+	}
+}
+//==============================
+// * 放置炸弹 - 键盘按键条件（Drill_OperateKeys来覆写）
+//==============================
+Game_Player.prototype.drill_isBombControl = function() {
+	return false;
+}
 
 //=============================================================================
 // ** 事件容器

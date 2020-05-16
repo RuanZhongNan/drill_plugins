@@ -2309,6 +2309,9 @@ Drill_LIl_MaskSprite.prototype.initialize = function(width, height) {
 Drill_LIl_MaskSprite.prototype.update = function() {
 	Sprite_Base.prototype.update.call(this);
 	
+	// > 关闭时，不工作
+	if( $gameSystem._drill_LIl_enable == false ){ return; }
+	
 	// > fps控制
 	this._drill_time += 1;
 	var fps = 1000 / Graphics._fpsMeter.duration;

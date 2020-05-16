@@ -47,10 +47,10 @@
  * ----插件扩展
  * 该插件 不能 单独使用，必须基于 事件跳跃 插件。
  * 基于：
- *   - Drill_EventJump 物体 - 事件跳跃
+ *   - Drill_EventJump            物体 - 事件跳跃
  *     需要该插件才能执行普通跳跃。
  * 被扩展：
- *   - Drill_OperateHud 互动 - 鼠标辅助操作面板
+ *   - Drill_OperateHud           互动 - 鼠标辅助操作面板
  *     该插件提供鼠标、触碰辅助控制跳跃的支持。
  *
  * -----------------------------------------------------------------------------
@@ -64,7 +64,8 @@
  * 跳跃能力:
  *   (1.载具不能跳跃。
  *   (2.跳跃过程中可以扔花盆。
- *   (3.鼠标长按可以自动跳跃。
+ *   (3.跳跃过程中可以放置炸弹，并且放的是玩家当前位置的正下方。
+ *   (4.鼠标长按可以自动跳跃。
  * 跳跃触发事件:
  *   (1.玩家的跳跃会触发扫过的事件的独立开关。
  *      如果同时扫过了多个事件，则事件执行的先后顺序由事件id大小决定。
@@ -170,13 +171,12 @@
 //				->跳跃触发事件
 //
 //		★必要注意事项：
-//			1.互动之间如果有较复杂的接口，最好遵循下面的格式：
-//				drill_canXxxx_Normal		面板-静态限制条件（无提示音，面板不收回）
-//				drill_canXxxx_Conditional	面板-特殊限制条件（有提示音，面板收回）
-//				drill_doXxxx				面板-执行操作
-//				drill_isXxxxControl			按键-按下即可操作
-//			  注意，面板和按键只做自己的事情，不额外调用插件的其它函数、变量。
-//			  除了以上接口，其他函数放心改名/改动。
+//			1.互动之间如果有较复杂的接口，必须遵循下面的格式：
+//				drill_canXxxx_Normal()			静态约束条件（无提示音）
+//				drill_canXxxx_Conditional()		外力限制条件（有提示音）
+//				drill_doXxxx()					执行操作
+//				drill_isXxxxControl()			键盘按键条件
+//			  面板通过上述四个接口 主动调用 能力插件中的函数。
 //
 //		★其它说明细节：
 //			1.该插件根据跳跃能力添加了多重判断，会出现好几个函数分别往下降层级描述的复合情况。
@@ -347,25 +347,31 @@ Game_Player.prototype.moveByInput = function() {
 	}
 	_drill_jump_moveByInput.call(this);	
 };
+
 //==============================
-// * 玩家 - 跳跃按钮按下控制条件
+// * 跳跃 - 键盘按键条件
 //==============================
 Game_Player.prototype.drill_isJumpControl = function() {
 	//Q键 + 长按鼠标
 	return Input.isPressed('pageup') || DrillUp.g_jump_mouse;
 }
 //==============================
-// * 玩家 - 跳跃条件
+// * 跳跃 - 静态约束条件
+//				
+//			程序执行流程中，必须禁止该能力的条件，一般不播放错误音。
 //==============================
 Game_Player.prototype.drill_canJump_Normal = function() {
-	//不能跳跃，是因为程序执行的静态属性，不播放错误音
-	if( this.isJumping() ){return false};	
-	if( !this.canMove() ){return false};		
-	if( this._drill_jump_delay_time <= $gameSystem._drill_jump_delay){return false};	
+	if( this.isJumping() ){return false};						//跳跃时
+	if( !this.canMove() ){return false};						//无法移动时
+	if( this._drill_jump_delay_time <= $gameSystem._drill_jump_delay){return false};	//跳跃间隔未结束
 	return true;
 }
+//==============================
+// * 跳跃 - 外力限制条件
+//				
+//			由能力关闭、封印、数量限制等因素造成的，一般会播放错误提示音。
+//==============================
 Game_Player.prototype.drill_canJump_Conditional = function() {
-	//不能跳跃，是因为特殊的限制条件，播放错误音
 	if( this.isInVehicle() ){return false};						//载具中禁止跳跃
 	if( this.drill_EJu_isInJumpForbiddenArea() ){return false};	//跳跃禁区禁止跳跃
 	if( !$gameSystem._drill_jump_enable ){return false};		//关闭跳跃能力，禁止跳跃
@@ -373,7 +379,7 @@ Game_Player.prototype.drill_canJump_Conditional = function() {
 }
 
 //==============================
-// * 执行跳跃
+// * 跳跃 - 执行操作
 //==============================
 Game_Player.prototype.drill_doJump = function() {
 	
@@ -385,7 +391,6 @@ Game_Player.prototype.drill_doJump = function() {
 	this.drill_EJu_commonJump();
 	
 }
-
 
 
 

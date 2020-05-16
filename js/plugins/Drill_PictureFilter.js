@@ -265,11 +265,11 @@ Sprite_Picture.prototype.update = function() {
 	this.drill_PFi_updatePicture();
 }
 Sprite_Picture.prototype.drill_PFi_updatePicture = function() {
-	if ( !this.visible ) { return; }
-	if ( this.bitmap == null ) { return; }
-	var picture = this.picture();
-	if ( !picture ) { return; }
-	if ( !picture._drill_PFi.openFilter ) { return; }
+	if( !this.visible ){ return; }
+	if( this.bitmap == null ){ return; }
+	var temp_picData = this.picture();
+	if( !temp_picData ){ return; }
+	if( !temp_picData._drill_PFi.openFilter ){ return; }
 	var picture_sprite = this;
 	var data;
 	
@@ -279,27 +279,27 @@ Sprite_Picture.prototype.drill_PFi_updatePicture = function() {
 	}
 	
 	//>插件指令配置 - 线性
-	data = picture._drill_PFi.setPureLinear;	
+	data = temp_picData._drill_PFi.setPureLinear;	
 	picture_sprite.drill_COF_setPureLinear_ONCE(data[0],data[1],data[2]);
-	data = picture._drill_PFi.setColorLinear;
+	data = temp_picData._drill_PFi.setColorLinear;
 	picture_sprite.drill_COF_setColorLinear_ONCE(data[0],data[1],data[2]);
-	data = picture._drill_PFi.setFillLinear;
+	data = temp_picData._drill_PFi.setFillLinear;
 	picture_sprite.drill_COF_setFillLinear_ONCE(data[0],data[1],data[2]);
-	data = picture._drill_PFi.setBlurLinear;
+	data = temp_picData._drill_PFi.setBlurLinear;
 	picture_sprite.drill_COF_setBlurLinear_ONCE(data[0],data[1]);
-	data = picture._drill_PFi.setNoiseLinear;
+	data = temp_picData._drill_PFi.setNoiseLinear;
 	picture_sprite.drill_COF_setNoiseLinear_ONCE(data[0],data[1]);
 	
 	//>插件指令配置 - 波动
-	data = picture._drill_PFi.setPureWave;	
+	data = temp_picData._drill_PFi.setPureWave;	
 	picture_sprite.drill_COF_setPureWave_ONCE(data[0],data[1],data[2]);
-	data = picture._drill_PFi.setColorWave;
+	data = temp_picData._drill_PFi.setColorWave;
 	picture_sprite.drill_COF_setColorWave_ONCE(data[0],data[1],data[2]);
-	data = picture._drill_PFi.setFillWave;
+	data = temp_picData._drill_PFi.setFillWave;
 	picture_sprite.drill_COF_setFillWave_ONCE(data[0],data[1],data[2]);
-	data = picture._drill_PFi.setBlurWave;
+	data = temp_picData._drill_PFi.setBlurWave;
 	picture_sprite.drill_COF_setBlurWave_ONCE(data[0],data[1]);
-	data = picture._drill_PFi.setNoiseWave;
+	data = temp_picData._drill_PFi.setNoiseWave;
 	picture_sprite.drill_COF_setNoiseWave_ONCE(data[0],data[1]);
 		
 }

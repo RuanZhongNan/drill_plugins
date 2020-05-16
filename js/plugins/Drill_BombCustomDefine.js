@@ -6,6 +6,14 @@
  * @plugindesc [v1.1]        炸弹人 - 自定义炸弹
  * @author Drill_up
  * 
+ * @Drill_LE_param "玩家炸弹-火力%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "DrillUp.g_BoCD_a_list_length"
+ * 
+ * @Drill_LE_param "事件炸弹-火力%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "DrillUp.g_BoCD_e_list_length"
+ * 
  * 
  * @help  
  * =============================================================================

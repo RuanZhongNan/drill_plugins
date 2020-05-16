@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        物体 - 事件的声音
+ * @plugindesc [v1.2]        物体 - 事件的声音
  * @author Drill_up
  * 
  * 
@@ -21,7 +21,7 @@
  * ----插件扩展
  * 插件可以配合目标插件一起使用，也可以单独使用。
  * 可作用于：
- *   - Drill_LayerCamera 地图 - 活动地图镜头 ★★v1.6及以上版本★★
+ *   - Drill_LayerCamera  地图 - 活动地图镜头 ★★v1.6及以上版本★★
  *     目标插件控制镜头放大缩小时，你能够听到的声音范围也会变化。
  * 
  * -----------------------------------------------------------------------------
@@ -108,6 +108,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 优化了部分结构。 
+ * [v1.2]
+ * 修正了事件距离与镜头的中心位置。
  *
  * 
  *
@@ -551,8 +553,8 @@ Game_Map.prototype.drill_ESo_updateDistanceDecay = function() {
 		if( buffer._drill_ESo_isOff == true ){ continue; }
 		var e = $gameMap.event(buffer._drill_ESo_event);
 		if( e && e._drill_ESo_isEventOff != true ){
-			var x1 = e._realX;								//事件位置
-			var y1 = e._realY;
+			var x1 = e._realX + 0.5;						//事件位置（中心位置）
+			var y1 = e._realY + 0.5;
 			var x2 = this._displayX + this.screenTileX()/2;	//镜头中心点
 			var y2 = this._displayY + this.screenTileY()/2;
 			var d = Math.abs( $gameMap.distance(x1, y1, x2, y2) );

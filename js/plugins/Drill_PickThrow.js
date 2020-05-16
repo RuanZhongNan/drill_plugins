@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        互动 - 举起花盆能力
+ * @plugindesc [v1.4]        互动 - 举起花盆能力
  * @author Drill_up
  * 
  * @param 举起音效
@@ -62,33 +62,39 @@
  *
  * -----------------------------------------------------------------------------
  * ----设定注意事项
- *    插件的作用域：地图界面。
- *    只对玩家有效。玩家可以触发举起事件的开关。
+ * 1.插件的作用域：地图界面。
+ *   对玩家、被举起的事件 有效。
  * 举起：
- *     1.玩家/花盆任一个站在花盆禁区，都无法举起花盆。
- *     2.花盆一次只能捡一个。
- *     3.花盆通过事件注释激活是否可以被举起。默认不可举起。
- *     4.添加了可举起状态的事件页会被阻止运行方法。
+ *   (1.玩家/花盆任一个站在花盆禁区，都无法举起花盆。
+ *   (2.花盆一次只能捡一个。
+ *   (3.花盆通过事件注释激活举起。默认不可举起。
+ *   (4.添加了可举起状态的事件页会被阻塞运行指令。
+ *   (5.如果你举起了物体，那么你的确定键是被占用的，确定键触发的事件，
+ *      必须扔掉花盆后再触发。
  * 运输：
- *     1.玩家可以携带花盆穿过花盆禁区。
- *     2.花盆不能带出地图。
- *     3.玩家举着花盆进入剧情时，玩家隐身，花盆也会隐身。（旧版不会）
- *     4.运输时，如果设置"运输时朝向一致"，可以设置抬起某些石像来达到旋转
- *       石像机关的谜题。
+ *   (1.玩家可以携带花盆穿过花盆禁区。
+ *   (2.花盆不能带出地图。
+ *   (3.玩家举着花盆进入剧情时，玩家隐身，花盆也会隐身。（旧版不会）
+ *   (4.被玩家运输的花盆，不能作任何移动操作，将事件移动到指定位置也
+ *      没有效果。
  * 投掷：
- *     1.玩家站在花盆禁区，无法投掷花盆，并且扔花盆无法翻越禁区。
- *     2.地图中的事件，会阻塞扔花盆。但自己的队伍的成员不会。
- *     3.跳跃过程中可以扔花盆。
- *     4.花盆通过事件注释控制是否可以被投掷。默认可以投掷。
- *     （可以设置某些黏物可以捡起但无法投掷）
- * 其它：
- *     1.花盆具有堵路功能，你需要留意是否会堵住剧情中npc的道路。
+ *   (1.玩家站在花盆禁区，无法投掷花盆，并且扔花盆无法翻越禁区。
+ *   (2.地图中的事件，会阻塞扔花盆。但自己的队伍的成员不会。
+ *   (3.跳跃过程中可以扔花盆。
+ * 其他操作：
+ *   (1.你可以设置注释，实现物体被举起时、落地时触发开关。
+ *   (2.插件指令可以执行强制举起/运输/投掷操作。
+ *      强制举起无视所有规则，而且可以举起多个事件。
+ *      使用强制举起事件前，最好判断一下玩家是否正在运输事件。
+ * 设计：
+ *   (1.花盆具有堵路功能，你需要留意是否会堵住剧情中npc的道路。
  *     （可推动箱子也有堵路功能）
- *     2.被玩家运输的花盆，不能作任何移动操作，包括指定事件位置。
- *     3.如果你举起了物体，那么你的确定键是被占用的，确定键触发的事件，必须
- *       扔掉花盆后再触发。
- *     4.不要被花盆限制想象力了,它可以是恐龙蛋（落地就碎）,夜明珠（举起就地震）,
- *       火药石（运输时持续扣HP），鸡（隔一段时间自己挣脱被举），炸弹……
+ *   (2.花盆通过事件注释控制是否可以被投掷。默认可以投掷。
+ *      可以设置某些黏物可以捡起但无法投掷。
+ *   (3.运输时，如果设置"运输时朝向一致"，可以设置抬起某些石像来达到
+ *      旋转石像机关的谜题。
+ *   (4.不要被花盆限制想象力了,它可以是恐龙蛋(落地就碎),夜明珠(举起就
+ *      地震),火药石(运输时持续扣HP)，鸡(隔一段时间自己挣脱被举)……
  * 
  * -----------------------------------------------------------------------------
  * ----控制操作 - 键盘、手柄
@@ -138,7 +144,7 @@
  *
  * 1.所有事件默认投掷距离为1。
  * 2."运输时朝向一致"对勾选了固定朝向的事件也有效。
- * 固定朝向的事件一般都为某些石像，通过该方法可以用来举起旋转石像。
+ *   固定朝向的事件一般都为某些石像，通过该方法可以用来举起旋转石像。
  * 3.如果未设置运输高度，则使用默认运输高度，高度单位为像素，可为负数。
  *
  * -----------------------------------------------------------------------------
@@ -161,7 +167,7 @@
  * 插件指令：>举起花盆 : 强制投掷 : 不能投掷时销毁
  *
  * 1.强制举起无视所有条件，而且可以举起多个事件。
- * 你在使用强制举起事件前，最好判断一下玩家是否正在运输事件。
+ *   你在使用强制举起事件前，最好判断一下玩家是否正在运输事件。
  * 
  *
  * -----------------------------------------------------------------------------
@@ -199,6 +205,8 @@
  * 修复了插件指令销毁霸王花后，然后强制投掷出去又冒出霸王花的bug。
  * [v1.3]
  * 添加了插件性能测试说明。
+ * [v1.4]
+ * 修复了举起花盆时，声音变小的bug。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -222,13 +230,12 @@
 //				->参数赋值-正在举起的事件
 //
 //		★必要注意事项：
-//			1.互动之间如果有较复杂的接口，最好遵循下面的格式：
-//				drill_canXxxx_Normal		面板-静态限制条件（无提示音，面板不收回）
-//				drill_canXxxx_Conditional	面板-特殊限制条件（有提示音，面板收回）
-//				drill_doXxxx				面板-执行操作
-//				drill_isXxxxControl			按键-按下即可操作
-//			  注意，面板和按键只做自己的事情，不额外调用插件的其它函数、变量。
-//			  除了以上接口，其他函数放心改名/改动。
+//			1.互动之间如果有较复杂的接口，必须遵循下面的格式：
+//				drill_canXxxx_Normal()			静态约束条件（无提示音）
+//				drill_canXxxx_Conditional()		外力限制条件（有提示音）
+//				drill_doXxxx()					执行操作
+//				drill_isXxxxControl()			键盘按键条件
+//			  面板通过上述四个接口 主动调用 能力插件中的函数。
 //			2.逻辑如下：
 //				举起：事件跳向玩家位置，是事件执行方法。
 //				运输：事件实时刷新至玩家头上。
@@ -471,12 +478,16 @@ Game_Event.prototype.drill_PT_setupPage = function() {
 //==============================
 // * 播放音效
 //==============================
-SoundManager.drill_PT_playSE = function(fileName){
-   var se = {};
-   se.name = fileName;
-   se.pitch = 100;
-   se.volume = 100;
-   AudioManager.playSe(se);
+SoundManager.drill_PT_playSE = function(fileName,character){
+	var se = {};
+	se.name = fileName;
+	se.pitch = 100;
+	se.volume = 100;
+	if( Imported.Drill_EventSound && AudioManager.drill_ESo_playCharacterSe ){		//适应声音距离化
+		AudioManager.drill_ESo_playCharacterSe(se,character);
+	}else{
+		AudioManager.playSe(se);
+	}
 };  
 //==============================
 // * 播放错误提示音效（持续时的自缓冲播放，不要用在只执行一次的方法中）
@@ -560,19 +571,20 @@ Game_Event.prototype.start = function() {
 		_drill_PT_event_start.call(this);
 	}
 };
+
 //==============================
-// * 按键控制条件
+// * 举起 - 键盘按键条件
 //==============================
 Game_Player.prototype.drill_isPickControl = function() {
 	//确定键
 	return Input.isPressed('ok');
 }
-
 //==============================
-// * 举起 - 举起条件
+// * 举起 - 静态约束条件
+//				
+//			程序执行流程中，必须禁止该能力的条件，一般不播放错误音。
 //==============================
 Game_Event.prototype.drill_canPick_Normal = function() {
-	//不能举起，是因为程序执行的静态属性，不播放错误音
 	if ($gamePlayer._drill_PT_pick_wait > 0) {return false};//玩家正在举起
 	if (this._drill_PT_pick_wait > 0) {return false};		//事件被举起中（时间）
 	
@@ -585,8 +597,12 @@ Game_Event.prototype.drill_canPick_Normal = function() {
 	if ( !this._drill_PT_pick_enabled) {return false};		//物体不能被举起
     return true;
 }
+//==============================
+// * 举起 - 外力限制条件
+//				
+//			由能力关闭、封印、数量限制等因素造成的，一般会播放错误提示音。
+//==============================
 Game_Event.prototype.drill_canPick_Conditional = function() {
-	//不能举起，是因为特殊的限制条件，播放错误音
 	if (!$gameSystem._drill_PT_can_pick) {return false};	//举起能力被关闭
 	
 	if (this.drill_PT_isInThrowForbiddenArea(this._x,this._y)) {return false};	//在花盆禁区中
@@ -594,9 +610,8 @@ Game_Event.prototype.drill_canPick_Conditional = function() {
 	
     return true;
 };
-
 //==============================
-// * 举起 - 执行举起
+// * 举起 - 执行操作
 //==============================
 Game_Event.prototype.drill_doPick = function() {
 
@@ -626,7 +641,7 @@ Game_Event.prototype.drill_doPick = function() {
 	var x = $gamePlayer._x - this._x;
 	var y = $gamePlayer._y - this._y;
 	this.jump(x,y);
-	SoundManager.drill_PT_playSE(String( DrillUp.g_PT_pickSE ));
+	SoundManager.drill_PT_playSE( DrillUp.g_PT_pickSE, $gamePlayer );
 };
 
 //=============================================================================
@@ -737,13 +752,12 @@ Sprite_Character.prototype.drill_PT_updateLiftingObjSprite = function() {
 //==============================
 // * 投掷 - 开始投掷
 //==============================
-
 var _drill_PT_moveByInput = Game_Player.prototype.moveByInput;
 Game_Player.prototype.moveByInput = function() {
 	
-	if ( this.drill_canThrow_Normal() ) {		//投掷基本条件
-	    if (this.drill_isThrowControl()) {		//投掷按键
-			if(this.drill_canThrow_Conditional()){	//投掷限制条件
+	if ( this.drill_canThrow_Normal() ) {			//静态约束条件
+	    if (this.drill_isThrowControl()) {			//投掷按键
+			if(this.drill_canThrow_Conditional()){	//外力限制条件
 				this.drill_doThrow();
 				return ;
 			}else{
@@ -753,18 +767,20 @@ Game_Player.prototype.moveByInput = function() {
     };
 	_drill_PT_moveByInput.call(this);	
 };
+
 //==============================
-// * 按键控制条件
+// * 投掷 - 键盘按键条件
 //==============================
 Game_Player.prototype.drill_isThrowControl = function() {
 	//确定键
 	return Input.isPressed('ok');
 }
 //==============================
-// * 投掷 - 投掷条件
+// * 投掷 - 静态约束条件
+//				
+//			程序执行流程中，必须禁止该能力的条件，一般不播放错误音。
 //==============================
 Game_Player.prototype.drill_canThrow_Normal = function() {
-	//不能举起，是因为程序执行的静态属性，不播放错误音
 	if ( this._drill_PT_pick_wait > 0 ) {return false};		//玩家正在举起（时间）
 	if ( !this._drill_PT_is_lifting ) {return false};		//玩家未举物体
 	if ( this._drill_PT_throw_wait > 0 ) {return false};	//玩家正在投掷（时间）
@@ -772,12 +788,16 @@ Game_Player.prototype.drill_canThrow_Normal = function() {
 	if ( !this.canMove() ) {return false};					//玩家不能移动
     return true;
 }
+//==============================
+// * 投掷 - 外力限制条件
+//				
+//			由能力关闭、封印、数量限制等因素造成的，一般会播放错误提示音。
+//==============================
 Game_Player.prototype.drill_canThrow_Conditional = function() {
-	//不能举起，是因为特殊的限制条件，播放错误音
 	if (!$gameSystem._drill_PT_can_throw) {return false};	//投掷能力被关闭
 	var e = $gamePlayer.drill_PT_getLiftingEvent();
-	if( e!=null ){
-		if( e._drill_PT_throw_enabled == false){
+	if( e != null ){
+		if( e._drill_PT_throw_enabled == false){			//正在举不可投掷的物体
 			return false;
 		}
 	}
@@ -785,6 +805,16 @@ Game_Player.prototype.drill_canThrow_Conditional = function() {
 	if ( this.drill_PT_isInThrowForbiddenArea(this._x,this._y) ) {return false};	//花盆禁区禁止投掷
 	
     return true;
+};
+//==============================
+// * 投掷 - 执行操作
+//==============================
+Game_Player.prototype.drill_doThrow = function() {
+	$gameMap.events().forEach(function(event) {
+		if (event._drill_PT_is_being_lift && !event._erased) {		//找到被举起标记的对象，执行投掷
+			this.drill_PT_eventBeingThrow(event);	
+		};
+    }, this);
 };
 
 //==============================
@@ -797,18 +827,6 @@ Game_Player.prototype.triggerAction = function() {
     if (this._drill_PT_is_lifting) {return false};
 	_drill_PT_player_triggerAction.call(this);
 	return false;
-};
-
-//==============================
-// * 投掷 - 执行投掷
-//==============================
-Game_Player.prototype.drill_doThrow = function() {
-	$gameMap.events().forEach(function(event) {
-		if (event._drill_PT_is_being_lift && !event._erased) {		//找到被举起标记的对象，执行投掷
-			this.drill_PT_eventBeingThrow(event);	
-		};
-    }, this);
-	
 };
 //==============================
 // * 投掷 - 执行投掷（事件被投掷）
@@ -897,7 +915,7 @@ Game_Player.prototype.drill_PT_eventBeingThrow = function(event) {
 	}
 	$gameSystem._drill_PT_being_lift_event = 0;
 	
-	SoundManager.drill_PT_playSE(String( DrillUp.g_PT_throwSE ));
+	SoundManager.drill_PT_playSE( DrillUp.g_PT_throwSE, event );
 };
 
 //==============================

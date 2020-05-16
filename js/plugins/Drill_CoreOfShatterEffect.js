@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        系统 - 方块粉碎核心
+ * @plugindesc [v1.2]        系统 - 方块粉碎核心
  * @author Drill_up
  * 
  * @Drill_LE_param "方块粉碎-%d"
@@ -44,6 +44,14 @@
  *   (3.原理为：将指定的图片根据行数列数切割成n块碎片。
  *      碎片编号为0至n-1，依次赋予弹道。
  *      如果弹道的随机值差异不大，则碎片散开的差异也不会很大。
+ * 比例粉碎：
+ *   (1.所有碎片，除了波动量设置，基本上速度都几乎一样。
+ *      比如线性粉碎配置，你能够清晰地看到一个圆向外扩散的样子。
+ *      因为所有碎片的速度都几乎一样。
+ *   (2.而比例粉碎，最外面碎片的速度最快，里面的速度较慢。
+ *      通过设置 "碎片速度是否分比例" 可以使得碎片里外的速度不一样。
+ *   (3.碎片数量少时，比例扩散的直观感受不大。
+ *      而碎片很多时，会有较明显的效果。
  * 
  * -----------------------------------------------------------------------------
  * ----插件性能
@@ -73,6 +81,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 修复了一些细节bug。
+ * [v1.2]
+ * 添加了碎片 比例扩散 的功能。
  * 
  * 
  * @param ---方块粉碎组 1至20---
@@ -154,19 +164,19 @@
  * @parent ---方块粉碎组 1至20---
  * @type struct<DrillCOSEShatter>
  * @desc GIF的详细配置信息。
- * @default 
+ * @default {"标签":"==小图-比例扩散==","切割矩阵行数":"9","切割矩阵列数":"8","碎片速度是否分比例":"true","最小速度比例":"0.15","碎片弹道":"{\"标签\":\"==扩散弹道==\",\"移动时长\":\"80\",\"移动模式\":\"极坐标模式\",\"---极坐标模式---\":\"\",\"速度类型\":\"初速度+波动量\",\"初速度\":\"5.0\",\"速度随机波动量\":\"0.5\",\"加速度\":\"0.0\",\"最大速度\":\"99.0\",\"最小速度\":\"0.0\",\"路程计算公式\":\"\\\"return 0.0\\\"\",\"方向类型\":\"四周扩散(线性)\",\"固定方向\":\"90.0\",\"扇形朝向\":\"45.0\",\"扇形角度\":\"90.0\",\"方向公式\":\"\\\"return 0.0\\\"\",\"---直角坐标模式---\":\"\",\"X轴速度类型\":\"只初速度\",\"X轴初速度\":\"1.0\",\"X轴速度随机波动量\":\"2.0\",\"X轴加速度\":\"0.0\",\"X轴最大速度\":\"99.0\",\"X轴最小速度\":\"0.0\",\"X轴路程计算公式\":\"\\\"return 0.0\\\"\",\"Y轴速度类型\":\"只初速度\",\"Y轴初速度\":\"1.0\",\"Y轴速度随机波动量\":\"2.0\",\"Y轴加速度\":\"0.0\",\"Y轴最大速度\":\"99.0\",\"Y轴最小速度\":\"0.0\",\"Y轴路程计算公式\":\"\\\"return 0.0\\\"\"}"}
  *
  * @param 方块粉碎-14
  * @parent ---方块粉碎组 1至20---
  * @type struct<DrillCOSEShatter>
  * @desc GIF的详细配置信息。
- * @default 
+ * @default {"标签":"==小图-比例半圆扩散==","切割矩阵行数":"9","切割矩阵列数":"8","碎片速度是否分比例":"true","最小速度比例":"0.15","碎片弹道":"{\"标签\":\"==扩散弹道==\",\"移动时长\":\"80\",\"移动模式\":\"极坐标模式\",\"---极坐标模式---\":\"\",\"速度类型\":\"初速度+波动量\",\"初速度\":\"4.5\",\"速度随机波动量\":\"0.2\",\"加速度\":\"0.0\",\"最大速度\":\"99.0\",\"最小速度\":\"0.0\",\"路程计算公式\":\"\\\"return 0.0\\\"\",\"方向类型\":\"扇形范围方向(线性)\",\"固定方向\":\"90.0\",\"扇形朝向\":\"-90.0\",\"扇形角度\":\"180.0\",\"方向公式\":\"\\\"return 0.0\\\"\",\"---直角坐标模式---\":\"\",\"X轴速度类型\":\"只初速度\",\"X轴初速度\":\"1.0\",\"X轴速度随机波动量\":\"2.0\",\"X轴加速度\":\"0.0\",\"X轴最大速度\":\"99.0\",\"X轴最小速度\":\"0.0\",\"X轴路程计算公式\":\"\\\"return 0.0\\\"\",\"Y轴速度类型\":\"只初速度\",\"Y轴初速度\":\"1.0\",\"Y轴速度随机波动量\":\"2.0\",\"Y轴加速度\":\"0.0\",\"Y轴最大速度\":\"99.0\",\"Y轴最小速度\":\"0.0\",\"Y轴路程计算公式\":\"\\\"return 0.0\\\"\"}"}
  *
  * @param 方块粉碎-15
  * @parent ---方块粉碎组 1至20---
  * @type struct<DrillCOSEShatter>
  * @desc GIF的详细配置信息。
- * @default 
+ * @default {"标签":"==小图-比例抛物线==","切割矩阵行数":"9","切割矩阵列数":"8","碎片速度是否分比例":"true","最小速度比例":"0.15","碎片弹道":"{\"标签\":\"==抛物线弹道==\",\"移动时长\":\"120\",\"移动模式\":\"直角坐标模式\",\"---极坐标模式---\":\"\",\"速度类型\":\"只初速度\",\"初速度\":\"1.0\",\"速度随机波动量\":\"2.0\",\"加速度\":\"0.0\",\"最大速度\":\"99.0\",\"最小速度\":\"0.0\",\"路程计算公式\":\"\\\"return 0.0\\\"\",\"方向类型\":\"四周扩散(线性)\",\"固定方向\":\"90.0\",\"扇形朝向\":\"45.0\",\"扇形角度\":\"90.0\",\"方向公式\":\"\\\"return 0.0\\\"\",\"---直角坐标模式---\":\"\",\"X轴速度类型\":\"初速度+波动量\",\"X轴初速度\":\"0.0\",\"X轴速度随机波动量\":\"3.0\",\"X轴加速度\":\"0.0\",\"X轴最大速度\":\"99.0\",\"X轴最小速度\":\"0.0\",\"X轴路程计算公式\":\"\\\"return 0.0\\\"\",\"Y轴速度类型\":\"初速度+波动量+加速度\",\"Y轴初速度\":\"-6.0\",\"Y轴速度随机波动量\":\"2.0\",\"Y轴加速度\":\"0.28\",\"Y轴最大速度\":\"99.0\",\"Y轴最小速度\":\"0.0\",\"Y轴路程计算公式\":\"\\\"return 0.0\\\"\"}"}
  *
  * @param 方块粉碎-16
  * @parent ---方块粉碎组 1至20---
@@ -462,6 +472,18 @@
  * @min 1
  * @desc 指定贴图切割的行数。碎片数 = 行数 x 列数。
  * @default 6
+ *
+ * @param 碎片速度是否分比例
+ * @type boolean
+ * @on 分比例
+ * @off 速度一致
+ * @desc true - 分比例，false - 速度一致
+ * @default false
+ * 
+ * @param 最小速度比例
+ * @parent 碎片速度是否分比例
+ * @desc 中心的碎片的速度最小，最边缘碎片的速度的最大。
+ * @default 0.2
  *
  * @param 碎片弹道
  * @type struct<DrillCOSEBallistic>
@@ -788,6 +810,8 @@
 			DrillUp.g_COSE_style_list[i] = JSON.parse(DrillUp.parameters['方块粉碎-' + String(i+1)] );
 			DrillUp.g_COSE_style_list[i]['splitRowCount'] = Number(DrillUp.g_COSE_style_list[i]['切割矩阵行数'] || 5);
 			DrillUp.g_COSE_style_list[i]['splitColCount'] = Number(DrillUp.g_COSE_style_list[i]['切割矩阵列数'] || 5);
+			DrillUp.g_COSE_style_list[i]['speedPer'] = String(DrillUp.g_COSE_style_list[i]['碎片速度是否分比例'] || "false") == "true";
+			DrillUp.g_COSE_style_list[i]['speedPerMin'] = Number(DrillUp.g_COSE_style_list[i]['最小速度比例'] || 0.2);
 			//DrillUp.g_COSE_style_list[i]['rotation'] = Number(DrillUp.g_COSE_style_list[i]['粒子自旋转速度'] || 0);
 			
 			var temp = JSON.parse(DrillUp.g_COSE_style_list[i]['碎片弹道'] || {} );
@@ -883,10 +907,21 @@ Sprite.prototype.drill_COSE_restoreShatter = function(){
 // * 方块粉碎 - 弹道初始化（坐标）
 //==============================
 Sprite.prototype.drill_COSE_initBallisticsMove = function( data ){
+	
+	// > 检查
 	var style_data = DrillUp.g_COSE_style_list[ data['shatter_id'] ];
+	if( style_data == null ){
+		alert(
+			"【Drill_CoreOfShatterEffect.js 系统-方块粉碎核心】\n"+
+			"没有找到编号为"+ (data['shatter_id']+1) +"的方块粉碎配置，请查看插件参数的配置内容。"
+		);
+	}
+	
 	var ballistics_data = style_data["ballistics"];
 	data['splitRowCount'] = style_data["splitRowCount"];
 	data['splitColCount'] = style_data["splitColCount"];
+	data['speedPer'] = style_data["speedPer"];
+	data['speedPerMin'] = style_data["speedPerMin"];
 		
 	//   移动（movement）
 	data['movementNum'] = data['splitRowCount'] * data['splitColCount'];		//碎片数量
@@ -970,7 +1005,27 @@ Sprite.prototype.drill_COSE_initShatterSprite = function(){
 	this._drill_COSE_layer = temp_layer;
 	this.addChild( temp_layer );
 	
+	// > 变速矩阵（测试显示）
+	//var ss = "";
+	//var max_per = Math.floor( Math.abs( (Math.max( data['splitColCount'],data['splitRowCount'] )-1) /2 ) );
+	//for( var i=0; i < data['splitColCount']; i++){
+	//	var sss = "";
+	//	for( var j=0; j < data['splitRowCount']; j++){
+	//		var a = Math.abs( i - (data['splitColCount']-1)/2 );
+	//		var b = Math.abs( j - (data['splitRowCount']-1)/2 );
+	//		a = Math.floor( Math.max( a,b ) );
+	//		a = a/max_per;
+	//		
+	//		sss += String(a) + "  ";
+	//		//sss += String(j + i * data['splitRowCount']) + "  ";
+	//	}
+	//	ss += sss + "\n";
+	//}
+	//alert(ss);
+	
+	
 	// > 粉碎块
+	var max_per = Math.floor( Math.abs( (Math.max( data['splitColCount'],data['splitRowCount'] )-1) /2 ) );
 	var ww = data['frameW']/data['splitColCount'];
 	var hh = data['frameH']/data['splitRowCount'];
 	this._drill_COSE_sprites = [];
@@ -993,6 +1048,23 @@ Sprite.prototype.drill_COSE_initShatterSprite = function(){
 			$gameTemp.drill_COBa_preBallisticsMove( temp_sprite, i*data['splitRowCount']+j , temp_sprite._orgX, temp_sprite._orgY );
 			$gameTemp.drill_COBa_preBallisticsOpacity( temp_sprite, i*data['splitRowCount']+j , temp_sprite._orgOpacity );
 			
+			// > 变速矩阵
+			if( data['speedPer'] == true ){
+				var a = Math.abs( i - (data['splitColCount']-1)/2 );
+				var b = Math.abs( j - (data['splitRowCount']-1)/2 );
+				a = Math.floor( Math.max( a,b ) );
+				a = a/max_per;
+				
+				a = a *( 1-data['speedPerMin'] ) + data['speedPerMin'];
+				
+				for( var n = 0; n < temp_sprite["_drill_COBa_x"].length; n++ ){
+					temp_sprite["_drill_COBa_x"][n] = temp_sprite["_drill_COBa_x"][n] * a + temp_sprite._orgX * (1-a);
+				}
+				for( var n = 0; n < temp_sprite["_drill_COBa_y"].length; n++ ){
+					temp_sprite["_drill_COBa_y"][n] = temp_sprite["_drill_COBa_y"][n] * a + temp_sprite._orgY * (1-a);
+				}
+			}
+
 
 			this._drill_COSE_sprites.push( temp_sprite );
 			temp_layer.addChild( temp_sprite );

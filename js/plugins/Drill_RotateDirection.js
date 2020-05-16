@@ -21,7 +21,7 @@
  * ----插件扩展
  * 该插件可以单独使用，也可以通过其他插件添加更多功能。
  * 被扩展：
- *   - Drill_OperateHud 互动 - 鼠标辅助操作面板
+ *   - Drill_OperateHud           互动 - 鼠标辅助操作面板
  *     该插件提供鼠标、触碰辅助控制原地转向的支持。
  *
  * -----------------------------------------------------------------------------
@@ -109,13 +109,13 @@
 //				x->八方向
 //
 //		★必要注意事项：
-//			1.互动之间如果有较复杂的接口，最好遵循下面的格式：
-//				drill_canXxxx_Normal		面板-静态限制条件（无提示音，面板不收回）
-//				drill_canXxxx_Conditional	面板-特殊限制条件（有提示音，面板收回）
-//				drill_doXxxx				面板-执行操作
-//				drill_isXxxxControl			按键-按下即可操作
-//			  注意，面板和按键只做自己的事情，不额外调用插件的其它函数、变量。
-//			  除了以上接口，其他函数放心改名/改动。
+//			1.互动之间如果有较复杂的接口，必须遵循下面的格式：
+//				drill_canXxxx_Normal()			静态约束条件（无提示音）
+//				drill_canXxxx_Conditional()		外力限制条件（有提示音）
+//				drill_doXxxx()					执行操作
+//				drill_isXxxxControl()			键盘按键条件
+//			  面板通过上述四个接口 主动调用 能力插件中的函数。
+//			  注意，这里【没有】 drill_doRotate() 函数。
 //
 //		★其它说明细节：
 //			1.转向可以朝向8个方向，这里还是只考虑4个方向，太复杂。
@@ -188,8 +188,9 @@ Game_Player.prototype.moveByInput = function() {
 	_drill_RD_moveByInput.call(this);	
 	
 };
+
 //==============================
-// * 转向按钮按下控制条件
+// * 转向 - 键盘按键条件
 //==============================
 Game_Player.prototype.drill_isRotateControl = function() {
 	//W键 + 方向键
@@ -201,20 +202,26 @@ Game_Player.prototype.drill_isRotateControl = function() {
 		);
 }
 //==============================
-// * 转向条件
+// * 转向 - 静态约束条件
+//				
+//			程序执行流程中，必须禁止该能力的条件，一般不播放错误音。
 //==============================
 Game_Player.prototype.drill_canRotate_Normal = function() {
-	//不能转向，是因为程序执行的静态属性，不播放错误音
-	if( this.isJumping() ){return false};	
-	if( !this.canMove() ){return false};		
+	if( this.isJumping() ){return false};						//跳跃时
+	if( !this.canMove() ){return false};						//无法移动时
 	return true;
 }
+//==============================
+// * 转向 - 外力限制条件
+//				
+//			由能力关闭、封印、数量限制等因素造成的，一般会播放错误提示音。
+//==============================
 Game_Player.prototype.drill_canRotate_Conditional = function() {
-	//不能转向，是因为特殊的限制条件，播放错误音
 	if( this.drill_RD_isInSlipperyArea() ){return false};		//光滑图块上禁止转向
-	if( !$gameSystem._drill_RD_enable ){return false};	//关闭转向能力，禁止转向
+	if( !$gameSystem._drill_RD_enable ){return false};			//关闭转向能力，禁止转向
 	return true;
 }
+
 //==============================
 // * 判断光滑图块
 //==============================
