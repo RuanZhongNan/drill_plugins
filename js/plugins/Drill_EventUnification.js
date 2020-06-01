@@ -704,7 +704,7 @@ Game_Map.prototype.drill_EU_moveDiagonallyByMoveTag = function( horz, vert, e_ta
 			//e._realX = $gameMap.xWithDirection(e._x, e.reverseDir(horz));
 			//e._realY = $gameMap.yWithDirection(e._y, e.reverseDir(vert));
 			if( this.isLoopHorizontal() ){
-				e._x = $gameMap.xWithDirection(e._x, d);
+				e._x = $gameMap.xWithDirection(e._x, horz);
 				if( e._x >= this.width() ){
 					e._x -= this.width();
 					e._realX -= this.width();
@@ -717,7 +717,7 @@ Game_Map.prototype.drill_EU_moveDiagonallyByMoveTag = function( horz, vert, e_ta
 				e._x = $gameMap.roundXWithDirection(e._x, horz);
 			}
 			if( this.isLoopVertical() ){
-				e._y = $gameMap.yWithDirection(e._y, d);
+				e._y = $gameMap.yWithDirection(e._y, vert);
 				if( e._y >= this.height() ){
 					e._y -= this.height();
 					e._realY -= this.height();

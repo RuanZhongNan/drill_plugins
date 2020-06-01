@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        地图 - 自定义照明效果
+ * @plugindesc [v1.2]        地图 - 自定义照明效果
  * @author Drill_up
  * 
  * @Drill_LE_param "光源-%d"
@@ -46,7 +46,7 @@
  *   (1.所有照明的形状、大小都需要你自己画照明素材来提供。
  *      通常为白色和透明为主。
  *   (2.rmmv单个图块的像素是48x48。所需光照素材的大小通常较大，
- *      你也可以修改光源配置的缩放比例来放大光源。
+ *      你也可以修改光源配置的 缩放比例 来放大光源。
  * 多种颜色：
  *   (1.资源图片的颜色默认都是纯白与透明。
  *      你可以设置其它颜色，可以产生不同效果，但要注意区分。
@@ -70,6 +70,7 @@
  *   (1.你可以在地图注释中，设置颜色、透明度、开关等。
  *      可以实现不同的地图有不同的黑暗效果。
  *   (2.光源是以GIF的模式展现的，你可以制作gif动画的光源效果。
+ *   (3.简单的方形、圆形光源，可以直接修改 缩放比例 来快速设置。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -178,6 +179,8 @@
  * [v1.1]
  * 修复了没有插件指令设置后未及时变色的bug。
  * 修复了添加动态光源时，gif和旋转角度重置的bug。
+ * [v1.2]
+ * 修复了菜单中地图截图在没有黑暗的情况下变黑的bug。
  *
  *
  *
@@ -2202,6 +2205,8 @@ Scene_Map.prototype.update = function() {
 // * 帧刷新 - 黑暗层
 //==============================
 Scene_Map.prototype.drill_LIl_updateDarkLayer = function() {
+	
+	// > 透明度控制
 	if( $gameSystem._drill_LIl_time > 0 ){
 		$gameSystem._drill_LIl_opacity += $gameSystem._drill_LIl_speed;
 		$gameSystem._drill_LIl_time -= 1;
@@ -2209,7 +2214,6 @@ Scene_Map.prototype.drill_LIl_updateDarkLayer = function() {
 	if( $gameSystem._drill_LIl_opacity <= 0 ){ $gameSystem._drill_LIl_opacity = 0;};
 	if( $gameSystem._drill_LIl_opacity >= 255 ){ $gameSystem._drill_LIl_opacity = 255;};
 	this._drill_LIl_darkSprite.opacity = $gameSystem._drill_LIl_opacity;
-	this._drill_LIl_darkSprite.visible = $gameSystem._drill_LIl_enable;
 };
 
 
@@ -2310,7 +2314,13 @@ Drill_LIl_MaskSprite.prototype.update = function() {
 	Sprite_Base.prototype.update.call(this);
 	
 	// > 关闭时，不工作
-	if( $gameSystem._drill_LIl_enable == false ){ return; }
+	var temp_visible = true;
+	if( $gameSystem._drill_LIl_enable == false ){ temp_visible = false; }
+	if( SceneManager._scene.constructor.name != "Scene_Map" ){ temp_visible = false; }
+	
+	// > 可见
+	this.visible = temp_visible;
+	if( temp_visible == false ){ return; }
 	
 	// > fps控制
 	this._drill_time += 1;

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        鼠标 - 目的地指向标
+ * @plugindesc [v1.1]        鼠标 - 目的地指向标
  * @author Drill_up
  * 
  * @Drill_LE_param "指向标-%d"
@@ -32,6 +32,7 @@
  * 设计：
  *   (1.指向标的资源可以是单张图片，也可以是GIF图像。
  *      你可以根据你设计的指向标，配置相关效果。
+ *   (2.如果你不想显示目的地指向标，设置参数初始隐藏即可。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -88,6 +89,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修复了插件配置细节。
  * 
  * 
  *
@@ -463,6 +466,8 @@ Spriteset_Map.prototype.drill_MDe_createDestination = function() {
 var _drill_MDe_update = Spriteset_Map.prototype.update;
 Spriteset_Map.prototype.update = function() {
 	_drill_MDe_update.call(this);
+	
+	// > 切换控制
 	if( $gameSystem._drill_MDe_curStyle == 0 &&
 		$gameSystem._drill_MDe_tarStyle != 0){
 		this.drill_MDe_createDestination();
@@ -472,6 +477,11 @@ Spriteset_Map.prototype.update = function() {
 		this.drill_MDe_createDestination();
 	}
 	$gameSystem._drill_MDe_curStyle = $gameSystem._drill_MDe_tarStyle;
+	
+	// > 显示控制
+	if( this._destinationSprite && $gameSystem._drill_MDe_visible == false){
+		this._destinationSprite.visible = false;
+	}
 }
 
 
@@ -501,6 +511,8 @@ Drill_MDe_DestSprite.prototype.initialize = function() {
 	this._drill_destY = 0;							//缓存坐标y
 	this._drill_curX = 0;							//平滑运动 - 当前坐标x
 	this._drill_curY = 0;							//平滑运动 - 当前坐标y
+	this._drill_MDe_sprite = null;					//指针贴图
+	this._drill_MDe_shadow = null;					//指针阴影
 };
 //==============================
 // * 贴图 - 帧刷新
@@ -509,11 +521,12 @@ Drill_MDe_DestSprite.prototype.update = function() {
 	Sprite_Base.prototype.update.call(this);
 	this._drill_time += 1;
 	
-	this.visible = $gameSystem._drill_MDe_visible;					//显示状态
 	if( this._drill_curStyle != $gameSystem._drill_MDe_curStyle ){	//重刷结构
 		this._drill_curStyle = $gameSystem._drill_MDe_curStyle;
 		this.drill_MDe_refreshAll();
 	}
+	if( this.visible == false ){ return; }			//未显示，不刷新
+	if( this._drill_data == null ){ return; }		//未载入，不刷新
 	
 	this.drill_MDe_updatePosition();				//位置
 	this.drill_MDe_updateGif();						//播放gif
@@ -521,13 +534,56 @@ Drill_MDe_DestSprite.prototype.update = function() {
 	this.drill_MDe_updateFade();					//淡出效果
 };
 //==============================
+// * 帧刷新 - 重刷结构
+//==============================
+Drill_MDe_DestSprite.prototype.drill_MDe_refreshAll = function() {
+	
+	// > 载入data
+	var temp = DrillUp.g_MDe_list[ this._drill_curStyle - 1 ];
+	if( !temp ){ return; }
+	this._drill_data = JSON.parse(JSON.stringify( temp ));
+	
+	// > 建立sprite
+	var temp_sprite = new Sprite();
+	var temp_sprite_data = this._drill_data;
+	for(var j = 0; j < temp_sprite_data['src_img'].length ; j++){
+		temp_sprite_data['src_bitmaps'].push(ImageManager.load_MapUiMouse(temp_sprite_data['src_img'][j]));
+	}
+	temp_sprite.bitmap = temp_sprite_data['src_bitmaps'][0];
+	temp_sprite.anchor.x = 0.5;
+	temp_sprite.anchor.y = 0.5;
+	temp_sprite.x = temp_sprite_data['x'];
+	temp_sprite.y = temp_sprite_data['y'];
+	temp_sprite.opacity = temp_sprite_data['opacity'];
+	temp_sprite.blendMode = temp_sprite_data['blendMode'];
+	
+	// > 建立阴影
+	var temp_shadow = new Sprite();
+	temp_shadow.bitmap = ImageManager.load_MapUiMouse(temp_sprite_data['src_img_shadow']);
+	temp_shadow.anchor.x = 0.5;
+	temp_shadow.anchor.y = 0.5;
+	temp_shadow.x = temp_sprite_data['x'];
+	temp_shadow.y = temp_sprite_data['y'];
+	temp_shadow.opacity = temp_sprite_data['opacity'];
+	temp_shadow.blendMode = temp_sprite_data['blendMode'];
+	
+	// > 重添sprite
+	if( this._drill_MDe_sprite ){this.removeChild( this._drill_MDe_sprite ); }
+	if( this._drill_MDe_shadow ){this.removeChild( this._drill_MDe_shadow ); }
+	this._drill_MDe_sprite = temp_sprite;
+	this._drill_MDe_shadow = temp_shadow
+	this.addChild(temp_shadow);
+	this.addChild(temp_sprite);
+}
+//==============================
 // * 帧刷新 - 位置
 //==============================
 Drill_MDe_DestSprite.prototype.drill_MDe_updatePosition = function() {
+	var data = this._drill_data;
     var tileWidth = $gameMap.tileWidth();
     var tileHeight = $gameMap.tileHeight();
-	var data = this._drill_data;
-	if( data == undefined || data['movement_enable'] != true ){
+	
+	if( data['movement_enable'] != true ){
 		// > 不移动
 		if( $gameTemp.destinationX() != null &&
 			$gameTemp.destinationY() != null ){
@@ -574,46 +630,6 @@ Drill_MDe_DestSprite.prototype.drill_MDe_updatePosition = function() {
 	}
 };
 //==============================
-// * 帧刷新 - 重刷结构
-//==============================
-Drill_MDe_DestSprite.prototype.drill_MDe_refreshAll = function() {
-	var temp = DrillUp.g_MDe_list[ this._drill_curStyle - 1 ];
-	if( !temp ){ return; }
-	this._drill_data = JSON.parse(JSON.stringify( temp ));
-	
-	// > 建立sprite
-	var temp_sprite = new Sprite();
-	var temp_sprite_data = this._drill_data;
-	for(var j = 0; j < temp_sprite_data['src_img'].length ; j++){
-		temp_sprite_data['src_bitmaps'].push(ImageManager.load_MapUiMouse(temp_sprite_data['src_img'][j]));
-	}
-	temp_sprite.bitmap = temp_sprite_data['src_bitmaps'][0];
-	temp_sprite.anchor.x = 0.5;
-	temp_sprite.anchor.y = 0.5;
-	temp_sprite.x = temp_sprite_data['x'];
-	temp_sprite.y = temp_sprite_data['y'];
-	temp_sprite.opacity = temp_sprite_data['opacity'];
-	temp_sprite.blendMode = temp_sprite_data['blendMode'];
-	
-	// > 建立阴影
-	var temp_shadow = new Sprite();
-	temp_shadow.bitmap = ImageManager.load_MapUiMouse(temp_sprite_data['src_img_shadow']);
-	temp_shadow.anchor.x = 0.5;
-	temp_shadow.anchor.y = 0.5;
-	temp_shadow.x = temp_sprite_data['x'];
-	temp_shadow.y = temp_sprite_data['y'];
-	temp_shadow.opacity = temp_sprite_data['opacity'];
-	temp_shadow.blendMode = temp_sprite_data['blendMode'];
-	
-	// > 重添sprite
-	if( this._drill_MDe_sprite ){this.removeChild( this._drill_MDe_sprite ); }
-	if( this._drill_MDe_shadow ){this.removeChild( this._drill_MDe_shadow ); }
-	this._drill_MDe_sprite = temp_sprite;
-	this._drill_MDe_shadow = temp_shadow
-	this.addChild(temp_shadow);
-	this.addChild(temp_sprite);
-}
-//==============================
 // * 帧刷新 - 播放gif
 //==============================
 Drill_MDe_DestSprite.prototype.drill_MDe_updateGif = function() {
@@ -623,7 +639,7 @@ Drill_MDe_DestSprite.prototype.drill_MDe_updateGif = function() {
 	var t_gif = this._drill_MDe_sprite;
 	var t_gif_data = this._drill_data;
 	
-	//播放gif
+	// > 播放gif
 	t_gif._time += 1;
 	var inter = this._drill_time ;
 	inter = inter / t_gif_data['interval'];
@@ -636,7 +652,6 @@ Drill_MDe_DestSprite.prototype.drill_MDe_updateGif = function() {
 	t_gif.rotation += t_gif_data['rotate'];
 	
 }
-
 //==============================
 // * 帧刷新 - 效果控制
 //==============================
@@ -671,8 +686,9 @@ Drill_MDe_DestSprite.prototype.drill_MDe_updateEffects = function() {
 // * 帧刷新 - 淡出效果
 //==============================
 Drill_MDe_DestSprite.prototype.drill_MDe_updateFade = function() {
-	
+	if(!this._drill_data ){ return; }
 	var data = this._drill_data;
+	
 	if( data['fade_enable'] == true ){
 		if( $gameTemp.isDestinationValid() ){
 			this.opacity = 255;

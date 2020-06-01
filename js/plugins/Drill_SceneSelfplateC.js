@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.4]        面板 - 全自定义信息面板C
+ * @plugindesc [v1.5]        面板 - 全自定义信息面板C
  * @author Drill_up
  * 
  * @Drill_LE_param "内容-%d"
@@ -149,6 +149,8 @@
  * [v1.4]
  * 优化了内部结构，并且修改了注释说明。
  * 添加了行间距控制、对齐方式功能。
+ * [v1.5]
+ * 添加了鼠标接近箭头后高亮的功能。
  * 
  *
  * @param ----杂项----
@@ -206,6 +208,262 @@
  * @type note
  * @desc 信息面板显示的被锁定选项内容。
  * @default "该内容的描述已被隐藏。"
+ *
+ * @param ----按键箭头----
+ * @default 
+ *
+ * @param 资源-左箭头
+ * @parent ----按键箭头----
+ * @desc 左箭头的图片资源。
+ * @default 信息面板C-左箭头
+ * @require 1
+ * @dir img/Menu__self/
+ * @type file
+ *
+ * @param 平移-左箭头 X
+ * @parent ----按键箭头----
+ * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
+ * @default 60
+ *
+ * @param 平移-左箭头 Y
+ * @parent ----按键箭头----
+ * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
+ * @default 290
+ *
+ * @param 资源-右箭头
+ * @parent ----按键箭头----
+ * @desc 右箭头的图片资源。
+ * @default 信息面板C-右箭头
+ * @require 1
+ * @dir img/Menu__self/
+ * @type file
+ *
+ * @param 平移-右箭头 X
+ * @parent ----按键箭头----
+ * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
+ * @default 750
+ *
+ * @param 平移-右箭头 Y
+ * @parent ----按键箭头----
+ * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
+ * @default 290
+ *
+ * @param 资源-上箭头
+ * @parent ----按键箭头----
+ * @desc 上箭头的图片资源。
+ * @default 信息面板C-上箭头
+ * @require 1
+ * @dir img/Menu__self/
+ * @type file
+ *
+ * @param 平移-上箭头 X
+ * @parent ----按键箭头----
+ * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
+ * @default 408
+ *
+ * @param 平移-上箭头 Y
+ * @parent ----按键箭头----
+ * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
+ * @default 35
+ *
+ * @param 资源-下箭头
+ * @parent ----按键箭头----
+ * @desc 下箭头的图片资源。
+ * @default 信息面板C-下箭头
+ * @require 1
+ * @dir img/Menu__self/
+ * @type file
+ *
+ * @param 平移-下箭头 X
+ * @parent ----按键箭头----
+ * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
+ * @default 408
+ *
+ * @param 平移-下箭头 Y
+ * @parent ----按键箭头----
+ * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
+ * @default 560
+ *
+ * @param 是否使用缩放效果
+ * @parent ----按键箭头----
+ * @type boolean
+ * @on 使用
+ * @off 不使用
+ * @desc true - 使用，false - 不使用，箭头会来回缩放。
+ * @default false
+ *
+ * @param 是否使用闪烁效果
+ * @parent ----按键箭头----
+ * @type boolean
+ * @on 使用
+ * @off 不使用
+ * @desc true - 使用，false - 不使用，箭头会来回闪烁。
+ * @default false
+ *
+ * @param 浮动偏移量
+ * @parent ----按键箭头----
+ * @type number
+ * @min 1
+ * @desc 使用左右或者上下浮动时，浮动偏移的位置量，单位像素。
+ * @default 10
+ *
+ * @param 是否使用左右浮动
+ * @parent ----按键箭头----
+ * @type boolean
+ * @on 使用
+ * @off 不使用
+ * @desc true - 使用，false - 不使用，只对左右箭头有效，箭头会左右浮动。
+ * @default true
+ *
+ * @param 是否使用上下浮动
+ * @parent ----按键箭头----
+ * @type boolean
+ * @on 使用
+ * @off 不使用
+ * @desc true - 使用，false - 不使用，只对上下箭头有效，箭头会上下浮动。
+ * @default true
+ *
+ * @param ----选项窗口----
+ * @default 
+ * 
+ * @param 选项窗口 X
+ * @parent ----选项窗口----
+ * @desc x轴方向平移，单位像素。0为贴在最左边。
+ * @default 0
+ *
+ * @param 选项窗口 Y
+ * @parent ----选项窗口----
+ * @desc y轴方向平移，单位像素。0为贴在最上面。
+ * @default 540
+ *
+ * @param 选项窗口宽度
+ * @parent ----选项窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 816
+ *
+ * @param 选项窗口高度
+ * @parent ----选项窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 80
+ *
+ * @param 选项窗口列数
+ * @parent ----选项窗口----
+ * @type number
+ * @min 1
+ * @desc 选项窗口的列数。
+ * @default 4
+ *
+ * @param 选项窗口字体大小
+ * @parent ----选项窗口----
+ * @type number
+ * @min 1
+ * @desc 选项窗口的字体大小。图标无法根据字体大小变化。
+ * @default 22
+ *
+ * @param 选项窗口移动动画
+ * @parent ----选项窗口----
+ * @type struct<DrillWindowMoving>
+ * @desc 窗口会从某个点跑回自己的原位置。
+ * @default {"移动类型":"弹性移动","移动时长":"60","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"0","起点-相对坐标 Y":"100","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
+ *
+ * @param 选项窗口布局
+ * @parent ----选项窗口----
+ * @type struct<DrillWindowLayout>
+ * @desc 控制窗口框架与窗口背景。
+ * @default {"布局类型":"默认皮肤","---单张背景贴图---":"","资源-贴图":"信息面板C-选项窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
+ *
+ * @param ----描述窗口----
+ * @default 
+ * 
+ * @param 描述窗口 X
+ * @parent ----描述窗口----
+ * @desc 描述窗口的位置。x轴方向平移，单位像素。0为贴在最左边。
+ * @default 80
+ *
+ * @param 描述窗口 Y
+ * @parent ----描述窗口----
+ * @desc 描述窗口的位置。y轴方向平移，单位像素。0为贴在最上面。
+ * @default 60
+ *
+ * @param 描述窗口宽度
+ * @parent ----描述窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 650
+ *
+ * @param 描述窗口高度
+ * @parent ----描述窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 460
+ *
+ * @param 描述窗口字体大小
+ * @parent ----描述窗口----
+ * @type number
+ * @min 1
+ * @desc 描述窗口的字体大小。图标无法根据字体大小变化。
+ * @default 22
+ *
+ * @param 描述窗口移动动画
+ * @parent ----描述窗口----
+ * @type struct<DrillWindowMoving>
+ * @desc 窗口会从某个点跑回自己的原位置。
+ * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"100","起点-相对坐标 Y":"0","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
+ * 
+ * @param 描述窗口布局
+ * @parent ----描述窗口----
+ * @type struct<DrillWindowLayout>
+ * @desc 控制窗口框架与窗口背景。
+ * @default {"布局类型":"隐藏布局","---单张背景贴图---":"","资源-贴图":"信息面板C-描述窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
+ * 
+ * @param 是否重播描述窗口移动动画
+ * @parent ----描述窗口----
+ * @type boolean
+ * @on 重播
+ * @off 不重播
+ * @desc true - 重播，false - 不重播。切换选项时，重播描述窗口的移动动画。
+ * @default true
+ *
+ * @param ----描述图----
+ * @default 
+ * 
+ * @param 描述图 X
+ * @parent ----描述图----
+ * @desc x轴方向平移，单位像素。0为贴在最左边。
+ * @default 285
+ *
+ * @param 描述图 Y
+ * @parent ----描述图----
+ * @desc y轴方向平移，单位像素。0为贴在最上面。
+ * @default 480
+ * 
+ * @param 描述图移动动画
+ * @parent ----描述图----
+ * @type struct<DrillWindowMoving>
+ * @desc 描述图会从某个点跑回自己的原位置。
+ * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"0","起点-相对坐标 Y":"100","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
+ * 
+ * @param 是否重播描述图移动动画
+ * @parent ----描述图----
+ * @type boolean
+ * @on 重播
+ * @off 不重播
+ * @desc true - 重播，false - 不重播。切换选项时，重播描述图的移动动画。
+ * @default true
+ * 
+ * @param 是否瞬间显示描述图
+ * @parent ----描述图----
+ * @type boolean
+ * @on 瞬间显示
+ * @off 渐变出现
+ * @desc true - 瞬间显示，false - 渐变出现。
+ * @default false
  *
  * @param ----内容----
  * @default 
@@ -706,255 +964,6 @@
  * @desc 添加新的内容，一个选项对应一个描述和一个描述图。
  * @default 
  *
- * @param ----按键箭头----
- * @default 
- *
- * @param 资源-左箭头
- * @parent ----按键箭头----
- * @desc 左箭头的图片资源。
- * @default 信息面板C-左箭头
- * @require 1
- * @dir img/Menu__self/
- * @type file
- *
- * @param 平移-左箭头 X
- * @parent ----按键箭头----
- * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
- * @default 60
- *
- * @param 平移-左箭头 Y
- * @parent ----按键箭头----
- * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
- * @default 290
- *
- * @param 资源-右箭头
- * @parent ----按键箭头----
- * @desc 右箭头的图片资源。
- * @default 信息面板C-右箭头
- * @require 1
- * @dir img/Menu__self/
- * @type file
- *
- * @param 平移-右箭头 X
- * @parent ----按键箭头----
- * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
- * @default 750
- *
- * @param 平移-右箭头 Y
- * @parent ----按键箭头----
- * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
- * @default 290
- *
- * @param 资源-上箭头
- * @parent ----按键箭头----
- * @desc 上箭头的图片资源。
- * @default 信息面板C-上箭头
- * @require 1
- * @dir img/Menu__self/
- * @type file
- *
- * @param 平移-上箭头 X
- * @parent ----按键箭头----
- * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
- * @default 408
- *
- * @param 平移-上箭头 Y
- * @parent ----按键箭头----
- * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
- * @default 35
- *
- * @param 资源-下箭头
- * @parent ----按键箭头----
- * @desc 下箭头的图片资源。
- * @default 信息面板C-下箭头
- * @require 1
- * @dir img/Menu__self/
- * @type file
- *
- * @param 平移-下箭头 X
- * @parent ----按键箭头----
- * @desc x轴方向平移，单位像素。0为箭头的中心贴在最左边。
- * @default 408
- *
- * @param 平移-下箭头 Y
- * @parent ----按键箭头----
- * @desc y轴方向平移，单位像素。0为箭头的中心贴在最上边。
- * @default 560
- *
- * @param 是否使用缩放效果
- * @parent ----按键箭头----
- * @type boolean
- * @on 使用
- * @off 不使用
- * @desc true - 使用，false - 不使用，箭头会来回缩放。
- * @default false
- *
- * @param 是否使用闪烁效果
- * @parent ----按键箭头----
- * @type boolean
- * @on 使用
- * @off 不使用
- * @desc true - 使用，false - 不使用，箭头会来回闪烁。
- * @default false
- *
- * @param 浮动偏移量
- * @parent ----按键箭头----
- * @type number
- * @min 1
- * @desc 使用左右或者上下浮动时，浮动偏移的位置量，单位像素。
- * @default 10
- *
- * @param 是否使用左右浮动
- * @parent ----按键箭头----
- * @type boolean
- * @on 使用
- * @off 不使用
- * @desc true - 使用，false - 不使用，只对左右箭头有效，箭头会左右浮动。
- * @default true
- *
- * @param 是否使用上下浮动
- * @parent ----按键箭头----
- * @type boolean
- * @on 使用
- * @off 不使用
- * @desc true - 使用，false - 不使用，只对上下箭头有效，箭头会上下浮动。
- * @default true
- *
- * @param ----选项窗口----
- * @default 
- * 
- * @param 选项窗口 X
- * @parent ----选项窗口----
- * @desc x轴方向平移，单位像素。0为贴在最左边。
- * @default 0
- *
- * @param 选项窗口 Y
- * @parent ----选项窗口----
- * @desc y轴方向平移，单位像素。0为贴在最上面。
- * @default 540
- *
- * @param 选项窗口宽度
- * @parent ----选项窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 816
- *
- * @param 选项窗口高度
- * @parent ----选项窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 80
- *
- * @param 选项窗口列数
- * @parent ----选项窗口----
- * @type number
- * @min 1
- * @desc 选项窗口的列数。
- * @default 4
- *
- * @param 选项窗口字体大小
- * @parent ----选项窗口----
- * @type number
- * @min 1
- * @desc 选项窗口的字体大小。图标无法根据字体大小变化。
- * @default 22
- *
- * @param 选项窗口移动动画
- * @parent ----选项窗口----
- * @type struct<DrillWindowMoving>
- * @desc 窗口会从某个点跑回自己的原位置。
- * @default {"移动类型":"弹性移动","移动时长":"60","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"0","起点-相对坐标 Y":"100","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
- *
- * @param 选项窗口布局
- * @parent ----选项窗口----
- * @type struct<DrillWindowLayout>
- * @desc 控制窗口框架与窗口背景。
- * @default {"布局类型":"默认皮肤","---单张背景贴图---":"","资源-贴图":"信息面板C-选项窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
- *
- * @param ----描述窗口----
- * @default 
- * 
- * @param 描述窗口 X
- * @parent ----描述窗口----
- * @desc 描述窗口的位置。x轴方向平移，单位像素。0为贴在最左边。
- * @default 80
- *
- * @param 描述窗口 Y
- * @parent ----描述窗口----
- * @desc 描述窗口的位置。y轴方向平移，单位像素。0为贴在最上面。
- * @default 60
- *
- * @param 描述窗口宽度
- * @parent ----描述窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 650
- *
- * @param 描述窗口高度
- * @parent ----描述窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 460
- *
- * @param 描述窗口字体大小
- * @parent ----描述窗口----
- * @type number
- * @min 1
- * @desc 描述窗口的字体大小。图标无法根据字体大小变化。
- * @default 22
- *
- * @param 描述窗口移动动画
- * @parent ----描述窗口----
- * @type struct<DrillWindowMoving>
- * @desc 窗口会从某个点跑回自己的原位置。
- * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"100","起点-相对坐标 Y":"0","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
- * 
- * @param 描述窗口布局
- * @parent ----描述窗口----
- * @type struct<DrillWindowLayout>
- * @desc 控制窗口框架与窗口背景。
- * @default {"布局类型":"隐藏布局","---单张背景贴图---":"","资源-贴图":"信息面板C-描述窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
- * 
- * @param 是否重播描述窗口移动动画
- * @parent ----描述窗口----
- * @type boolean
- * @on 重播
- * @off 不重播
- * @desc true - 重播，false - 不重播。切换选项时，重播描述窗口的移动动画。
- * @default true
- *
- * @param ----描述图----
- * @default 
- * 
- * @param 描述图 X
- * @parent ----描述图----
- * @desc x轴方向平移，单位像素。0为贴在最左边。
- * @default 285
- *
- * @param 描述图 Y
- * @parent ----描述图----
- * @desc y轴方向平移，单位像素。0为贴在最上面。
- * @default 480
- * 
- * @param 描述图移动动画
- * @parent ----描述图----
- * @type struct<DrillWindowMoving>
- * @desc 描述图会从某个点跑回自己的原位置。
- * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"0","起点-相对坐标 Y":"100","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
- * 
- * @param 是否重播描述图移动动画
- * @parent ----描述图----
- * @type boolean
- * @on 重播
- * @off 不重播
- * @desc true - 重播，false - 不重播。切换选项时，重播描述图的移动动画。
- * @default true
- *
- *
  */
 /*~struct~DrillSSpC:
  * 
@@ -1127,9 +1136,11 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			全自定义面板：
-//				->选项窗口、详细窗口、描述图片
-//				->当前选项
-//				->全局存储
+//				->窗口
+//					->选项窗口、详细窗口、描述图片
+//					->当前选项
+//					->全局存储
+//					->描述图预加载
 //				->四箭头
 //				->箭头点击事件
 //
@@ -1151,8 +1162,9 @@
 　　var Imported = Imported || {};
 　　Imported.Drill_SceneSelfplateC = true;
 　　var DrillUp = DrillUp || {}; 
-
     DrillUp.parameters = PluginManager.parameters('Drill_SceneSelfplateC');
+	
+	/*-----------------杂项------------------*/
     DrillUp.g_SSpC_layout = String(DrillUp.parameters['资源-整体布局'] || "");
 	DrillUp.g_SSpC_add_to_menu = String(DrillUp.parameters['是否添加到主菜单'] || "true") === "true";	
     DrillUp.g_SSpC_menu_name = String(DrillUp.parameters['主菜单显示名'] || "");
@@ -1160,6 +1172,7 @@
     DrillUp.g_SSpC_title_name = String(DrillUp.parameters['标题窗口显示名'] || "");
 	DrillUp.g_SSpC_title_data_global = String(DrillUp.parameters['数据是否全局存储'] || "false") === "true";	
 	
+	/*-----------------箭头------------------*/
 	DrillUp.g_SSpC_arrowLeft = String(DrillUp.parameters['资源-左箭头'] || "");
 	DrillUp.g_SSpC_arrowRight = String(DrillUp.parameters['资源-右箭头'] || "");
 	DrillUp.g_SSpC_arrowUp = String(DrillUp.parameters['资源-上箭头'] || "");
@@ -1178,6 +1191,7 @@
 	DrillUp.g_SSpC_arrow_float_lr = String(DrillUp.parameters['是否使用左右浮动'] || "true") === "true";	
 	DrillUp.g_SSpC_arrow_float_ud = String(DrillUp.parameters['是否使用上下浮动'] || "true") === "true";	
 	
+	/*-----------------选项窗口------------------*/
 	DrillUp.g_SSpC_selWin_x = Number(DrillUp.parameters['选项窗口 X'] || 30);
 	DrillUp.g_SSpC_selWin_y = Number(DrillUp.parameters['选项窗口 Y'] || 120);
 	DrillUp.g_SSpC_selWin_width = Number(DrillUp.parameters['选项窗口宽度'] || 220);
@@ -1208,6 +1222,7 @@
 		DrillUp.g_SSpC_selWin_layout = {};
 	}
 
+	/*-----------------描述窗口------------------*/
 	DrillUp.g_SSpC_descWin_x = Number(DrillUp.parameters['描述窗口 X'] || 285);
 	DrillUp.g_SSpC_descWin_y = Number(DrillUp.parameters['描述窗口 Y'] || 100);
 	DrillUp.g_SSpC_descWin_width = Number(DrillUp.parameters['描述窗口宽度'] || 510);
@@ -1238,9 +1253,11 @@
 		DrillUp.g_SSpC_descWin_layout = {};
 	}
 
+	/*-----------------描述图------------------*/
 	DrillUp.g_SSpC_descPic_x = Number(DrillUp.parameters['描述图 X'] || 285);
 	DrillUp.g_SSpC_descPic_y = Number(DrillUp.parameters['描述图 Y'] || 480);
 	DrillUp.g_SSpC_descPic_replay = String(DrillUp.parameters['是否重播描述图移动动画'] || "true") === "true";	
+	DrillUp.g_SSpC_descPic_showInstant = String(DrillUp.parameters['是否瞬间显示描述图'] || "false") === "true";	
 	if( DrillUp.parameters['描述图移动动画'] != undefined ){
 		DrillUp.g_SSpC_descPic_slideAnim = JSON.parse( DrillUp.parameters['描述图移动动画'] );
 		DrillUp.g_SSpC_descPic_slideAnim['slideMoveType'] = String(DrillUp.g_SSpC_descPic_slideAnim['移动类型'] || "匀速移动");
@@ -1255,6 +1272,7 @@
 		DrillUp.g_SSpC_descPic_slideAnim = {};
 	}
 	
+	/*-----------------内容------------------*/
 	DrillUp.g_SSpC_context_list_length = 80;
 	DrillUp.g_SSpC_context_list = {};
 	for (var i = 1; i <= DrillUp.g_SSpC_context_list_length ; i++ ) {
@@ -1327,7 +1345,7 @@ if( Imported.Drill_CoreOfWindowAuxiliary ){
 			DrillUp.global_SSpC_lock = [];
 		}
 	}
-	//注意，不要马上将全局的值赋值到system函数中，需要在 "存档数据赋值" 中再做存储区分判断
+	//注意，不要马上将全局的值赋值到system函数中，需要在 "正常存储赋值" 中再做存储区分判断
 	
 //==============================
 // * 全局 - 存储
@@ -1373,33 +1391,33 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 			if( type == "显示全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpC_context_list_length; i++){
-					DrillUp.g_SSpC_context_list[i]['enabled'] = true;	//全局数据
+					DrillUp.g_SSpC_context_list[i]['enabled'] = true;	//全局存储
 					if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-					$gameSystem._drill_SSpC_context_list[i]['enabled'] = true;	//存档数据
+					$gameSystem._drill_SSpC_context_list[i]['enabled'] = true;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
 			if( type == "隐藏全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpC_context_list_length; i++){
-					DrillUp.g_SSpC_context_list[i]['enabled'] = false;	//全局数据
+					DrillUp.g_SSpC_context_list[i]['enabled'] = false;	//全局存储
 					if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-					$gameSystem._drill_SSpC_context_list[i]['enabled'] = false;	//存档数据
+					$gameSystem._drill_SSpC_context_list[i]['enabled'] = false;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
 			if( type == "锁定全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpC_context_list_length; i++){
-					DrillUp.g_SSpC_context_list[i]['locked'] = true;	//全局数据
+					DrillUp.g_SSpC_context_list[i]['locked'] = true;	//全局存储
 					if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-					$gameSystem._drill_SSpC_context_list[i]['locked'] = true;	//存档数据
+					$gameSystem._drill_SSpC_context_list[i]['locked'] = true;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
 			if( type == "解锁全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpC_context_list_length; i++){
-					DrillUp.g_SSpC_context_list[i]['locked'] = false;	//全局数据
+					DrillUp.g_SSpC_context_list[i]['locked'] = false;	//全局存储
 					if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-					$gameSystem._drill_SSpC_context_list[i]['locked'] = false;	//存档数据
+					$gameSystem._drill_SSpC_context_list[i]['locked'] = false;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
@@ -1410,28 +1428,28 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var type = String(args[1]);
 			var temp1 = Number(args[3]);
 			if( type == "显示选项" ){
-				DrillUp.g_SSpC_context_list[temp1]['enabled'] = true;	//全局数据
+				DrillUp.g_SSpC_context_list[temp1]['enabled'] = true;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-				$gameSystem._drill_SSpC_context_list[temp1]['enabled'] = true;	//存档数据
+				$gameSystem._drill_SSpC_context_list[temp1]['enabled'] = true;	//正常存储
 			}
 			if( type == "隐藏选项" ){
-				DrillUp.g_SSpC_context_list[temp1]['enabled'] = false;	//全局数据
+				DrillUp.g_SSpC_context_list[temp1]['enabled'] = false;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-				$gameSystem._drill_SSpC_context_list[temp1]['enabled'] = false;	//存档数据
+				$gameSystem._drill_SSpC_context_list[temp1]['enabled'] = false;	//正常存储
 			}
 			if( type == "锁定选项" ){
-				DrillUp.g_SSpC_context_list[temp1]['locked'] = true;	//全局数据
+				DrillUp.g_SSpC_context_list[temp1]['locked'] = true;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-				$gameSystem._drill_SSpC_context_list[temp1]['locked'] = true;	//存档数据
+				$gameSystem._drill_SSpC_context_list[temp1]['locked'] = true;	//正常存储
 			}
 			if( type == "解锁选项" ){
-				DrillUp.g_SSpC_context_list[temp1]['locked'] = false;	//全局数据
+				DrillUp.g_SSpC_context_list[temp1]['locked'] = false;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpC_context_list ){ $gameSystem.drill_SSpC_dataInit(); }
-				$gameSystem._drill_SSpC_context_list[temp1]['locked'] = false;	//存档数据
+				$gameSystem._drill_SSpC_context_list[temp1]['locked'] = false;	//正常存储
 			}
 			if( type == "选中页" ){
 				var temp = temp1 -1;
@@ -1513,7 +1531,7 @@ Scene_Drill_SSpC.prototype.initialize = function() {
 	if (!$gameSystem._drill_SSpC_context_list) {$gameSystem.drill_SSpC_dataInit();};
 };
 //==============================
-// * 信息面板C - 存档数据赋值
+// * 信息面板C - 正常存储赋值
 //==============================
 Game_System.prototype.drill_SSpC_dataInit = function() {
 	this._drill_SSpC_context_list = JSON.parse(JSON.stringify( DrillUp.g_SSpC_context_list ));	//拷贝object（杜绝引用造成的修改）
@@ -1546,6 +1564,7 @@ Scene_Drill_SSpC.prototype.update = function() {
 	
 	this._window_select.drill_COWA_CPD_update();
 	this._window_desc.drill_COWA_CPD_update();
+	this.updateDescPic();
 	this.updateIndex();
 	
 	this.updateArrow();
@@ -1646,6 +1665,8 @@ Scene_Drill_SSpC.prototype.createDescPic = function() {
 	this._window_desc_pic = new Sprite();
 	this._window_desc_pic.drill_COWA_setButtonMove( data );		//辅助核心 - 控制按钮贴图基本属性
 	this._drill_field.addChild(this._window_desc_pic);	
+	
+	this._window_desc_pic._drill_bitmaps = [];
 };
 
 //==============================
@@ -1667,10 +1688,30 @@ Scene_Drill_SSpC.prototype.resetPosition = function() {
 // * 信息面板C - 描述图片刷新
 //==============================
 Scene_Drill_SSpC.prototype.drill_refreshDescPic = function(index) {
-	var context_index = $gameTemp._drill_SSpC_visibleList[index]['index'];
-	this._window_desc_pic.bitmap = ImageManager.load_MenuSelfDef(DrillUp.g_SSpC_context_list[context_index]["pic"]);
+	
+	// > 资源预加载
+	if( this._window_desc_pic._drill_bitmaps.length == 0 ){
+		var visible_list = $gameTemp._drill_SSpC_visibleList;
+		for( var i=0; i < visible_list.length; i++ ){
+			var context_index = visible_list[i]['index'];
+			this._window_desc_pic._drill_bitmaps[i] = ImageManager.load_MenuSelfDef(DrillUp.g_SSpC_context_list[context_index]["pic"]);	
+		}
+	}
+	
+	// > 切换描述图
+	this._window_desc_pic.bitmap = this._window_desc_pic._drill_bitmaps[index];
+	if( DrillUp.g_SSpC_descPic_showInstant == false ){
+		this._window_desc_pic.opacity = 0;
+	}
 }
-
+//==============================
+// * 帧刷新 - 描述图片
+//==============================
+Scene_Drill_SSpC.prototype.updateDescPic = function() {
+	if( DrillUp.g_SSpC_descPic_showInstant == false ){
+		this._window_desc_pic.opacity += 255/DrillUp.g_SSpC_descPic_slideAnim['slideTime'];
+	}
+}
 //==============================
 // * 帧刷新 - 窗口选项刷新
 //==============================
@@ -1702,25 +1743,45 @@ Scene_Drill_SSpC.prototype.updateIndex = function() {
 Scene_Drill_SSpC.prototype.drill_checkImgTouch = function() {
 	
 	//图片 - 箭头
-	if (this.drill_isOnSprite( this._arrow_left) ) { this._window_select.cursorLeft(); SoundManager.playCursor();}
-	if (this.drill_isOnSprite( this._arrow_right) ) { this._window_select.cursorRight(); SoundManager.playCursor();}
-	if (this.drill_isOnSprite( this._arrow_up) ) { this._window_select.cursorUp();SoundManager.playCursor(); }
-	if (this.drill_isOnSprite( this._arrow_down) ) { this._window_select.cursorDown();SoundManager.playCursor(); }
+	if (this.drill_isOnArrow( this._arrow_left) ) { this._window_select.cursorLeft(); SoundManager.playCursor();}
+	if (this.drill_isOnArrow( this._arrow_right) ) { this._window_select.cursorRight(); SoundManager.playCursor();}
+	if (this.drill_isOnArrow( this._arrow_up) ) { this._window_select.cursorUp();SoundManager.playCursor(); }
+	if (this.drill_isOnArrow( this._arrow_down) ) { this._window_select.cursorDown();SoundManager.playCursor(); }
 }
 //==============================
 // * 帧刷新 - 箭头 - 鼠标点击图片范围判断
 //==============================
-Scene_Drill_SSpC.prototype.drill_isOnSprite = function(sprite) {
-	 var cw = sprite.bitmap.width / 2;
-	 var ch = sprite.bitmap.height / 2;
-	 if (sprite.visible === false) {return false};
-	 if (sprite.opacity === 0) {return false};
-	 if (TouchInput.x < sprite.x - cw) {return false};
-	 if (TouchInput.x > sprite.x + cw) {return false};
-	 if (TouchInput.y < sprite.y - ch) {return false};
-	 if (TouchInput.y > sprite.y + ch) {return false};
+Scene_Drill_SSpC.prototype.drill_isOnArrow = function(sprite_arrow) {
+	if( sprite_arrow.bitmap == null ){ return false };
+	if(!sprite_arrow.bitmap.isReady() ){ return false };
+	if( sprite_arrow.visible === false ){ return false };
+	var pw = sprite_arrow.bitmap.width /2 + 20;
+	var ph = sprite_arrow.bitmap.height /2 + 20;
+	
+	 if (TouchInput.x < sprite_arrow._org_x - pw) {return false};
+	 if (TouchInput.x > sprite_arrow._org_x + pw) {return false};
+	 if (TouchInput.y < sprite_arrow._org_y - ph) {return false};
+	 if (TouchInput.y > sprite_arrow._org_y + ph) {return false};
 	 return true;	
 };
+//==============================
+// * 帧刷新 - 箭头 - 箭头高亮范围
+//==============================
+Scene_Drill_SSpC.prototype.drill_isOnHoverArrow = function(sprite_arrow) {
+	if( sprite_arrow.bitmap == null ){ return false };
+	if(!sprite_arrow.bitmap.isReady() ){ return false };
+	if( sprite_arrow.visible === false ){ return false };
+	var pw = sprite_arrow.bitmap.width /2 + 20;
+	var ph = sprite_arrow.bitmap.height /2 + 20;
+	
+	var _x = _drill_mouse_x;
+	var _y = _drill_mouse_y;
+	if ( _x < sprite_arrow._org_x - pw) {return false};
+	if ( _x > sprite_arrow._org_x + pw) {return false};
+	if ( _y < sprite_arrow._org_y - ph) {return false};
+	if ( _y > sprite_arrow._org_y + ph) {return false};
+	return true;	
+}
 
 //==============================
 // * 创建 - 箭头
@@ -1790,12 +1851,20 @@ Scene_Drill_SSpC.prototype.updateArrow = function() {
 		this._arrow_down.scale.y = 1 + this._arrow_linear * 0.3 ;
 	}
 	//闪烁
+	this._arrow_left.opacity = 180 ;
+	this._arrow_right.opacity= 180 ;
+	this._arrow_up.opacity =   180 ;
+	this._arrow_down.opacity = 180 ;
 	if( DrillUp.g_SSpC_arrow_flash ){
 		this._arrow_left.opacity = 56+ this._arrow_linear * 200 ;
 		this._arrow_right.opacity= 56+ this._arrow_linear * 200 ;
 		this._arrow_up.opacity =   56+ this._arrow_linear * 200 ;
 		this._arrow_down.opacity = 56+ this._arrow_linear * 200 ;
 	}
+	if( this.drill_isOnHoverArrow(this._arrow_left) ){ this._arrow_left.opacity = 255; }
+	if( this.drill_isOnHoverArrow(this._arrow_right) ){ this._arrow_right.opacity = 255; }
+	if( this.drill_isOnHoverArrow(this._arrow_up) ){ this._arrow_up.opacity = 255; }
+	if( this.drill_isOnHoverArrow(this._arrow_down) ){ this._arrow_down.opacity = 255; }
 }
 //==============================
 // * 信息面板C - 刷新箭头
@@ -1823,6 +1892,22 @@ Scene_Drill_SSpC.prototype.refreshArrow = function(index) {
 	this._arrow_right.visible = r_visible;
 	this._arrow_up.visible = u_visible;
 	this._arrow_down.visible = d_visible;
+}
+
+//=============================================================================
+// ** 获取鼠标位置（输入设备核心的片段）
+//=============================================================================
+if( typeof(_drill_mouse_getCurPos) == "undefined" ){	//防止重复定义
+
+	var _drill_mouse_getCurPos = TouchInput._onMouseMove;
+	var _drill_mouse_x = 0;
+	var _drill_mouse_y = 0;
+	TouchInput._onMouseMove = function(event) {		//鼠标位置
+		_drill_mouse_getCurPos.call(this,event);
+		
+        _drill_mouse_x = Graphics.pageToCanvasX(event.pageX);
+        _drill_mouse_y = Graphics.pageToCanvasY(event.pageY);
+	};
 }
 
 
@@ -1875,9 +1960,9 @@ Drill_SSpC_SelectWindow.prototype.refresh = function() {
 	for(var i=1; i<= DrillUp.g_SSpC_context_list_length ;i++){
 		
 		if( DrillUp.g_SSpC_title_data_global ){
-			var temp = DrillUp.g_SSpC_context_list[i];	//全局数据
+			var temp = DrillUp.g_SSpC_context_list[i];	//全局存储
 		}else{
-			var temp = $gameSystem._drill_SSpC_context_list[i];	//存档数据
+			var temp = $gameSystem._drill_SSpC_context_list[i];	//正常存储
 		}
 		
 		if( temp != "" && temp['enabled'] == true ){

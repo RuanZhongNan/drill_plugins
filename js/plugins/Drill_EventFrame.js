@@ -425,7 +425,6 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
-
 	
 //=============================================================================
 // ** 初始化

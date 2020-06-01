@@ -293,21 +293,21 @@ Game_System.prototype.initialize = function() {
     this._drill_cam_limit_width = DrillUp.g_BCa_limit_width;
     this._drill_cam_limit_height = DrillUp.g_BCa_limit_height;
 	
-	this._drill_BCa_X = {}
-	this._drill_BCa_X.cur = 0;
-	this._drill_BCa_X.move = 0;
-	this._drill_BCa_X.time = 0;
-	this._drill_BCa_Y = {}
-	this._drill_BCa_Y.cur = 0;
-	this._drill_BCa_Y.move = 0;
-	this._drill_BCa_Y.time = 0;
-	this._drill_BCa_R = {}
-	this._drill_BCa_R.cur = 0;
-	this._drill_BCa_R.move = 0;
-	this._drill_BCa_R.time = 0;
+	this._drill_BCa_X = {}			// 缩放x
+	this._drill_BCa_X.cur = 0;      //	cur = -0.1，则缩放为0.9
+	this._drill_BCa_X.move = 0;     //
+	this._drill_BCa_X.time = 0;     //
+	this._drill_BCa_Y = {}          // 缩放y
+	this._drill_BCa_Y.cur = 0;      //
+	this._drill_BCa_Y.move = 0;     //
+	this._drill_BCa_Y.time = 0;     //
+	this._drill_BCa_R = {}          // 旋转
+	this._drill_BCa_R.cur = 0;      //
+	this._drill_BCa_R.move = 0;     //
+	this._drill_BCa_R.time = 0;     //
 	
-    this._drill_BCa_flip = {};
-    this._drill_BCa_flip.lock = false;
+    this._drill_BCa_flip = {};			//翻转控制
+    this._drill_BCa_flip.lock = false;	//
 };
 
 //=============================================================================
@@ -333,36 +333,114 @@ Game_Temp.prototype.drill_BCa_clearCamera = function() {
 
 
 //=============================================================================
-// ** 镜头缩放、翻转
+// ** 镜头属性
 //=============================================================================
 //==============================
-// * 固定帧初始值
+// * 镜头属性 - 固定帧初始值
 //==============================
 var _drill_BCa_updatePosition = Spriteset_Battle.prototype.updatePosition;
 Spriteset_Battle.prototype.updatePosition = function() {
-	_drill_BCa_updatePosition.call(this);
-    //this.x ;
-    //this.y ;
-    //this.scale.x ;
-    //this.scale.y ;
-	this.rotation = 0;
-	this.anchor.x = 0;	//Spriteset_Battle的中心点设置没有任何效果，且rotation被锁定为（0,0）中心点位置，这里索性固定中心点为(0,0)。
-	this.anchor.y = 0;
-	this.skew.x = 0;
-	this.skew.y = 0;
-	
-	this._drill_BCa_change_rotation = 0;	//你只需要操作这三个变量即可（操作会上面的变量会把算法变复杂）
-	this._drill_BCa_change_sizeX = 1;
-	this._drill_BCa_change_sizeY = 1;
-	
-	this.drill_BCa_resize();
-	this.drill_BCa_rotate();
-	this.drill_BCa_flip();
-	this.drill_BCa_coreOperate();
-};
-
+	_drill_BCa_updatePosition.call(this);				// x、y、z、缩放x、缩放y
+	if( this.rotation != 0 ){ this.rotation = 0; }		// 旋转
+	if( this.skew.x != 0 ){ this.skew.x = 0; }			// 斜切x
+	if( this.skew.y != 0 ){ this.skew.y = 0; }			// 斜切y
+														//Spriteset_Battle的中心锚点没有效果，且rotation被锁定为（0,0）中心点位置，这里索性固定中心点为(0,0)。
+}
 //==============================
-// * 镜头翻转
+// * 镜头属性 - 帧刷新
+//==============================
+var _drill_BCa_updatePosition2 = Spriteset_Battle.prototype.updatePosition;
+Spriteset_Battle.prototype.updatePosition = function() {
+	_drill_BCa_updatePosition2.call(this);			
+	
+	this._drill_BCa_change_rotation = 0;	//旋转
+	this._drill_BCa_change_sizeX = 1;		//缩放x
+	this._drill_BCa_change_sizeY = 1;		//缩放y
+	
+	this.drill_BCa_resize();				//缩放操作
+	this.drill_BCa_rotate();				//旋转操作
+	this.drill_BCa_flip();					//翻转控制
+	this.drill_BCa_lockAnchor();			//锁定锚点
+};
+//==============================
+// * 镜头属性 - 缩放
+//==============================
+Spriteset_Battle.prototype.drill_BCa_resize = function() {
+	var re_x = $gameSystem._drill_BCa_X;
+	var re_y = $gameSystem._drill_BCa_Y;
+	re_x.move += 1;
+	re_y.move += 1;
+	
+	if( re_x.move < re_x.time ){ re_x.cur += re_x.speed; }
+	if( re_y.move < re_y.time ){ re_y.cur += re_y.speed; }
+	
+	this._drill_BCa_change_sizeX += re_x.cur;
+	this._drill_BCa_change_sizeY += re_y.cur;
+}
+//==============================
+// * 镜头属性 - 旋转
+//==============================
+Spriteset_Battle.prototype.drill_BCa_rotate = function() {
+	var re_r = $gameSystem._drill_BCa_R;
+	re_r.move += 1;
+	
+	if( re_r.move < re_r.time ){
+		re_r.cur += re_r.speed;
+	}
+	
+	this._drill_BCa_change_rotation += ( re_r.cur /180.0 )*Math.PI;
+}
+//==============================
+// * 镜头属性 - 锁定锚点
+//==============================
+Spriteset_Battle.prototype.drill_BCa_lockAnchor = function() {
+	var rotation = this._drill_BCa_change_rotation;
+	var scale_x = this._drill_BCa_change_sizeX;
+	var scale_y = this._drill_BCa_change_sizeY;
+	if( rotation == 0 && scale_x == 1 && scale_y == 1 ){ return; } 
+	
+	// > 锚点(0.5,0.5)锁定
+	var fix_point = $gameTemp.drill_BCa_getFixPointInAnchor( 0,0, 0.5,0.5, Graphics.boxWidth,Graphics.boxHeight, rotation, scale_x, scale_y );
+	this.x += Graphics.boxWidth/2;	
+	this.y += Graphics.boxHeight/2;	
+	this.x += fix_point.x;	
+	this.y += fix_point.y;	
+	
+	this.rotation = rotation;
+	this.scale.x *= scale_x;
+	this.scale.y *= scale_y;
+}
+//=============================================================================
+// * 数学 - 锁定锚点
+//			
+//			说明：修正 旋转+缩放 的xy坐标，使其看起来像是在绕着 新的锚点 变换。
+//=============================================================================
+Game_Temp.prototype.drill_BCa_getFixPointInAnchor = function( 
+					org_anchor_x,org_anchor_y,			//原贴图中心锚点 
+					target_anchor_x,target_anchor_y, 	//新的中心锚点 
+					width, height,						//贴图高宽
+					rotation, scale_x, scale_y ) {		//变换的值（旋转+缩放）
+	
+	var ww = width * ( target_anchor_x - org_anchor_x );
+	var hh = height * ( target_anchor_y - org_anchor_y );
+	var xx = 0;
+	var yy = 0;
+	if( ww == 0 && hh == 0){ return { "x":0, "y":0 }; }
+	if( ww == 0 ){ ww = 0.0001; }
+	
+	var r = Math.sqrt( Math.pow(ww,2) + Math.pow(hh,2) );
+	var p_degree = Math.atan(hh/ww);	
+	p_degree = Math.PI - p_degree;
+	
+	xx = r*Math.cos( rotation - p_degree);		//圆公式 (x-a)²+(y-b)²=r²
+	yy = r*Math.sin( rotation - p_degree);		//圆极坐标 x=ρcosθ,y=ρsinθ
+	xx += ww * (1 - scale_x);
+	yy += hh * (1 - scale_y);
+	
+	return { "x":xx, "y":yy };
+}
+//==============================
+// * 镜头属性 - 翻转控制
 //==============================
 Spriteset_Battle.prototype.drill_BCa_flip = function() {
 	var flip = $gameSystem._drill_BCa_flip;
@@ -454,64 +532,6 @@ Spriteset_Battle.prototype.drill_BCa_flip = function() {
 				this._drill_BCa_change_sizeY *= -2 * flip.move / flip.time + 1;
 			}
 		}
-	}
-}
-//==============================
-// * 镜头缩放
-//==============================
-Spriteset_Battle.prototype.drill_BCa_resize = function() {
-	var re_x = $gameSystem._drill_BCa_X;
-	var re_y = $gameSystem._drill_BCa_Y;
-	re_x.move += 1;
-	re_y.move += 1;
-	
-	if( re_x.move < re_x.time ){
-		re_x.cur += re_x.speed;
-	}
-	if( re_y.move < re_y.time ){
-		re_y.cur += re_y.speed;
-	}
-	
-	this._drill_BCa_change_sizeX += re_x.cur;
-	this._drill_BCa_change_sizeY += re_y.cur;
-}
-//==============================
-// * 镜头旋转
-//==============================
-Spriteset_Battle.prototype.drill_BCa_rotate = function() {
-	var re_r = $gameSystem._drill_BCa_R;
-	re_r.move += 1;
-	
-	if( re_r.move < re_r.time ){
-		re_r.cur += re_r.speed;
-	}
-	
-	this._drill_BCa_change_rotation += ( re_r.cur /180.0 )*Math.PI;
-}
-//==============================
-// * 镜头变化核心
-//==============================
-Spriteset_Battle.prototype.drill_BCa_coreOperate = function() {
-	
-	if( this._drill_BCa_change_rotation != 0 ){
-		//圆公式 (x-a)²+(y-b)²=r²
-		//圆极坐标 x=ρcosθ,y=ρsinθ
-		var ww = Graphics.boxWidth/2;
-		var hh = Graphics.boxHeight/2;
-		var r = Math.sqrt( Math.pow(ww,2) + Math.pow(hh,2) );
-		var p_degree = Math.atan(hh/ww);
-		p_degree = Math.PI - p_degree;
-		this.x += r*Math.cos( this._drill_BCa_change_rotation - p_degree);
-		this.y += r*Math.sin( this._drill_BCa_change_rotation - p_degree);
-		this.x += Graphics.boxWidth/2 ;
-		this.y += Graphics.boxHeight/2 ;
-		this.rotation = this._drill_BCa_change_rotation;
-	}
-	if( this._drill_BCa_change_sizeX != 1 || this._drill_BCa_change_sizeY != 1 ){
-		this.scale.x = this._drill_BCa_change_sizeX;
-		this.scale.y = this._drill_BCa_change_sizeY;
-		this.x += Graphics.boxWidth/2 * (1 - this._drill_BCa_change_sizeX ) ;
-		this.y += Graphics.boxHeight/2 * (1 - this._drill_BCa_change_sizeY ) ;
 	}
 }
 

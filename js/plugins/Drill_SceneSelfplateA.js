@@ -208,6 +208,149 @@
  * @desc 信息面板显示的被锁定选项内容。
  * @default "该内容的描述已被隐藏。"
  *
+ * @param ----选项窗口----
+ * @default 
+ * 
+ * @param 选项窗口 X
+ * @parent ----选项窗口----
+ * @desc x轴方向平移，单位像素。0为贴在最左边。
+ * @default 30
+ *
+ * @param 选项窗口 Y
+ * @parent ----选项窗口----
+ * @desc y轴方向平移，单位像素。0为贴在最上面。
+ * @default 120
+ *
+ * @param 选项窗口宽度
+ * @parent ----选项窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 220
+ *
+ * @param 选项窗口高度
+ * @parent ----选项窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 460
+ *
+ * @param 选项窗口列数
+ * @parent ----选项窗口----
+ * @type number
+ * @min 1
+ * @desc 选项窗口的列数。
+ * @default 1
+ *
+ * @param 选项窗口字体大小
+ * @parent ----选项窗口----
+ * @type number
+ * @min 1
+ * @desc 选项窗口的字体大小。图标无法根据字体大小变化。
+ * @default 22
+ *
+ * @param 选项窗口移动动画
+ * @parent ----选项窗口----
+ * @type struct<DrillWindowMoving>
+ * @desc 窗口会从某个点跑回自己的原位置。
+ * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"-100","起点-相对坐标 Y":"0","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
+ *
+ * @param 选项窗口布局
+ * @parent ----选项窗口----
+ * @type struct<DrillWindowLayout>
+ * @desc 控制窗口框架与窗口背景。
+ * @default {"布局类型":"单张背景贴图","---单张背景贴图---":"","资源-贴图":"信息面板A-选项窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
+ *
+ * @param ----描述窗口----
+ * @default 
+ * 
+ * @param 描述窗口 X
+ * @parent ----描述窗口----
+ * @desc 描述窗口的位置。x轴方向平移，单位像素。0为贴在最左边。
+ * @default 285
+ *
+ * @param 描述窗口 Y
+ * @parent ----描述窗口----
+ * @desc 描述窗口的位置。y轴方向平移，单位像素。0为贴在最上面。
+ * @default 100
+ *
+ * @param 描述窗口宽度
+ * @parent ----描述窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 510
+ *
+ * @param 描述窗口高度
+ * @parent ----描述窗口----
+ * @type number
+ * @min 50
+ * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @default 360
+ *
+ * @param 描述窗口字体大小
+ * @parent ----描述窗口----
+ * @type number
+ * @min 1
+ * @desc 描述窗口的字体大小。图标无法根据字体大小变化。
+ * @default 22
+ *
+ * @param 描述窗口移动动画
+ * @parent ----描述窗口----
+ * @type struct<DrillWindowMoving>
+ * @desc 窗口会从某个点跑回自己的原位置。
+ * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"100","起点-相对坐标 Y":"0","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
+ * 
+ * @param 描述窗口布局
+ * @parent ----描述窗口----
+ * @type struct<DrillWindowLayout>
+ * @desc 控制窗口框架与窗口背景。
+ * @default {"布局类型":"单张背景贴图","---单张背景贴图---":"","资源-贴图":"信息面板A-描述窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
+ * 
+ * @param 是否重播描述窗口移动动画
+ * @parent ----描述窗口----
+ * @type boolean
+ * @on 重播
+ * @off 不重播
+ * @desc true - 重播，false - 不重播。切换选项时，重播描述窗口的移动动画。
+ * @default true
+ *
+ * @param ----描述图----
+ * @default 
+ * 
+ * @param 描述图 X
+ * @parent ----描述图----
+ * @desc x轴方向平移，单位像素。0为贴在最左边。
+ * @default 285
+ *
+ * @param 描述图 Y
+ * @parent ----描述图----
+ * @desc y轴方向平移，单位像素。0为贴在最上面。
+ * @default 480
+ * 
+ * @param 描述图移动动画
+ * @parent ----描述图----
+ * @type struct<DrillWindowMoving>
+ * @desc 描述图会从某个点跑回自己的原位置。
+ * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"0","起点-相对坐标 Y":"100","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
+ * 
+ * @param 是否重播描述图移动动画
+ * @parent ----描述图----
+ * @type boolean
+ * @on 重播
+ * @off 不重播
+ * @desc true - 重播，false - 不重播。切换选项时，重播描述图的移动动画。
+ * @default true
+ * 
+ * @param 是否瞬间显示描述图
+ * @parent ----描述图----
+ * @type boolean
+ * @on 瞬间显示
+ * @off 渐变出现
+ * @desc true - 瞬间显示，false - 渐变出现。
+ * @default false
+ *
+ *
  * @param ----内容----
  * @default 
  *
@@ -707,141 +850,6 @@
  * @desc 添加新的内容，一个选项对应一个描述和一个描述图。
  * @default 
  *
- * @param ----选项窗口----
- * @default 
- * 
- * @param 选项窗口 X
- * @parent ----选项窗口----
- * @desc x轴方向平移，单位像素。0为贴在最左边。
- * @default 30
- *
- * @param 选项窗口 Y
- * @parent ----选项窗口----
- * @desc y轴方向平移，单位像素。0为贴在最上面。
- * @default 120
- *
- * @param 选项窗口宽度
- * @parent ----选项窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 220
- *
- * @param 选项窗口高度
- * @parent ----选项窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 460
- *
- * @param 选项窗口列数
- * @parent ----选项窗口----
- * @type number
- * @min 1
- * @desc 选项窗口的列数。
- * @default 1
- *
- * @param 选项窗口字体大小
- * @parent ----选项窗口----
- * @type number
- * @min 1
- * @desc 选项窗口的字体大小。图标无法根据字体大小变化。
- * @default 22
- *
- * @param 选项窗口移动动画
- * @parent ----选项窗口----
- * @type struct<DrillWindowMoving>
- * @desc 窗口会从某个点跑回自己的原位置。
- * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"-100","起点-相对坐标 Y":"0","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
- *
- * @param 选项窗口布局
- * @parent ----选项窗口----
- * @type struct<DrillWindowLayout>
- * @desc 控制窗口框架与窗口背景。
- * @default {"布局类型":"单张背景贴图","---单张背景贴图---":"","资源-贴图":"信息面板A-选项窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
- *
- * @param ----描述窗口----
- * @default 
- * 
- * @param 描述窗口 X
- * @parent ----描述窗口----
- * @desc 描述窗口的位置。x轴方向平移，单位像素。0为贴在最左边。
- * @default 285
- *
- * @param 描述窗口 Y
- * @parent ----描述窗口----
- * @desc 描述窗口的位置。y轴方向平移，单位像素。0为贴在最上面。
- * @default 100
- *
- * @param 描述窗口宽度
- * @parent ----描述窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 510
- *
- * @param 描述窗口高度
- * @parent ----描述窗口----
- * @type number
- * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
- * @default 360
- *
- * @param 描述窗口字体大小
- * @parent ----描述窗口----
- * @type number
- * @min 1
- * @desc 描述窗口的字体大小。图标无法根据字体大小变化。
- * @default 22
- *
- * @param 描述窗口移动动画
- * @parent ----描述窗口----
- * @type struct<DrillWindowMoving>
- * @desc 窗口会从某个点跑回自己的原位置。
- * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"100","起点-相对坐标 Y":"0","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
- * 
- * @param 描述窗口布局
- * @parent ----描述窗口----
- * @type struct<DrillWindowLayout>
- * @desc 控制窗口框架与窗口背景。
- * @default {"布局类型":"单张背景贴图","---单张背景贴图---":"","资源-贴图":"信息面板A-描述窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
- * 
- * @param 是否重播描述窗口移动动画
- * @parent ----描述窗口----
- * @type boolean
- * @on 重播
- * @off 不重播
- * @desc true - 重播，false - 不重播。切换选项时，重播描述窗口的移动动画。
- * @default true
- *
- * @param ----描述图----
- * @default 
- * 
- * @param 描述图 X
- * @parent ----描述图----
- * @desc x轴方向平移，单位像素。0为贴在最左边。
- * @default 285
- *
- * @param 描述图 Y
- * @parent ----描述图----
- * @desc y轴方向平移，单位像素。0为贴在最上面。
- * @default 480
- * 
- * @param 描述图移动动画
- * @parent ----描述图----
- * @type struct<DrillWindowMoving>
- * @desc 描述图会从某个点跑回自己的原位置。
- * @default {"移动类型":"弹性移动","移动时长":"30","移动延迟":"0","---起点---":"","坐标类型":"相对坐标","起点-相对坐标 X":"0","起点-相对坐标 Y":"100","起点-绝对坐标 X":"0","起点-绝对坐标 Y":"0"}
- * 
- * @param 是否重播描述图移动动画
- * @parent ----描述图----
- * @type boolean
- * @on 重播
- * @off 不重播
- * @desc true - 重播，false - 不重播。切换选项时，重播描述图的移动动画。
- * @default true
- *
- *
  */
 /*~struct~DrillSSpA:
  * 
@@ -1014,9 +1022,11 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			全自定义面板：
-//				->选项窗口、详细窗口、描述图片
-//				->当前选项
-//				->全局存储
+//				->窗口
+//					->选项窗口、详细窗口、描述图片
+//					->当前选项
+//					->全局存储
+//					->描述图预加载
 //
 //		★必要注意事项：
 //			1.替换以下字符变成新面板：
@@ -1036,8 +1046,9 @@
 　　var Imported = Imported || {};
 　　Imported.Drill_SceneSelfplateA = true;
 　　var DrillUp = DrillUp || {}; 
-
     DrillUp.parameters = PluginManager.parameters('Drill_SceneSelfplateA');
+
+	/*-----------------杂项------------------*/
     DrillUp.g_SSpA_layout = String(DrillUp.parameters['资源-整体布局'] || "");
 	DrillUp.g_SSpA_add_to_menu = String(DrillUp.parameters['是否添加到主菜单'] || "true") === "true";	
     DrillUp.g_SSpA_menu_name = String(DrillUp.parameters['主菜单显示名'] || "");
@@ -1045,6 +1056,7 @@
     DrillUp.g_SSpA_title_name = String(DrillUp.parameters['标题窗口显示名'] || "");
 	DrillUp.g_SSpA_title_data_global = String(DrillUp.parameters['数据是否全局存储'] || "false") === "true";	
 	
+	/*-----------------选项窗口------------------*/
 	DrillUp.g_SSpA_selWin_x = Number(DrillUp.parameters['选项窗口 X'] || 30);
 	DrillUp.g_SSpA_selWin_y = Number(DrillUp.parameters['选项窗口 Y'] || 120);
 	DrillUp.g_SSpA_selWin_width = Number(DrillUp.parameters['选项窗口宽度'] || 220);
@@ -1075,6 +1087,7 @@
 		DrillUp.g_SSpA_selWin_layout = {};
 	}
 
+	/*-----------------描述窗口------------------*/
 	DrillUp.g_SSpA_descWin_x = Number(DrillUp.parameters['描述窗口 X'] || 285);
 	DrillUp.g_SSpA_descWin_y = Number(DrillUp.parameters['描述窗口 Y'] || 100);
 	DrillUp.g_SSpA_descWin_width = Number(DrillUp.parameters['描述窗口宽度'] || 510);
@@ -1105,9 +1118,11 @@
 		DrillUp.g_SSpA_descWin_layout = {};
 	}
 
+	/*-----------------描述图------------------*/
 	DrillUp.g_SSpA_descPic_x = Number(DrillUp.parameters['描述图 X'] || 285);
 	DrillUp.g_SSpA_descPic_y = Number(DrillUp.parameters['描述图 Y'] || 480);
 	DrillUp.g_SSpA_descPic_replay = String(DrillUp.parameters['是否重播描述图移动动画'] || "true") === "true";	
+	DrillUp.g_SSpA_descPic_showInstant = String(DrillUp.parameters['是否瞬间显示描述图'] || "false") === "true";	
 	if( DrillUp.parameters['描述图移动动画'] != undefined ){
 		DrillUp.g_SSpA_descPic_slideAnim = JSON.parse( DrillUp.parameters['描述图移动动画'] );
 		DrillUp.g_SSpA_descPic_slideAnim['slideMoveType'] = String(DrillUp.g_SSpA_descPic_slideAnim['移动类型'] || "匀速移动");
@@ -1122,6 +1137,7 @@
 		DrillUp.g_SSpA_descPic_slideAnim = {};
 	}
 	
+	/*-----------------内容------------------*/
 	DrillUp.g_SSpA_context_list_length = 80;
 	DrillUp.g_SSpA_context_list = {};
 	for (var i = 1; i <= DrillUp.g_SSpA_context_list_length ; i++ ) {
@@ -1194,7 +1210,7 @@ if( Imported.Drill_CoreOfWindowAuxiliary ){
 			DrillUp.global_SSpA_lock = [];
 		}
 	}
-	//注意，不要马上将全局的值赋值到system函数中，需要在 "存档数据赋值" 中再做存储区分判断
+	//注意，不要马上将全局的值赋值到system函数中，需要在 "正常存储赋值" 中再做存储区分判断
 	
 //==============================
 // * 全局 - 存储
@@ -1240,33 +1256,33 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 			if( type == "显示全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpA_context_list_length; i++){
-					DrillUp.g_SSpA_context_list[i]['enabled'] = true;	//全局数据
+					DrillUp.g_SSpA_context_list[i]['enabled'] = true;	//全局存储
 					if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-					$gameSystem._drill_SSpA_context_list[i]['enabled'] = true;	//存档数据
+					$gameSystem._drill_SSpA_context_list[i]['enabled'] = true;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
 			if( type == "隐藏全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpA_context_list_length; i++){
-					DrillUp.g_SSpA_context_list[i]['enabled'] = false;	//全局数据
+					DrillUp.g_SSpA_context_list[i]['enabled'] = false;	//全局存储
 					if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-					$gameSystem._drill_SSpA_context_list[i]['enabled'] = false;	//存档数据
+					$gameSystem._drill_SSpA_context_list[i]['enabled'] = false;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
 			if( type == "锁定全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpA_context_list_length; i++){
-					DrillUp.g_SSpA_context_list[i]['locked'] = true;	//全局数据
+					DrillUp.g_SSpA_context_list[i]['locked'] = true;	//全局存储
 					if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-					$gameSystem._drill_SSpA_context_list[i]['locked'] = true;	//存档数据
+					$gameSystem._drill_SSpA_context_list[i]['locked'] = true;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
 			if( type == "解锁全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpA_context_list_length; i++){
-					DrillUp.g_SSpA_context_list[i]['locked'] = false;	//全局数据
+					DrillUp.g_SSpA_context_list[i]['locked'] = false;	//全局存储
 					if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-					$gameSystem._drill_SSpA_context_list[i]['locked'] = false;	//存档数据
+					$gameSystem._drill_SSpA_context_list[i]['locked'] = false;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
@@ -1277,28 +1293,28 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var type = String(args[1]);
 			var temp1 = Number(args[3]);
 			if( type == "显示选项" ){
-				DrillUp.g_SSpA_context_list[temp1]['enabled'] = true;	//全局数据
+				DrillUp.g_SSpA_context_list[temp1]['enabled'] = true;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-				$gameSystem._drill_SSpA_context_list[temp1]['enabled'] = true;	//存档数据
+				$gameSystem._drill_SSpA_context_list[temp1]['enabled'] = true;	//正常存储
 			}
 			if( type == "隐藏选项" ){
-				DrillUp.g_SSpA_context_list[temp1]['enabled'] = false;	//全局数据
+				DrillUp.g_SSpA_context_list[temp1]['enabled'] = false;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-				$gameSystem._drill_SSpA_context_list[temp1]['enabled'] = false;	//存档数据
+				$gameSystem._drill_SSpA_context_list[temp1]['enabled'] = false;	//正常存储
 			}
 			if( type == "锁定选项" ){
-				DrillUp.g_SSpA_context_list[temp1]['locked'] = true;	//全局数据
+				DrillUp.g_SSpA_context_list[temp1]['locked'] = true;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-				$gameSystem._drill_SSpA_context_list[temp1]['locked'] = true;	//存档数据
+				$gameSystem._drill_SSpA_context_list[temp1]['locked'] = true;	//正常存储
 			}
 			if( type == "解锁选项" ){
-				DrillUp.g_SSpA_context_list[temp1]['locked'] = false;	//全局数据
+				DrillUp.g_SSpA_context_list[temp1]['locked'] = false;	//全局存储
 				DataManager.forceSaveGlobalInfo();
 				if( !$gameSystem._drill_SSpA_context_list ){ $gameSystem.drill_SSpA_dataInit(); }
-				$gameSystem._drill_SSpA_context_list[temp1]['locked'] = false;	//存档数据
+				$gameSystem._drill_SSpA_context_list[temp1]['locked'] = false;	//正常存储
 			}
 			if( type == "选中页" ){
 				var temp = temp1 -1;
@@ -1380,7 +1396,7 @@ Scene_Drill_SSpA.prototype.initialize = function() {
 	if (!$gameSystem._drill_SSpA_context_list) {$gameSystem.drill_SSpA_dataInit();};
 };
 //==============================
-// * 信息面板A - 存档数据赋值
+// * 信息面板A - 正常存储赋值
 //==============================
 Game_System.prototype.drill_SSpA_dataInit = function() {
 	this._drill_SSpA_context_list = JSON.parse(JSON.stringify( DrillUp.g_SSpA_context_list ));	//拷贝object（杜绝引用造成的修改）
@@ -1412,6 +1428,7 @@ Scene_Drill_SSpA.prototype.update = function() {
 	
 	this._window_select.drill_COWA_CPD_update();
 	this._window_desc.drill_COWA_CPD_update();
+	this.updateDescPic();
 	this.updateIndex();
 }
 
@@ -1507,6 +1524,8 @@ Scene_Drill_SSpA.prototype.createDescPic = function() {
 	this._window_desc_pic = new Sprite();
 	this._window_desc_pic.drill_COWA_setButtonMove( data );		//辅助核心 - 控制按钮贴图基本属性
 	this._drill_field.addChild(this._window_desc_pic);	
+	
+	this._window_desc_pic._drill_bitmaps = [];
 };
 
 //==============================
@@ -1528,10 +1547,30 @@ Scene_Drill_SSpA.prototype.resetPosition = function() {
 // * 信息面板A - 描述图片刷新
 //==============================
 Scene_Drill_SSpA.prototype.drill_refreshDescPic = function(index) {
-	var context_index = $gameTemp._drill_SSpA_visibleList[index]['index'];
-	this._window_desc_pic.bitmap = ImageManager.load_MenuSelfDef(DrillUp.g_SSpA_context_list[context_index]["pic"]);
+	
+	// > 资源预加载
+	if( this._window_desc_pic._drill_bitmaps.length == 0 ){
+		var visible_list = $gameTemp._drill_SSpA_visibleList;
+		for( var i=0; i < visible_list.length; i++ ){
+			var context_index = visible_list[i]['index'];
+			this._window_desc_pic._drill_bitmaps[i] = ImageManager.load_MenuSelfDef(DrillUp.g_SSpA_context_list[context_index]["pic"]);	
+		}
+	}
+	
+	// > 切换描述图
+	this._window_desc_pic.bitmap = this._window_desc_pic._drill_bitmaps[index];
+	if( DrillUp.g_SSpA_descPic_showInstant == false ){
+		this._window_desc_pic.opacity = 0;
+	}
 }
-
+//==============================
+// * 帧刷新 - 描述图片
+//==============================
+Scene_Drill_SSpA.prototype.updateDescPic = function() {
+	if( DrillUp.g_SSpA_descPic_showInstant == false ){
+		this._window_desc_pic.opacity += 255/DrillUp.g_SSpA_descPic_slideAnim['slideTime'];
+	}
+}
 //==============================
 // * 帧刷新 - 窗口选项刷新
 //==============================
@@ -1602,9 +1641,9 @@ Drill_SSpA_SelectWindow.prototype.refresh = function() {
 	for(var i=1; i<= DrillUp.g_SSpA_context_list_length ;i++){
 		
 		if( DrillUp.g_SSpA_title_data_global ){
-			var temp = DrillUp.g_SSpA_context_list[i];	//全局数据
+			var temp = DrillUp.g_SSpA_context_list[i];	//全局存储
 		}else{
-			var temp = $gameSystem._drill_SSpA_context_list[i];	//存档数据
+			var temp = $gameSystem._drill_SSpA_context_list[i];	//正常存储
 		}
 		
 		if( temp != "" && temp['enabled'] == true ){

@@ -1217,6 +1217,7 @@ Scene_Item.prototype.create = function() {
     this._categoryWindow.visible = false;
 	this._categoryWindow.active = false;
     this._itemWindow.active = true;
+	this._itemWindow.setCategory('item');
 	this._itemWindow.select(0);
 	this._itemWindow.contentsOpacity = 0;
 	this._itemWindow.x = this._itemPosOrg[0] + Moghunter.scItem_ItemWindow_L_slideX;

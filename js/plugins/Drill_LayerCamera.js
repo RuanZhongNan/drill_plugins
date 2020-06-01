@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.7]        地图 - 活动地图镜头
+ * @plugindesc [v1.8]        地图 - 活动地图镜头
  * @author Drill_up
  * 
  * @param 缩小镜头时是否加强刷新量
@@ -117,17 +117,17 @@
  * 插件指令：>地图镜头 : 设置镜头移动模式 : 平滑移动
  * 插件指令：>地图镜头 : 设置镜头移动模式 : 弹性移动
  * 插件指令：>地图镜头 : 设置弹性模式移动速度 : 10
- * 插件指令：>地图镜头 : 设置弹性模式镜头速度上限 : 10
+ * 插件指令：>地图镜头 : 设置弹性模式镜头速度上限 : 24
  * 
  * -----------------------------------------------------------------------------
  * ----可选设定 - 镜头缩放/旋转
  * 你可以通过插件指令设置镜头缩放：
  * 
- * 插件指令：>地图镜头 : 缩放X : 1.50 : 60
- * 插件指令：>地图镜头 : 缩放Y : 1.50 : 60
- * 插件指令：>地图镜头 : 缩放X : 0.50 : 60
- * 插件指令：>地图镜头 : 缩放Y : 0.50 : 60
- * 插件指令：>地图镜头 : 旋转 : 180 : 60
+ * 插件指令：>地图镜头 : 缩放X : 1.50 : 时间[60]
+ * 插件指令：>地图镜头 : 缩放Y : 1.50 : 时间[60]
+ * 插件指令：>地图镜头 : 缩放X : 0.50 : 时间[60]
+ * 插件指令：>地图镜头 : 缩放Y : 0.50 : 时间[60]
+ * 插件指令：>地图镜头 : 旋转 : 180 : 时间[60]
  * 
  * 1.缩放前一个数字表示缩放比例，后一个数字表示缩放持续时间，单位帧。
  *   1.50表示镜头放大50%，只能看见实际范围的四分之一。
@@ -143,22 +143,22 @@
  * ----可选设定 - 镜头翻转
  * 你可以通过插件指令设置镜头翻转：
  * 
- * 插件指令：>地图镜头 : 水平翻转 : 60 : 匀速
- * 插件指令：>地图镜头 : 垂直翻转 : 60 : 匀速
- * 插件指令：>地图镜头 : 顺时针翻转 : 60 : 匀速
- * 插件指令：>地图镜头 : 逆时针翻转 : 60 : 匀速
- * 插件指令：>地图镜头 : 水平翻转 : 60 : 平滑
- * 插件指令：>地图镜头 : 垂直翻转 : 60 : 平滑
- * 插件指令：>地图镜头 : 顺时针翻转 : 60 : 平滑
- * 插件指令：>地图镜头 : 逆时针翻转 : 60 : 平滑
- * 插件指令：>地图镜头 : 水平翻转 : 60 : 弹性
- * 插件指令：>地图镜头 : 垂直翻转 : 60 : 弹性
- * 插件指令：>地图镜头 : 顺时针翻转 : 60 : 弹性
- * 插件指令：>地图镜头 : 逆时针翻转 : 60 : 弹性
+ * 插件指令：>地图镜头 : 水平翻转 : 时间[60] : 匀速
+ * 插件指令：>地图镜头 : 垂直翻转 : 时间[60] : 匀速
+ * 插件指令：>地图镜头 : 顺时针翻转 : 时间[60] : 匀速
+ * 插件指令：>地图镜头 : 逆时针翻转 : 时间[60] : 匀速
+ * 插件指令：>地图镜头 : 水平翻转 : 时间[60] : 平滑
+ * 插件指令：>地图镜头 : 垂直翻转 : 时间[60] : 平滑
+ * 插件指令：>地图镜头 : 顺时针翻转 : 时间[60] : 平滑
+ * 插件指令：>地图镜头 : 逆时针翻转 : 时间[60] : 平滑
+ * 插件指令：>地图镜头 : 水平翻转 : 时间[60] : 弹性
+ * 插件指令：>地图镜头 : 垂直翻转 : 时间[60] : 弹性
+ * 插件指令：>地图镜头 : 顺时针翻转 : 时间[60] : 弹性
+ * 插件指令：>地图镜头 : 逆时针翻转 : 时间[60] : 弹性
  * 
- * 插件指令：>地图镜头 : 恢复翻转 : 60 : 匀速
- * 插件指令：>地图镜头 : 恢复翻转 : 60 : 平滑
- * 插件指令：>地图镜头 : 恢复翻转 : 60 : 弹性
+ * 插件指令：>地图镜头 : 恢复翻转 : 时间[60] : 匀速
+ * 插件指令：>地图镜头 : 恢复翻转 : 时间[60] : 平滑
+ * 插件指令：>地图镜头 : 恢复翻转 : 时间[60] : 弹性
  * 
  * 1.数字表示翻转的时间，单位帧。
  * 2.注意，翻转只能处于一种状态。比如顺时针翻转后。其它翻转指令完全失效。
@@ -259,6 +259,8 @@
  * [v1.7]
  * 修复了镜头在移动过程中，事件抖动的问题。
  * （感谢p1伙伴"开关关"https://rpg.blue/thread-480641-1-1.html。）
+ * [v1.8]
+ * 修复了镜头翻转时偏移的bug。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -315,7 +317,7 @@
 //			2.由于镜头平移关系，目前镜头设置偏移量非常麻烦，目前xy相关平移不考虑，以免平移非常难看。
 //			3.镜头最大的问题，在于圆心的问题。
 //			  只有单独的sprite才能设置圆心，tilemap和循环贴图都没有圆心。
-//			  旋转的时候问题也大，这相当于指数形式让公式越来越复杂
+//			  旋转的时候问题也大，这相当于指数形式让公式越来越复杂（通过数学转换部分解决，但是仍然存在问题）
 
 //=============================================================================
 // ** 变量获取
@@ -339,30 +341,30 @@
 var _drill_LCa_sys_initialize = Game_System.prototype.initialize;
 Game_System.prototype.initialize = function() {
 	_drill_LCa_sys_initialize.call(this);
-    this._drill_LCa_type = DrillUp.g_LCa_type ;
-    this._drill_LCa_speedRatio = DrillUp.g_LCa_speedRatio ;
-    this._drill_LCa_speedMax = DrillUp.g_LCa_speedMax ;
+    this._drill_LCa_type = DrillUp.g_LCa_type ;					//镜头移动模式
+    this._drill_LCa_speedRatio = DrillUp.g_LCa_speedRatio ;		//移动速度
+    this._drill_LCa_speedMax = DrillUp.g_LCa_speedMax ;			//速度上限
 	
-	this._drill_LCa_sX = {}			//缩放值
+	this._drill_LCa_sX = {}			// 缩放x
 	this._drill_LCa_sX.cur = 0;		//	cur = -0.1，则缩放为0.9
-	this._drill_LCa_sX.move = 0;
-	this._drill_LCa_sX.time = 0;
-	this._drill_LCa_sY = {}
-	this._drill_LCa_sY.cur = 0;
-	this._drill_LCa_sY.move = 0;
-	this._drill_LCa_sY.time = 0;
-	this._drill_LCa_R = {}
-	this._drill_LCa_R.cur = 0;
-	this._drill_LCa_R.move = 0;
-	this._drill_LCa_R.time = 0;
+	this._drill_LCa_sX.move = 0;	//
+	this._drill_LCa_sX.time = 0;	//
+	this._drill_LCa_sY = {}			// 缩放y
+	this._drill_LCa_sY.cur = 0;		//
+	this._drill_LCa_sY.move = 0;	//
+	this._drill_LCa_sY.time = 0;	//
+	this._drill_LCa_R = {}			// 旋转
+	this._drill_LCa_R.cur = 0;		//
+	this._drill_LCa_R.move = 0;		//
+	this._drill_LCa_R.time = 0;		//
 	
-    this._drill_LCa_flip = {};
-    this._drill_LCa_flip.lock = false;
+    this._drill_LCa_flip = {};			//翻转控制
+    this._drill_LCa_flip.lock = false;	//
 	
-    this._drill_LCa_locked = false;
-    this._drill_LCa_lookAt_X = -1;
-    this._drill_LCa_lookAt_Y = -1;
-    this._drill_LCa_lookAt_event = -1;
+    this._drill_LCa_locked = false;		//固定看向
+    this._drill_LCa_lookAt_X = -1;		//看向图块x
+    this._drill_LCa_lookAt_Y = -1;		//看向图块y
+    this._drill_LCa_lookAt_event = -1;	//看向事件
 };
 //==============================
 // * 缩放参数
@@ -527,13 +529,17 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		/*-----------------镜头缩放/旋转------------------*/
 		if(args.length == 6){
 			var type = String(args[1]);
-			var temp1 = Number(args[3]);
+			var temp1 = String(args[3]);
 			var temp2 = String(args[5]);
+			temp1 = temp1.replace("时间[","");
+			temp1 = temp1.replace("]","");
+			temp2 = temp2.replace("时间[","");
+			temp2 = temp2.replace("]","");
 			if( (type == "顺时针翻转" || type == "逆时针翻转") && $gameSystem._drill_LCa_flip.lock == false){
 				$gameSystem._drill_LCa_flip.type = type;
 				$gameSystem._drill_LCa_flip.back = false;
 				$gameSystem._drill_LCa_flip.mode = temp2;
-				$gameSystem._drill_LCa_flip.time = temp1;
+				$gameSystem._drill_LCa_flip.time = Number(temp1);
 				$gameSystem._drill_LCa_flip.move = 0;
 				$gameSystem._drill_LCa_flip.lock = true;
 			}
@@ -541,30 +547,30 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				$gameSystem._drill_LCa_flip.type = type;
 				$gameSystem._drill_LCa_flip.back = false;
 				$gameSystem._drill_LCa_flip.mode = temp2;
-				$gameSystem._drill_LCa_flip.time = temp1;
+				$gameSystem._drill_LCa_flip.time = Number(temp1);
 				$gameSystem._drill_LCa_flip.move = 0;
 				$gameSystem._drill_LCa_flip.lock = true;
 			}
 			if( type == "恢复翻转" && $gameSystem._drill_LCa_flip.lock == true ){
 				$gameSystem._drill_LCa_flip.back = true;
 				$gameSystem._drill_LCa_flip.mode = temp2;
-				$gameSystem._drill_LCa_flip.time = temp1;
-				$gameSystem._drill_LCa_flip.move = temp1;
+				$gameSystem._drill_LCa_flip.time = Number(temp1);
+				$gameSystem._drill_LCa_flip.move = Number(temp1);
 			}
 			if( type == "缩放X" ){
 				$gameSystem._drill_LCa_sX.move = 0;
 				$gameSystem._drill_LCa_sX.time = Math.max(Number(temp2),1);
-				$gameSystem._drill_LCa_sX.speed = (temp1 -1 - $gameSystem._drill_LCa_sX.cur)/$gameSystem._drill_LCa_sX.time;
+				$gameSystem._drill_LCa_sX.speed = (Number(temp1) -1 - $gameSystem._drill_LCa_sX.cur)/$gameSystem._drill_LCa_sX.time;
 			}
 			if( type == "缩放Y" ){
 				$gameSystem._drill_LCa_sY.move = 0;
 				$gameSystem._drill_LCa_sY.time = Math.max(Number(temp2),1);
-				$gameSystem._drill_LCa_sY.speed = (temp1 -1 - $gameSystem._drill_LCa_sY.cur)/$gameSystem._drill_LCa_sY.time;
+				$gameSystem._drill_LCa_sY.speed = (Number(temp1) -1 - $gameSystem._drill_LCa_sY.cur)/$gameSystem._drill_LCa_sY.time;
 			}
 			if( type == "旋转" ){
 				$gameSystem._drill_LCa_R.move = 0;
 				$gameSystem._drill_LCa_R.time = Math.max(Number(temp2),1);
-				$gameSystem._drill_LCa_R.speed = (temp1 - $gameSystem._drill_LCa_R.cur)/$gameSystem._drill_LCa_R.time;
+				$gameSystem._drill_LCa_R.speed = (Number(temp1) - $gameSystem._drill_LCa_R.cur)/$gameSystem._drill_LCa_R.time;
 			}
 		}
 	}
@@ -689,131 +695,53 @@ Game_Map.prototype.drill_LCa_refreshSwitchChecks = function() {
 
 
 //=============================================================================
-// ** 镜头缩放、翻转
+// ** 镜头属性
 //=============================================================================
 //==============================
-// * 固定帧初始值
+// * 镜头属性 - 缩放地图的鼠标修正
 //==============================
-var _drill_LCa_updatePosition = Spriteset_Map.prototype.updatePosition;
-Spriteset_Map.prototype.updatePosition = function() {
-	_drill_LCa_updatePosition.call(this);
-    //this.x ;
-    //this.y ;
-    //this.scale.x ;
-    //this.scale.y ;
-	this.rotation = 0;
-	this.anchor.x = 0;	//Spriteset_Map的中心点设置没有任何效果，且rotation被锁定为（0,0）中心点位置，这里索性固定中心点为(0,0)。
-	this.anchor.y = 0;
-	this.skew.x = 0;
-	this.skew.y = 0;
-	
-	this._drill_LCa_change_rotation = 0;	//你只需要操作这三个变量即可（操作会上面的变量会把算法变复杂）
-	this._drill_LCa_change_sizeX = 1;
-	this._drill_LCa_change_sizeY = 1;
-	
-	this.drill_LCa_resize();
-	this.drill_LCa_rotate();
-	this.drill_LCa_flip();
-	this.drill_LCa_coreOperate();
+var _drill_LCa_g_canvasToMapX = Game_Map.prototype.canvasToMapX;
+Game_Map.prototype.canvasToMapX = function( x ) {
+	x = $gameSystem.drill_LCa_cameraToMapX( x );
+	return _drill_LCa_g_canvasToMapX.call(this,x);
+};
+
+var _drill_LCa_g_canvasToMapY = Game_Map.prototype.canvasToMapY;
+Game_Map.prototype.canvasToMapY = function( y ) {
+	y = $gameSystem.drill_LCa_cameraToMapY( y );
+	return _drill_LCa_g_canvasToMapY.call(this,y);
 };
 
 //==============================
-// * 镜头翻转
+// * 镜头属性 - 固定帧初始值
 //==============================
-Spriteset_Map.prototype.drill_LCa_flip = function() {
-	var flip = $gameSystem._drill_LCa_flip;
-	
-	if(flip.type == "顺时针翻转"){
-		if( flip.back == false ){
-			if( flip.move <= flip.time){ flip.move += 1; }
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2)) - Math.PI;
-			}else if(flip.mode == "平滑"){	//（正弦公式）
-				this._drill_LCa_change_rotation += Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
-			}else{	//默认匀速
-				this._drill_LCa_change_rotation += Math.PI * flip.move / flip.time ;
-			}
-		}else{
-			if( flip.move > 0 ){ flip.move -= 1; }
-			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move-flip.time , 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2));
-			}else if(flip.mode == "平滑"){	//（正弦公式）
-				this._drill_LCa_change_rotation += Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
-			}else{	//默认匀速
-				this._drill_LCa_change_rotation += Math.PI * flip.move / flip.time ;
-			}
-		}
-	}
-	if(flip.type == "逆时针翻转"){
-		if( flip.back == false ){
-			if( flip.move <= flip.time){ flip.move += 1; }
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2)) - Math.PI;
-			}else if( flip.mode == "平滑"){	//（正弦公式）
-				this._drill_LCa_change_rotation += -Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
-			}else{	//默认匀速
-				this._drill_LCa_change_rotation += -Math.PI * flip.move / flip.time ;
-			}
-		}else{
-			if( flip.move > 0 ){ flip.move -= 1; }
-			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move-flip.time , 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2));
-			}else if(flip.mode == "平滑"){	//（正弦公式）
-				this._drill_LCa_change_rotation += -Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
-			}else{	//默认匀速
-				this._drill_LCa_change_rotation += -Math.PI * flip.move / flip.time ;
-			}
-		}
-	}
-	if(flip.type == "水平翻转"){
-		if( flip.back == false ){
-			if( flip.move <= flip.time){ flip.move += 1; }
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_sizeX *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
-			}else if( flip.mode == "平滑"){	//（余弦公式）
-				this._drill_LCa_change_sizeX *= Math.cos( Math.PI * flip.move / flip.time );
-			}else{	//默认匀速
-				this._drill_LCa_change_sizeX *= -2 * flip.move / flip.time + 1;
-			}
-		}else{
-			if( flip.move > 0 ){ flip.move -= 1; }
-			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_sizeX *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
-			}else if( flip.mode == "平滑"){	//（余弦公式）
-				this._drill_LCa_change_sizeX *= Math.cos( Math.PI * flip.move / flip.time );
-			}else{	//默认匀速
-				this._drill_LCa_change_sizeX *= -2 * flip.move / flip.time + 1;
-			}
-		}
-	}
-	if(flip.type == "垂直翻转"){
-		if( flip.back == false ){
-			if( flip.move <= flip.time){ flip.move += 1; }
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_sizeY *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
-			}else if( flip.mode == "平滑"){	//（余弦公式）
-				this._drill_LCa_change_sizeY *= Math.cos( Math.PI * flip.move / flip.time );
-			}else{	//默认匀速
-				this._drill_LCa_change_sizeY *= -2 * flip.move / flip.time + 1;
-			}
-		}else{
-			if( flip.move > 0 ){ flip.move -= 1; }
-			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
-			if(flip.mode == "弹性"){		//（椭圆公式）
-				this._drill_LCa_change_sizeY *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
-			}else if( flip.mode == "平滑"){	//（余弦公式）
-				this._drill_LCa_change_sizeY *= Math.cos( Math.PI * flip.move / flip.time );
-			}else{	//默认匀速
-				this._drill_LCa_change_sizeY *= -2 * flip.move / flip.time + 1;
-			}
-		}
-	}
+var _drill_LCa_updatePosition = Spriteset_Map.prototype.updatePosition;
+Spriteset_Map.prototype.updatePosition = function() {
+	_drill_LCa_updatePosition.call(this);				// x、y、z、缩放x、缩放y
+	if( this.rotation != 0 ){ this.rotation = 0; }		// 旋转
+	if( this.skew.x != 0 ){ this.skew.x = 0; }			// 斜切x
+	if( this.skew.y != 0 ){ this.skew.y = 0; }			// 斜切y
+														//Spriteset_Map的中心锚点没有效果，且rotation被锁定为（0,0）中心点位置，这里索性固定中心点为(0,0)。
 }
 //==============================
-// * 镜头缩放
+// * 镜头属性 - 帧刷新
+//==============================
+var _drill_LCa_updatePosition2 = Spriteset_Map.prototype.updatePosition;
+Spriteset_Map.prototype.updatePosition = function() {
+	_drill_LCa_updatePosition2.call(this);				
+	
+	this._drill_LCa_change_rotation = 0;	//旋转
+	this._drill_LCa_change_sizeX = 1;		//缩放x
+	this._drill_LCa_change_sizeY = 1;		//缩放y
+	
+	this.drill_LCa_resize();				//缩放操作
+	this.drill_LCa_rotate();				//旋转操作
+	this.drill_LCa_flip();					//翻转控制
+	this.drill_LCa_lockAnchor();			//锁定锚点
+	this.drill_LCa_tileResize();			//图块填充（缩放比例适应）
+};
+//==============================
+// * 镜头属性 - 缩放
 //==============================
 Spriteset_Map.prototype.drill_LCa_resize = function() {
 	var re_x = $gameSystem._drill_LCa_sX;
@@ -831,23 +759,7 @@ Spriteset_Map.prototype.drill_LCa_resize = function() {
 	this._drill_LCa_change_sizeY += re_y.cur;
 }
 //==============================
-// * 缩放地图的鼠标修正
-//==============================
-var _drill_LCa_g_canvasToMapX = Game_Map.prototype.canvasToMapX;
-Game_Map.prototype.canvasToMapX = function( x ) {
-	x = $gameSystem.drill_LCa_cameraToMapX( x );
-	return _drill_LCa_g_canvasToMapX.call(this,x);
-};
-
-var _drill_LCa_g_canvasToMapY = Game_Map.prototype.canvasToMapY;
-Game_Map.prototype.canvasToMapY = function( y ) {
-	y = $gameSystem.drill_LCa_cameraToMapY( y );
-	return _drill_LCa_g_canvasToMapY.call(this,y);
-};
-
-
-//==============================
-// * 镜头旋转
+// * 镜头属性 - 旋转
 //==============================
 Spriteset_Map.prototype.drill_LCa_rotate = function() {
 	var re_r = $gameSystem._drill_LCa_R;
@@ -860,38 +772,81 @@ Spriteset_Map.prototype.drill_LCa_rotate = function() {
 	this._drill_LCa_change_rotation += ( re_r.cur /180.0 )*Math.PI;
 }
 //==============================
-// * 镜头变化核心
+// * 镜头属性 - 锁定锚点
 //==============================
-Spriteset_Map.prototype.drill_LCa_coreOperate = function() {
+Spriteset_Map.prototype.drill_LCa_lockAnchor = function() {
 	
-	if( this._drill_LCa_change_rotation != 0 ){
-		//圆公式 (x-a)²+(y-b)²=r²
-		//圆极坐标 x=ρcosθ,y=ρsinθ
-		var ww = Graphics.boxWidth/2;
-		var hh = Graphics.boxHeight/2;
-		var r = Math.sqrt( Math.pow(ww,2) + Math.pow(hh,2) );
-		var p_degree = Math.atan(hh/ww);
-		p_degree = Math.PI - p_degree;
-		this.x += r*Math.cos( this._drill_LCa_change_rotation - p_degree);
-		this.y += r*Math.sin( this._drill_LCa_change_rotation - p_degree);
-		this.x += Graphics.boxWidth/2 ;
-		this.y += Graphics.boxHeight/2 ;
-		this.rotation = this._drill_LCa_change_rotation;
-	}
-	if( this._drill_LCa_change_sizeX != 1 || this._drill_LCa_change_sizeY != 1 ){
-		this.scale.x = this._drill_LCa_change_sizeX;
-		this.scale.y = this._drill_LCa_change_sizeY;
-		this.x += Graphics.boxWidth/2 * (1 - this._drill_LCa_change_sizeX ) ;
-		this.y += Graphics.boxHeight/2 * (1 - this._drill_LCa_change_sizeY ) ;
-		if( DrillUp.g_LCa_forceRefresh ){
-			this.drill_LCa_tileResize();
-		}
-	}
+	//if( this._drill_LCa_change_rotation != 0 ){
+	//	var ww = Graphics.boxWidth/2;
+	//	var hh = Graphics.boxHeight/2;
+	//	var r = Math.sqrt( Math.pow(ww,2) + Math.pow(hh,2) );
+	//	var p_degree = Math.atan(hh/ww);
+	//	p_degree = Math.PI - p_degree;
+	//	this.x += r*Math.cos( this._drill_LCa_change_rotation - p_degree);
+	//	this.y += r*Math.sin( this._drill_LCa_change_rotation - p_degree);
+	//	this.x += Graphics.boxWidth/2 ;
+	//	this.y += Graphics.boxHeight/2 ;
+	//	this.rotation = this._drill_LCa_change_rotation;
+	//}
+	//if( this._drill_LCa_change_sizeX != 1 || this._drill_LCa_change_sizeY != 1 ){
+	//	this.scale.x = this._drill_LCa_change_sizeX;
+	//	this.scale.y = this._drill_LCa_change_sizeY;
+	//	this.x += Graphics.boxWidth/2 * (1 - this._drill_LCa_change_sizeX ) ;
+	//	this.y += Graphics.boxHeight/2 * (1 - this._drill_LCa_change_sizeY ) ;
+	//}
+	
+	var rotation = this._drill_LCa_change_rotation;
+	var scale_x = this._drill_LCa_change_sizeX;
+	var scale_y = this._drill_LCa_change_sizeY;
+	if( rotation == 0 && scale_x == 1 && scale_y == 1 ){ return; } 
+	
+	// > 锚点(0.5,0.5)锁定
+	var fix_point = $gameTemp.drill_LCa_getFixPointInAnchor( 0,0, 0.5,0.5, Graphics.boxWidth,Graphics.boxHeight, rotation, scale_x, scale_y );
+	this.x += Graphics.boxWidth/2;	
+	this.y += Graphics.boxHeight/2;	
+	this.x += fix_point.x;	
+	this.y += fix_point.y;	
+	
+	this.rotation = rotation;
+	this.scale.x *= scale_x;
+	this.scale.y *= scale_y;
+}
+//=============================================================================
+// * 数学 - 锁定锚点
+//			
+//			说明：修正 旋转+缩放 的xy坐标，使其看起来像是在绕着 新的锚点 变换。
+//=============================================================================
+Game_Temp.prototype.drill_LCa_getFixPointInAnchor = function( 
+					org_anchor_x,org_anchor_y,			//原贴图中心锚点 
+					target_anchor_x,target_anchor_y, 	//新的中心锚点 
+					width, height,						//贴图高宽
+					rotation, scale_x, scale_y ) {		//变换的值（旋转+缩放）
+	
+	var ww = width * ( target_anchor_x - org_anchor_x );
+	var hh = height * ( target_anchor_y - org_anchor_y );
+	var xx = 0;
+	var yy = 0;
+	if( ww == 0 && hh == 0){ return { "x":0, "y":0 }; }
+	if( ww == 0 ){ ww = 0.0001; }
+	
+	var r = Math.sqrt( Math.pow(ww,2) + Math.pow(hh,2) );
+	var p_degree = Math.atan(hh/ww);	
+	p_degree = Math.PI - p_degree;
+	
+	xx = r*Math.cos( rotation - p_degree);		//圆公式 (x-a)²+(y-b)²=r²
+	yy = r*Math.sin( rotation - p_degree);		//圆极坐标 x=ρcosθ,y=ρsinθ
+	xx += ww * (1 - scale_x);
+	yy += hh * (1 - scale_y);
+	
+	return { "x":xx, "y":yy };
 }
 //==============================
-// * 缩小控制（图块填充）
+// * 镜头属性 - 图块填充（缩放比例适应）
 //==============================
 Spriteset_Map.prototype.drill_LCa_tileResize = function() {
+	if( DrillUp.g_LCa_forceRefresh == false ){ return; }
+	if( this._drill_LCa_change_sizeX == 1 && this._drill_LCa_change_sizeY == 1 ){ return; }
+	
 	var _x = Graphics.boxWidth / this.scale.x - Graphics.boxWidth;
 	var _y = Graphics.boxHeight / this.scale.y - Graphics.boxHeight;
 	var _xx =  Graphics.boxWidth + _x/2*3 ;
@@ -912,6 +867,9 @@ Spriteset_Map.prototype.drill_LCa_tileResize = function() {
 		this._tilemap.margin = 20;
 	}
 }
+//==============================
+// * 镜头属性 - margin属性（图块填充）
+//==============================
 Object.defineProperty(Tilemap.prototype, 'margin', {
     get: function() {
         return this._margin;
@@ -925,7 +883,7 @@ Object.defineProperty(Tilemap.prototype, 'margin', {
 });
 
 //==============================
-// * 缩小控制（兼容Drill_LayerGround）
+// * 镜头属性 - 兼容Drill_LayerGround缩放
 //==============================
 var _drill_LCa_s_update = Scene_Map.prototype.update;
 Scene_Map.prototype.update = function (){
@@ -949,6 +907,101 @@ Scene_Map.prototype.update = function (){
 				this._spriteset._parallax.move( -1*_x/2 , -1*_y/2 , _xx , _yy );
 				this._spriteset._parallax.origin.x -= _x/2;
 				this._spriteset._parallax.origin.y -= _y/2;
+			}
+		}
+	}
+}
+//==============================
+// * 镜头属性 - 翻转控制
+//==============================
+Spriteset_Map.prototype.drill_LCa_flip = function() {
+	var flip = $gameSystem._drill_LCa_flip;
+	
+	if(flip.type == "顺时针翻转"){
+		if( flip.back == false ){
+			if( flip.move < flip.time){ flip.move += 1; }
+			if( flip.mode == "弹性"){		//（椭圆公式）
+				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2)) - Math.PI;
+			}else if(flip.mode == "平滑"){	//（正弦公式）
+				this._drill_LCa_change_rotation += Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
+			}else{	//默认匀速
+				this._drill_LCa_change_rotation += Math.PI * flip.move / flip.time ;
+			}
+		}else{
+			if( flip.move > 0 ){ flip.move -= 1; }
+			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
+			if( flip.mode == "弹性"){		//（椭圆公式）
+				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move-flip.time , 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2));
+			}else if(flip.mode == "平滑"){	//（正弦公式）
+				this._drill_LCa_change_rotation += Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
+			}else{	//默认匀速
+				this._drill_LCa_change_rotation += Math.PI * flip.move / flip.time ;
+			}
+		}
+	}
+	if(flip.type == "逆时针翻转"){
+		if( flip.back == false ){
+			if( flip.move < flip.time){ flip.move += 1; }
+			if( flip.mode == "弹性"){		//（椭圆公式）
+				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2)) - Math.PI;
+			}else if( flip.mode == "平滑"){	//（正弦公式）
+				this._drill_LCa_change_rotation += -Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
+			}else{	//默认匀速
+				this._drill_LCa_change_rotation += -Math.PI * flip.move / flip.time ;
+			}
+		}else{
+			if( flip.move > 0 ){ flip.move -= 1; }
+			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
+			if( flip.mode == "弹性" ){		//（椭圆公式）
+				this._drill_LCa_change_rotation += Math.sqrt((1 - Math.pow( flip.move-flip.time , 2 )/Math.pow(flip.time,2) ) * Math.pow(Math.PI,2));
+			}else if(flip.mode == "平滑"){	//（正弦公式）
+				this._drill_LCa_change_rotation += -Math.PI * Math.sin( flip.move / flip.time * Math.PI/2 );
+			}else{	//默认匀速
+				this._drill_LCa_change_rotation += -Math.PI * flip.move / flip.time ;
+			}
+		}
+	}
+	if(flip.type == "水平翻转"){
+		if( flip.back == false ){
+			if( flip.move < flip.time){ flip.move += 1; }
+			if( flip.mode == "弹性" ){		//（椭圆公式）
+				this._drill_LCa_change_sizeX *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
+			}else if( flip.mode == "平滑"){	//（余弦公式）
+				this._drill_LCa_change_sizeX *= Math.cos( Math.PI * flip.move / flip.time );
+			}else{	//默认匀速
+				this._drill_LCa_change_sizeX *= -2 * flip.move / flip.time + 1;
+			}
+		}else{
+			if( flip.move > 0 ){ flip.move -= 1; }
+			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
+			if( flip.mode == "弹性" ){		//（椭圆公式）
+				this._drill_LCa_change_sizeX *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
+			}else if( flip.mode == "平滑"){	//（余弦公式）
+				this._drill_LCa_change_sizeX *= Math.cos( Math.PI * flip.move / flip.time );
+			}else{	//默认匀速
+				this._drill_LCa_change_sizeX *= -2 * flip.move / flip.time + 1;
+			}
+		}
+	}
+	if(flip.type == "垂直翻转"){
+		if( flip.back == false ){
+			if( flip.move < flip.time){ flip.move += 1; }
+			if( flip.mode == "弹性" ){		//（椭圆公式）
+				this._drill_LCa_change_sizeY *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
+			}else if( flip.mode == "平滑"){	//（余弦公式）
+				this._drill_LCa_change_sizeY *= Math.cos( Math.PI * flip.move / flip.time );
+			}else{	//默认匀速
+				this._drill_LCa_change_sizeY *= -2 * flip.move / flip.time + 1;
+			}
+		}else{
+			if( flip.move > 0 ){ flip.move -= 1; }
+			if( flip.move == 0 ){ flip.lock = false; } //清空当前情况
+			if( flip.mode == "弹性" ){		//（椭圆公式）
+				this._drill_LCa_change_sizeY *= Math.sqrt((1 - Math.pow( flip.move, 2 )/Math.pow(flip.time,2) ) * Math.pow(2,2)) - 1;
+			}else if( flip.mode == "平滑"){	//（余弦公式）
+				this._drill_LCa_change_sizeY *= Math.cos( Math.PI * flip.move / flip.time );
+			}else{	//默认匀速
+				this._drill_LCa_change_sizeY *= -2 * flip.move / flip.time + 1;
 			}
 		}
 	}

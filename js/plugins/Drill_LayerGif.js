@@ -1767,6 +1767,7 @@ Spriteset_Map.prototype.createTilemap = function() {
 	_drill_LGi_layer_createTilemap.call(this);		//rmmv图块 < 中层 < rmmv角色
 	if( !this._drill_mapCenterArea ){
 		this._drill_mapCenterArea = new Sprite();
+		this._drill_mapCenterArea.z = 0.60;
 		this._tilemap.addChild(this._drill_mapCenterArea);	
 	}
 }
