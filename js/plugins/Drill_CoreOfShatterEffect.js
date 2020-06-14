@@ -28,8 +28,11 @@
  * 基于：
  *   - Drill_CoreOfBallistics       系统 - 弹道核心
  * 作用于：
+ *   - Drill_BattleShatterEffect    战斗 - 方块粉碎效果
  *   - Drill_LayerShatterEffect     地图 - 方块粉碎效果
  *   - Drill_EventShatterEffect     行走图 - 方块粉碎效果
+ *   - Drill_PictureShatterEffect   图片 - 方块粉碎效果
+ *   - Drill_DialogShatterEffect    对话框 - 方块粉碎效果
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项

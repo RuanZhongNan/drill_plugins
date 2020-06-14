@@ -765,7 +765,11 @@
  * @desc 用于区分你设置的颜色的说明注释，脚本中不起作用。
  * @default ==新的按钮样式==
  * 
+ * @param ---贴图---
+ * @default 
+ * 
  * @param 资源-返回按钮
+ * @parent ---贴图---
  * @desc 返回按钮的png图片资源组，多张构成gif。
  * @default ["返回按钮-默认"]
  * @require 1
@@ -773,12 +777,14 @@
  * @type file[]
  *
  * @param 帧间隔
+ * @parent ---贴图---
  * @type number
  * @min 1
  * @desc 返回按钮每帧播放间隔时间，单位帧。（1秒60帧）
  * @default 4
  *
  * @param 是否倒放
+ * @parent ---贴图---
  * @type boolean
  * @on 倒放
  * @off 不倒放
@@ -786,13 +792,15 @@
  * @default false
  *
  * @param 透明度
+ * @parent ---贴图---
  * @type number
  * @min 0
  * @max 255
  * @desc 0为完全透明，255为完全不透明。
  * @default 255
- *
+ * 
  * @param 混合模式
+ * @parent ---贴图---
  * @type number
  * @min 0
  * @max 16
@@ -800,13 +808,17 @@
  * @default 0
  *
  * @param 图片层级
+ * @parent ---贴图---
  * @type number
  * @min 0
  * @desc 背景在同一个菜单，并且在菜单层级下，先后排序的位置，0表示最后面。
  * @default 20
  * 
+ * @param ---效果---
+ * @default 
+ * 
  * @param 高亮效果
- * @parent 是否显示高亮
+ * @parent ---效果---
  * @type select
  * @option 关闭高亮效果
  * @value 关闭高亮效果
@@ -814,10 +826,11 @@
  * @value 图片切换
  * @option 图片叠加
  * @value 图片叠加
- * @desc 切换，鼠标靠近时，按钮直接换成高亮的图片。如果为叠加，则直接在按钮上加资源图片。
+ * @desc 鼠标靠近时，"图片切换"将换成高亮图片。"图片叠加"将直接在按钮上叠加高亮图片。
  * @default 关闭高亮效果
  *
  * @param 资源-高亮图片
+ * @parent ---效果---
  * @parent 高亮效果
  * @desc 返回按钮高亮的图片资源。
  * @default 返回按钮-高亮图片
@@ -826,7 +839,7 @@
  * @type file
  * 
  * @param 按下效果
- * @parent 是否显示高亮
+ * @parent ---效果---
  * @type select
  * @option 关闭按下效果
  * @value 关闭按下效果
@@ -834,10 +847,11 @@
  * @value 图片切换
  * @option 图片叠加
  * @value 图片叠加
- * @desc 切换，鼠标靠近时，按钮直接换成高亮的图片。如果为叠加，则直接在按钮上加资源图片。
+ * @desc 鼠标靠近时，"图片切换"将换成按下图片。"图片叠加"将直接在按钮上叠加按下图片。
  * @default 图片叠加
  *
  * @param 资源-按下图片
+ * @parent ---效果---
  * @parent 按下效果
  * @desc 返回按钮按下的图片资源。
  * @default 返回按钮-按下图片

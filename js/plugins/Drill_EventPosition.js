@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        物体 - 位置与位移
+ * @plugindesc [v1.4]        物体 - 位置与位移
  * @author Drill_up
  *
  * @help  
@@ -45,6 +45,7 @@
  * （冒号两边都有一个空格）
  * 
  * 插件指令：>位置与位移 : 本事件 : 立即归位
+ * 插件指令：>位置与位移 : 全图事件 : 立即归位
  * 插件指令：>位置与位移 : 事件[10] : 立即归位
  * 插件指令：>位置与位移 : 事件变量[21] : 立即归位
  * 插件指令：>位置与位移 : 批量事件[10,11] : 立即归位
@@ -157,6 +158,8 @@
  * 添加了玩家移动到相对位置的功能。
  * [v1.3]
  * 完善了部分插件指令的参数。
+ * [v1.4]
+ * 添加了全图事件的功能。
  * 
  */
  
@@ -253,10 +256,19 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				unit = unit.replace("]","");
 				e_ids = [ Number(unit) ];
 			}
+			if( e_ids == null && unit == "全图事件" ){
+				var all_e = $gameMap._events;
+				e_ids = [];
+				for( var i=0; i < all_e.length; i++ ){
+					if( !all_e[i] ){ continue; }
+					e_ids.push( all_e[i]._eventId );
+				}
+			}
 			
 			if( e_ids && type == "立即归位" ){
 				for( var k=0; k < e_ids.length; k++ ){
 					var e = $gameMap.event( e_ids[k] );
+					if(!e ){ continue; }
 					var data = e.event();		//当前事件的初始化数据
 					e.locate(data.x, data.y);
 				}
@@ -264,6 +276,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( e_ids && type == "立即归位包括朝向" ){
 				for( var k=0; k < e_ids.length; k++ ){
 					var e = $gameMap.event( e_ids[k] );
+					if(!e ){ continue; }
 					var data = e.event();
 					e.locate(data.x, data.y);
 					e.setDirection(e.page().image.direction);

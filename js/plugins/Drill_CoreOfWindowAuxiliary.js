@@ -397,7 +397,7 @@ Window_Base.prototype.drill_COWA_changeParamData = function( data ){
 //==============================
 // * CPD - 帧刷新（功能接口）
 //
-//			说明：必须要求scene亲自控制update。（window的update只对激活的窗口有效）
+//			说明：必须要求scene亲自控制update。（建立窗口后，手动update窗口）
 //==============================
 Window_Base.prototype.drill_COWA_CPD_update = function(){
 	if( this._drill_COWA_CPD_data['enable'] == false ){ return; }
@@ -739,7 +739,7 @@ Window_Base.prototype.initialize = function(x, y, width, height){
 //==============================
 // * 窗口SBM - 帧刷新（功能接口）
 //
-//			说明：必须要求scene亲自控制update。（window的update只对激活的窗口有效）
+//			说明：必须要求scene亲自控制update。（建立窗口后，手动update窗口）
 //==============================
 Window_Base.prototype.drill_COWA_SBM_update = function(){
 	if( this._drill_COWA_SBM_data['enable'] == false ){ return; }

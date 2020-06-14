@@ -5,6 +5,10 @@
 /*:
  * @plugindesc [v1.4]        标题 - 多层标题GIF
  * @author Drill_up
+ * 
+ * @Drill_LE_param "GIF-%d"
+ * @Drill_LE_parentKey "---GIF组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_TGi_list_length"
  *
  * @help
  * =============================================================================

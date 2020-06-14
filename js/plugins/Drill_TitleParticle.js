@@ -5,6 +5,10 @@
 /*:
  * @plugindesc [v1.4]        标题 - 多层标题粒子
  * @author Drill_up
+ * 
+ * @Drill_LE_param "粒子-%d"
+ * @Drill_LE_parentKey "---粒子组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_TPa_list_length"
  *
  * @help
  * =============================================================================

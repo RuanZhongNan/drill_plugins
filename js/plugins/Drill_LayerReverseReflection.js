@@ -26,6 +26,7 @@
  * 1.插件的作用域：地图界面。
  *   事件、玩家、跟随队员都有效。
  * 2.注意区分 镜面 和 镜像 关系。
+ *   建议先了解基本定义"显示与透明度.docx"。
  *   更多详细内容，去看看"关于镜像与镜面.docx"。
  * 地图开关：
  *   (1.不反射镜像指令 或者 没有在镜面上 都只是镜像不显示，并不是不存在。
@@ -1047,7 +1048,9 @@ Drill_Sprite_LRR.prototype.update = function() {
 	var real_fix_y = Math.round( (this._character.scrolledY() + 1)*$gameMap.tileHeight() - this._character.shiftY());
 	this.y = real_fix_y - this.y + real_fix_y;
 	//>大小
-	this.scale.y = -this.scale.y * DrillUp.g_LRR_height_size;
+	if( this.scale.y > 0 ){
+		this.scale.y = -this.scale.y * DrillUp.g_LRR_height_size;
+	}
 	//>透明度
 	if( this._character.drill_LRR_isOpacitySync() ){
 		this.opacity = Math.min( this._character._opacity ,255) /100 * DrillUp.g_LRR_opacity_per;

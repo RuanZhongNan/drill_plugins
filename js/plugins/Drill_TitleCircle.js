@@ -5,6 +5,10 @@
 /*:
  * @plugindesc [v1.4]        标题 - 多层标题魔法圈
  * @author Drill_up
+ * 
+ * @Drill_LE_param "魔法圈-%d"
+ * @Drill_LE_parentKey "---魔法圈组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_TCi_list_length"
  *
  * @help
  * =============================================================================

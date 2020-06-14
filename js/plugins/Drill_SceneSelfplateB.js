@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.8]        面板 - 全自定义信息面板B
+ * @plugindesc [v1.9]        面板 - 全自定义信息面板B
  * @author Drill_up
  * 
  * @Drill_LE_param "内容-%d"
@@ -60,6 +60,11 @@
  *      其他特殊字符可以见插件"对话框-消息核心"。
  *   (3.内容可以包含表达式，用于特殊的功能显示。
  *      表达式介绍见"系统-窗口辅助核心"插件。
+ * 内容锁定：
+ *   (1.你可以将某个内容锁定，锁定项将会只显示锁定信息。
+ *      但注意前提是内容正在显示，没有隐藏。
+ *   (2.内容锁定时，可以选择锁定内容或描述图。
+ *      如果你想让锁定时描述图不显示，可以配置空的锁定图片。
  * 设计：
  *   (1.你可以在面板中写任何东西，比如做成新手教学手册、历史书、怪物掉
  *      宝介绍、指示牌内容等。
@@ -151,6 +156,8 @@
  * [v1.8]
  * 优化了内部结构，并且修改了注释说明。
  * 添加了行间距控制、对齐方式功能。
+ * [v1.9]
+ * 改进了内容锁定功能。
  * 
  *
  * @param ----杂项----
@@ -198,16 +205,39 @@
  * @desc true-存储在全局游戏中,false-普通存档,控制该面板的解锁隐藏的状态数据存储位置。(设置不会立即生效,要删旧档)
  * @default false
  *
+ * @param ----锁定内容----
+ * @default 
+ *
+ * @param 内容锁定方式
+ * @parent ----锁定内容----
+ * @type select
+ * @option 锁定描述图和描述内容
+ * @value 锁定描述图和描述内容
+ * @option 只锁定描述图
+ * @value 只锁定描述图
+ * @option 只锁定描述内容
+ * @value 只锁定描述内容
+ * @desc 内容锁定的方式。
+ * @default 锁定描述图和描述内容
+ *
  * @param 用语-锁定的选项名
- * @parent ----杂项----
- * @desc 信息面板显示的被锁定选项名。
+ * @parent ----锁定内容----
+ * @desc 选项被锁定时，信息面板显示的选项名。
  * @default \c[7]---未知---
  *
  * @param 用语-锁定的选项内容
- * @parent ----杂项----
+ * @parent ----锁定内容----
  * @type note
- * @desc 信息面板显示的被锁定选项内容。
+ * @desc 选项被锁定时，信息面板显示的内容。
  * @default "该内容的描述已被隐藏。"
+ *
+ * @param 资源-锁定的描述图
+ * @parent ----锁定内容----
+ * @desc 选项被锁定时，信息面板显示的描述图。
+ * @default 信息面板B-锁定描述图
+ * @require 1
+ * @dir img/Menu__self/
+ * @type file
  *
  * @param ----选项窗口----
  * @default 
@@ -1176,12 +1206,15 @@
 		
 	};
 	
+	/*-----------------锁定内容------------------*/
 	DrillUp.g_SSpB_locked_name = String(DrillUp.parameters['用语-锁定的选项名'] || "");
 	DrillUp.g_SSpB_locked_name = DrillUp.g_SSpB_locked_name.replace(/\\\\/g,"\\");
 	DrillUp.g_SSpB_locked_context = String(DrillUp.parameters['用语-锁定的选项内容'] || "");
 	DrillUp.g_SSpB_locked_context = DrillUp.g_SSpB_locked_context.substring(1,DrillUp.g_SSpB_locked_context.length-1);
 	DrillUp.g_SSpB_locked_context = DrillUp.g_SSpB_locked_context.replace(/\\\\/g,"\\");
 	DrillUp.g_SSpB_locked_context = DrillUp.g_SSpB_locked_context.split(/\\n/);
+	DrillUp.g_SSpB_locked_type = String(DrillUp.parameters['内容锁定方式'] || "锁定描述图和描述内容");
+	DrillUp.g_SSpB_locked_pic = String(DrillUp.parameters['资源-锁定的描述图'] || "");
 	
 //=============================================================================
 // * >>>>基于插件检测>>>>
@@ -1547,19 +1580,29 @@ Scene_Drill_SSpB.prototype.resetPosition = function() {
 //==============================
 // * 信息面板B - 描述图片刷新
 //==============================
-Scene_Drill_SSpB.prototype.drill_refreshDescPic = function(index) {
+Scene_Drill_SSpB.prototype.drill_refreshDescPic = function( cur_index ) {
+	var temp_list = $gameTemp._drill_SSpB_visibleList;		//可见项列表
+	var temp_data = temp_list[ cur_index ];					//当前选项
+	var src_tank = this._window_desc_pic._drill_bitmaps;	//资源bitmap容器
 	
 	// > 资源预加载
-	if( this._window_desc_pic._drill_bitmaps.length == 0 ){
-		var visible_list = $gameTemp._drill_SSpB_visibleList;
-		for( var i=0; i < visible_list.length; i++ ){
-			var context_index = visible_list[i]['index'];
-			this._window_desc_pic._drill_bitmaps[i] = ImageManager.load_MenuSelfDef(DrillUp.g_SSpB_context_list[context_index]["pic"]);	
+	if( src_tank.length == 0 ){
+		src_tank[0] = ImageManager.load_MenuSelfDef(DrillUp.g_SSpB_locked_pic);
+		for( var i=0; i < temp_list.length; i++ ){
+			var context_index = temp_list[i]['index'];
+			src_tank[ i+1 ] = ImageManager.load_MenuSelfDef(DrillUp.g_SSpB_context_list[context_index]["pic"]);	
 		}
+		this._window_desc_pic._drill_bitmaps = src_tank;
 	}
 	
 	// > 切换描述图
-	this._window_desc_pic.bitmap = this._window_desc_pic._drill_bitmaps[index];
+	if( temp_data['locked'] && 
+		(DrillUp.g_SSpB_locked_type == "锁定描述图和描述内容" || 
+		 DrillUp.g_SSpB_locked_type == "只锁定描述图" ) ){
+		this._window_desc_pic.bitmap = src_tank[ 0 ];			//锁定描述图
+	}else{
+		this._window_desc_pic.bitmap = src_tank[ cur_index+1 ];	//当前描述图
+	}
 	if( DrillUp.g_SSpB_descPic_showInstant == false ){
 		this._window_desc_pic.opacity = 0;
 	}
@@ -1717,13 +1760,18 @@ Drill_SSpB_DescWindow.prototype.update = function() {
 //==============================
 // * 显示窗口 - 重绘内容
 //==============================
-Drill_SSpB_DescWindow.prototype.drill_refreshDesc = function(index) {
-	// > 获取当前选项的描述内容
-	var cur_index = index;
-	var temp_data = $gameTemp._drill_SSpB_visibleList[ cur_index ];
-	var context_list = temp_data['context'];
-	if( temp_data['locked'] ){
-		context_list = DrillUp.g_SSpB_locked_context;
+Drill_SSpB_DescWindow.prototype.drill_refreshDesc = function( cur_index ) {
+	var temp_list = $gameTemp._drill_SSpB_visibleList;		//可见项列表
+	var temp_data = temp_list[ cur_index ];					//当前选项
+	
+	// > 切换描述内容
+	var context_list = "";
+	if( temp_data['locked'] && 
+		(DrillUp.g_SSpB_locked_type == "锁定描述图和描述内容" || 
+		 DrillUp.g_SSpB_locked_type == "只锁定描述内容" ) ){
+		context_list = DrillUp.g_SSpB_locked_context;		//锁定内容
+	}else{
+		context_list = temp_data['context'];				//当前内容
 	}
 	
 	// > 绘制内容

@@ -3,8 +3,12 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        地图 - 多层地图魔法圈
+ * @plugindesc [v1.3]        地图 - 多层地图魔法圈
  * @author Drill_up
+ * 
+ * @Drill_LE_param "魔法圈层-%d"
+ * @Drill_LE_parentKey "---魔法圈层组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_LCi_layers_length"
  * 
  * @help 
  * =============================================================================
@@ -13,24 +17,37 @@
  * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
- * 你可以设置各种魔法圈，然后将这些层组合贴在地图的不同的层级。
- * 要了解更详细的组合方法，去看看"多层组合背景,粒子,魔法圈,gif,视频.docx"。
+ * 你可以在地图界面中放置一个或者多个魔法圈。
  * 【支持插件关联资源的打包、加密】
  *
  * -----------------------------------------------------------------------------
  * ----设定注意事项
  * 1.插件的作用域：地图界面。
  *   可以在地图的五个层级放多层不同的魔法圈。
- * 2.魔法圈被隐藏 或者 操作不在当前地图的魔法圈，插件指令仍然有效。
- *   注意，插件指令变化的是增量，增加用正数，减少用负数。
- * 3.如果要让魔法圈看起来”远”，那么应该设置位移比接近1.00的图层，
- *   越接近1.00越远。
- * 4.需要注意的是，默认rmmv远景和镜头位移比固定是0.00，所以rmmv的远景每次
- *   调整都感觉不对，你需要换掉适合的含位移比的图层。
- * 5.将魔法圈放置在画面正中心方法：
- *     平移：（408,312） 这时候，17,13图块是正中心
- *     位移图块偏移 = 实际图块位置 - 中心图块/2
- *   例如放在图块x66位置，66 - 17/2 = 57.5‬，57.5‬为设置的图块偏移。
+ * 2.该插件可以装饰地图的各种层级。要了解更详细的组合方法，
+ *   去看看"多层组合背景,粒子,魔法圈,gif,视频.docx"。
+ * 地图层级：
+ *   (1.你可以将背景放置在地图的五种层级中，分别为：
+ *      下层、中层、上层、图片层、最顶层
+ *   (2.地图层级之间的关系为：
+ *      rmmv远景 < 下层 < rmmv图块 < 中层 < rmmv玩家/事件 < 上层
+ *      < rmmv图片 < 图片层 < rmmv对话框 < 最顶层
+ *   (3.最顶层的背景，可以把地图界面最高层的对话框、窗口也给挡住。
+ *   (4.处于同一 地图层级 时，将根据 图片层级 再先后排序。
+ * 位移比：
+ *   (1.根据物理相对运动知识，近大远小，近快远慢的原则。要让魔法圈看
+ *      起来真的”远”，那需要设置位移比接近1.00，越接近1.00越远。
+ *   (2.需要注意的是，rmmv远景和镜头位移比固定是0.00，所以rmmv的远景
+ *      每次调整都感觉不像远景，你需要换掉适合的含位移比的图层。
+ * 细节：
+ *   (1.插件指令操作的变化结果，是永久性的。
+ *   (2.操作隐藏的魔法圈 或者 操作其他地图的魔法圈，插件指令都会有效。
+ *      注意，插件指令变化的是增量，增加用正数，减少用负数。
+ * 设计：
+ *   (1.将魔法圈放置在画面正中心方法：
+ *      平移：（408,312） 这时候，17,13图块是正中心
+ *      位移图块偏移 = 实际图块位置 - 中心图块/2
+ *      例如放在图块x66位置，66 - 17/2 = 57.5‬，57.5‬为设置的图块偏移。
  *
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -45,16 +62,6 @@
  * ……
  *
  * 所有素材都放在Map__layer文件夹下。
- *
- * -----------------------------------------------------------------------------
- * ----地图层级
- * 你可以把地图放在下面层级之间，对应关系为：
- *   rmmv远景 < 下层 < rmmv图块 < 中层 < rmmv角色/事件 < 上层
- *   < rmmv图片 < 图片层 < rmmv对话框 < 最顶层
- * 
- * 1.rmmv的层级是被固定的，你可以在 下层、中层、上层、图片层、最顶层 添加魔法圈。
- * 2.最顶层的魔法圈，可以把地图界面最高层的对话框、窗口也给挡住。
- * 3.处于同一地图层级的魔法圈、魔法圈等，根据 图片层级 再先后排序。
  * 
  * -----------------------------------------------------------------------------
  * ----可选设定
@@ -70,7 +77,7 @@
  * 插件指令：>地图魔法圈 : 11 : 变斜切 : 60 : 1.0 : 1.0
  * 插件指令：>地图魔法圈 : 11 : 变混合模式 : 2
  * 
- * 1.最前面的数字表示 配置的地图层 编号。
+ * 1.最前面的数字表示 配置的魔法圈 编号。
  * 2.变坐标后面表示 时长，x位置，y位置 。坐标变化效果与速度叠加。
  * 3.变透明后面表示 时长，透明度 。
  * 4.变转速后面表示 时长，旋转速度 。
@@ -79,7 +86,30 @@
  * 7.混合模式为瞬间切换，去看看"pixi的渲染混合模式"。
  * 8.插件指令的变化是永久性的。
  *   如果你想瞬间切换，设置时长为0即可。
- * 9.魔法圈被隐藏 或者 操作不在当前地图的魔法圈，插件指令仍然有效。
+ * 9.操作隐藏的魔法圈 或者 操作其他地图的魔法圈，插件指令仍然有效。
+ * 
+ * -----------------------------------------------------------------------------
+ * ----插件性能
+ * 测试仪器：   4G 内存，Intel Core i5-2520M CPU 2.5GHz 处理器
+ *              Intel(R) HD Graphics 3000 集显 的垃圾笔记本
+ *              (笔记本的3dmark综合分：571，鲁大师综合分：48456)
+ * 总时段：     20000.00ms左右
+ * 对照表：     0.00ms  - 40.00ms （几乎无消耗）
+ *              40.00ms - 80.00ms （低消耗）
+ *              80.00ms - 120.00ms（中消耗）
+ *              120.00ms以上      （高消耗）
+ * 工作类型：   持续执行
+ * 时间复杂度： o(n^2)*o(贴图处理) 每帧
+ * 测试方法：   在地图中放置多个魔法圈，进行性能测试。
+ * 测试结果：   200个事件的地图中，平均消耗为：【28.34ms】
+ *              100个事件的地图中，平均消耗为：【17.61ms】
+ *               50个事件的地图中，平均消耗为：【16.32ms】
+ *
+ * 1.插件只在自己作用域下工作消耗性能，在其它作用域下是不工作的。
+ *   测试结果并不是精确值，范围在给定值的10ms范围内波动。
+ *   更多了解插件性能，可以去看看"关于插件性能.docx"。
+ * 2.从原理上来说，多层魔法圈只是固定放置的贴图，但由于事件数量会挤占
+ *   部分计算资源，所以消耗会稍微增大一些。
  *
  * -----------------------------------------------------------------------------
  * ----更新日志
@@ -87,6 +117,10 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 修改了插件关联的资源文件夹。
+ * [v1.2]
+ * 修改了插件内部结构。
+ * [v1.3]
+ * 修复了背景处于中层时，会和事件、图块相互闪烁的bug。
  *
  *
  *
@@ -1403,7 +1437,7 @@
  * @option 最顶层
  * @value 最顶层
  * @desc 地图所在的层级位置，具体关系看看插件说明。
- * @default 上层
+ * @default 中层
  *
  * @param 图片层级
  * @type number
@@ -1445,17 +1479,25 @@
 //		全局存储变量	无
 //		覆盖重写方法	无
 //
+//		工作类型		持续执行
+//		时间复杂度		o(n^2)*o(贴图处理) 每帧
+//		性能测试因素	对话管理层
+//		性能测试消耗	16.32ms  3.77ms（updateBase）
+//		最坏情况		暂无
+//		备注			暂无
+//
 //插件记录：
 //		★大体框架与功能如下：
 //			多层地图魔法圈：
-//				->显示隐藏
-//				->地图层级、图片层级（多插件相互作用）
-//				->简单持续平移
-//				->镜头位移比
+//				->基本属性
+//					->地图层级、图片层级（多插件相互作用）
+//					->旋转
+//					->镜头位移比
 //				->可修改的属性
-//				->坐标、速度、透明、混合模式
-//				->缩放、斜切
-//				->色调 ？x
+//					->显示隐藏
+//					->坐标、速度、透明、混合模式
+//					->缩放、斜切
+//					->色调 ？x
 //
 //			地图界面全层级关系：
 //				Spriteset： LowerLayer：	rmmv远景 < 下层 < rmmv图块 < 中层 < rmmv角色 < rmmv鼠标目的地 < 上层 < rmmv天气
@@ -1467,13 +1509,13 @@
 //			1.插件的图片层级与多个插件共享。【必须自写 层级排序 函数】
 //			2.使用插件指令变化时，changing将会作为一个变化容器，根据时间对【数据】进行改变。
 //			3.原理基于【定量】赋值，【你直接用_displayX就可以了】,增量赋值方法绕太多远路！
-//			4.默认所有窗口都在 _windowLayer 中，通过addWindow添加。
-//			  而最顶层就在 _windowLayer 的后面，作为另外一个父类层。
-//			5.【这里的镜头位移比是相减，而背景的是相加】。
+//			4.【这里的镜头位移比是相减，而背景的是相加】。
 //
 //		★其它说明细节：
 //			1.不要通过覆写创建函数来穿插远景和前景，直接在插入点抱方法的大腿。
 //			2.循环时，_displayY会舍去取余，你需要控制图片的位置偏移的取余量不变。
+//			3.默认所有窗口都在 _windowLayer 中，通过addWindow添加。
+//			  而最顶层就在 _windowLayer 的后面，作为另外一个父类层。
 //				
 //		★存在的问题：
 //			1.位移图块偏移 X为小数，但是不明原因必须用【parseInt】才能解析小数。
@@ -1489,28 +1531,28 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_LayerCircle');
 
-	DrillUp.g_LCi_layers_max = 200;
+	DrillUp.g_LCi_layers_length = 200;
 	DrillUp.g_LCi_layers = [];
-	
-	for (var i = 0; i < DrillUp.g_LCi_layers_max; i++) {
+	for (var i = 0; i < DrillUp.g_LCi_layers_length; i++) {
 		if( DrillUp.parameters['魔法圈层-' + String(i+1) ] != "" ){
 			DrillUp.g_LCi_layers[i] = JSON.parse(DrillUp.parameters['魔法圈层-' + String(i+1) ]);
 			DrillUp.g_LCi_layers[i]['id'] = Number(i)+1;
 			DrillUp.g_LCi_layers[i]['map'] = Number(DrillUp.g_LCi_layers[i]["所属地图"]);
 			DrillUp.g_LCi_layers[i]['visible'] = String(DrillUp.g_LCi_layers[i]["初始是否显示"] || "true") == "true";
 			DrillUp.g_LCi_layers[i]['src_img'] = String(DrillUp.g_LCi_layers[i]["资源-魔法圈"]);
-			DrillUp.g_LCi_layers[i]['opacity'] = Number(DrillUp.g_LCi_layers[i]["透明度"]);
-			DrillUp.g_LCi_layers[i]['blendMode'] = Number(DrillUp.g_LCi_layers[i]["混合模式"]);
 			DrillUp.g_LCi_layers[i]['x'] = Number(DrillUp.g_LCi_layers[i]["平移-魔法圈 X"]);
 			DrillUp.g_LCi_layers[i]['y'] = Number(DrillUp.g_LCi_layers[i]["平移-魔法圈 Y"]);
-			DrillUp.g_LCi_layers[i]['rotate'] = Number(DrillUp.g_LCi_layers[i]["旋转速度"] || 0.01 );
+			DrillUp.g_LCi_layers[i]['opacity'] = Number(DrillUp.g_LCi_layers[i]["透明度"]);
+			DrillUp.g_LCi_layers[i]['blendMode'] = Number(DrillUp.g_LCi_layers[i]["混合模式"]);
+			DrillUp.g_LCi_layers[i]['layer_index'] = String(DrillUp.g_LCi_layers[i]["地图层级"]);
+			DrillUp.g_LCi_layers[i]['zIndex'] = Number(DrillUp.g_LCi_layers[i]["图片层级"]);
+			
 			DrillUp.g_LCi_layers[i]['XPer'] = Number(DrillUp.g_LCi_layers[i]["位移比X"]);
 			DrillUp.g_LCi_layers[i]['YPer'] = Number(DrillUp.g_LCi_layers[i]["位移比Y"]);
 			DrillUp.g_LCi_layers[i]['tile_x'] = parseInt(DrillUp.g_LCi_layers[i]["位移图块偏移 X"] || 0);
 			DrillUp.g_LCi_layers[i]['tile_y'] = parseInt(DrillUp.g_LCi_layers[i]["位移图块偏移 Y"] || 0);
 			
-			DrillUp.g_LCi_layers[i]['layer_index'] = String(DrillUp.g_LCi_layers[i]["地图层级"]);
-			DrillUp.g_LCi_layers[i]['zIndex'] = Number(DrillUp.g_LCi_layers[i]["图片层级"]);
+			DrillUp.g_LCi_layers[i]['rotate'] = Number(DrillUp.g_LCi_layers[i]["旋转速度"] || 0.01 );
 			DrillUp.g_LCi_layers[i]['scale_x'] = Number(DrillUp.g_LCi_layers[i]["缩放 X"] || 1.0);
 			DrillUp.g_LCi_layers[i]['scale_y'] = Number(DrillUp.g_LCi_layers[i]["缩放 Y"] || 1.0);
 			DrillUp.g_LCi_layers[i]['skew_x'] = Number(DrillUp.g_LCi_layers[i]["斜切 X"] || 0);
@@ -1558,58 +1600,58 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 var _drill_LCi_sys_initialize = Game_System.prototype.initialize;
 Game_System.prototype.initialize = function() {
     _drill_LCi_sys_initialize.call(this);
+	
+	this._drill_LCi_dataTank_changing = [];	//插件指令变化容器
 
-	this._drill_LCi_dataTank = [];		//数据总容器
+	this._drill_LCi_dataTank = [];			//魔法圈数据总容器
+	this._drill_LCi_dataTank_map = [];		//当前地图的魔法圈容器
 	for(var i = 0; i< DrillUp.g_LCi_layers.length ;i++){
-		var temp = DrillUp.g_LCi_layers[i];
+		var temp_data = DrillUp.g_LCi_layers[i];
 			
 		var data = {};
-		data.id = temp['id'];
-		data.map = temp['map'];
-		data.visible = temp['visible'];
-		data.src_img = temp['src_img'];
-		data.opacity = temp['opacity'];
-		data.blendMode = temp['blendMode'];
+		data.id = temp_data['id'];						//id
+		data.map = temp_data['map'];					//所属地图
+		data.visible = temp_data['visible'];			//显示
+		data.src_img = temp_data['src_img'];			//资源背景
+		data.x = temp_data['x'];						//x
+		data.y = temp_data['y'];						//y
+		data.opacity = temp_data['opacity'];			//透明度
+		data.blendMode = temp_data['blendMode'];		//混合模式
+		data.layer_index = temp_data['layer_index'];	//地图层级
+		data.zIndex = temp_data['zIndex'];				//图片层级
 		
-		data.mode = temp['mode'];
-		data.x = temp['x'];
-		data.y = temp['y'];
-		data.rotate = temp['rotate'];
-		data.XPer = temp['XPer'];
-		data.YPer = temp['YPer'];
-		data.tile_x = temp['tile_x'];
-		data.tile_y = temp['tile_y'];
+		data.XPer = temp_data['XPer'];					//位移比x
+		data.YPer = temp_data['YPer'];					//位移比y
+		data.tile_x = temp_data['tile_x'];				//位移图块偏移 X
+		data.tile_y = temp_data['tile_y'];				//位移图块偏移 Y
 		
-		data.layer_index = temp['layer_index'];
-		data.zIndex = temp['zIndex'];
-		data.scale_x = temp['scale_x'];
-		data.scale_y = temp['scale_y'];
-		data.skew_x = temp['skew_x'];
-		data.skew_y = temp['skew_y'];
+		data.rotate = temp_data['rotate'];				//旋转速度
+		data.scale_x = temp_data['scale_x'];			//缩放x
+		data.scale_y = temp_data['scale_y'];			//缩放y
+		data.skew_x = temp_data['skew_x'];				//斜切x
+		data.skew_y = temp_data['skew_y'];				//斜切y
 		
-		data.created = false;
-		data.curX = 0;			//速度改变的x结果值
-		data.curY = 0;
-		data.time = 0;
 		data.cameraX = 0;		//实际镜头的x精确坐标
-		data.cameraY = 0;
+		data.cameraY = 0;		//
 		data.loopX = 0;			//循环地图中，走动循环的次数
-		data.loopY = 0;
+		data.loopY = 0;			//
 		data.loopFixX = 0;		//循环地图中，把displayX取余的部分加回
-		data.loopFixY = 0;
+		data.loopFixY = 0;		//
+		
+		data.wave_time = 0;		//（暂未使用）
+		data.curX = 0;			//当前x位置（速度累加的结果）（暂未使用）
+		data.curY = 0;			//
 		
 		this._drill_LCi_dataTank.push(data);
 	}
-	//alert(JSON.stringify(this._drill_LCi_dataTank));
-	
-	this._drill_LCi_dataTank_map = [];		//地图变化容器
-	
-	this._drill_LCi_dataTank_changing = [];	//插件指令变化容器
 };	
 
 //=============================================================================
 // ** 地图
 //=============================================================================
+//==============================
+// ** 地图 - 初始化
+//==============================
 var _drill_LCi_setup = Game_Map.prototype.setup;
 Game_Map.prototype.setup = function(mapId) {
 	_drill_LCi_setup.call(this,mapId);
@@ -1617,7 +1659,7 @@ Game_Map.prototype.setup = function(mapId) {
 	this.drill_LCi_initMapdata();
 }
 Game_Map.prototype.drill_LCi_initMapdata = function() {
-	$gameSystem._drill_LCi_dataTank_map = [];
+	$gameSystem._drill_LCi_dataTank_map = [];		//刷新当前地图的魔法圈
 	for(var i = 0; i< $gameSystem._drill_LCi_dataTank.length ;i++){
 		var data = $gameSystem._drill_LCi_dataTank[i];
 		if( data.map == this._mapId ){
@@ -1626,7 +1668,7 @@ Game_Map.prototype.drill_LCi_initMapdata = function() {
 	}
 }
 //==============================
-// * 进入地图的初始镜头位置（图块）
+// * 地图 - 进地图初始镜头位置（图块）
 //==============================
 var _drill_LCi_Map_setDisplayPos = Game_Map.prototype.setDisplayPos;
 Game_Map.prototype.setDisplayPos = function(x, y) {
@@ -1859,12 +1901,14 @@ Scene_Map.prototype.drill_LCi_create = function() {
 var _drill_LCi_scene_update = Scene_Map.prototype.update;
 Scene_Map.prototype.update = function() {	
 	_drill_LCi_scene_update.call(this);
-	
 	if( this.isActive() ){
-		this.drill_LCi_updateBase();
-		this.drill_LCi_updateChange();
+		this.drill_LCi_updateBase();		//基本属性
+		this.drill_LCi_updateChange();		//变化属性
 	}
 };
+//==============================
+// * 帧刷新 - 基本属性
+//==============================
 Scene_Map.prototype.drill_LCi_updateBase = function() {
 	var sprite_tank = this._drill_LCi_spriteTank ;
 	var sprite_tank_bitmap = this._drill_LCi_spriteTank_bitmap ;
@@ -1879,16 +1923,19 @@ Scene_Map.prototype.drill_LCi_updateBase = function() {
 			temp_sprite.opacity = temp_data.opacity;
 			temp_sprite.blendMode = temp_data.blendMode;
 			
-			temp_data.time += 1;//波形移动
-			//temp_data.curX += Math.sin(temp_data.time / 30);
-			
 			temp_sprite_bitmap.rotation += temp_data.rotate;
 			temp_sprite.x = temp_data.x - temp_data.cameraX * (1 - temp_data.XPer) + temp_data.curX;
 			temp_sprite.y = temp_data.y - temp_data.cameraY * (1 - temp_data.YPer) + temp_data.curY;
 			//初始位移 - 镜头位移 * 位移比 + 魔法圈位移
+			
+			temp_data.wave_time += 1;//波形移动
+			//temp_data.curX += Math.sin(temp_data.wave_time / 30);
 		}
 	}
 };
+//==============================
+// * 帧刷新 - 变化属性
+//==============================
 Scene_Map.prototype.drill_LCi_updateChange = function() {
 	var data_tank = $gameSystem._drill_LCi_dataTank_map;
 	var sprite_tank = this._drill_LCi_spriteTank;

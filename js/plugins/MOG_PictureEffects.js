@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.3)[v1.1]  图片 - 动态图片效果 + 事件头顶图片
+ * @plugindesc (v1.3)[v1.2]  图片 - 动态图片效果 + 事件头顶图片
  * @author Moghunter （Drill_up翻译）
  * 
  * @help  
@@ -20,6 +20,7 @@
  *   对图片进行直接操作，可以作用于地图和战斗界面。
  * 2.该插件与 MOG_CharParticles.js 行走图-粒子效果 的功能相似。
  *   后者是在事件上显示粒子，该插件是在对事件进行图片粘附。
+ * 3.插件即将被推翻重写，v1.2是最后一次更新。
  *
  * -----------------------------------------------------------------------------
  * ----激活条件 - 事件头顶图片
@@ -94,6 +95,8 @@
  * ----关于Drill_up优化：
  * [v1.1]
  * 修改了插件分类。
+ * [v1.2]
+ * 修改了插件的部分结构，防止主动干扰其他图片插件的功能。
  */
 
 //=============================================================================
@@ -331,19 +334,26 @@ Game_Picture.prototype.move = function(origin, x, y, scaleX, scaleY,opacity, ble
 //==============================
 // * update Move
 //==============================
+var _mog_pect_gpicture_updateMove = Game_Picture.prototype.updateMove;
 Game_Picture.prototype.updateMove = function() {
+	var last_duration = 0;
     if (this._duration > 0) {		
+		last_duration = this._duration;
         var d = this._duration;
+        this._zoom[0] = (this._scaleX  * (d - 1) + this._targetScaleX)  / d;
+        this._zoom[1] = (this._scaleY  * (d - 1) + this._targetScaleY)  / d;
+		need_update = true;
+    };
+	_mog_pect_gpicture_updateMove.call(this);
+	if( last_duration > 0 ){
+        var d = last_duration;
 		if (this._positionData[0] === 0) {
 			this._x = (this._x * (d - 1) + this._targetX) / d;
 			this._y = (this._y * (d - 1) + this._targetY) / d;	
-		};
-        this._zoom[0] = (this._scaleX  * (d - 1) + this._targetScaleX)  / d;
-        this._zoom[1] = (this._scaleY  * (d - 1) + this._targetScaleY)  / d;
-        this._opacity = (this._opacity * (d - 1) + this._targetOpacity) / d;		
-        this._duration--;
+		};	
+        this._opacity = (this._opacity * (d - 1) + this._targetOpacity) / d;	
 		this.updatePictureEffects();
-    };
+	}
 };
 
 //==============================
@@ -365,8 +375,8 @@ Game_Picture.prototype.updatePictureEffects = function() {
 	if (this._floatEffect[0]) {this.updateFloatEffect()};
 	if (this._positionData[0] > 0) {this.updatePicPosEfct()};
 	if (this._moveEffect[0]) {this.updateMoveEfct()};
-	this._scaleX = this.zoomX();
-	this._scaleY = this.zoomY();
+	if (this._breathEffect[2] != 0 ){this._scaleX = this.zoomX();}
+	if (this._breathEffect[3] != 0 ){this._scaleY = this.zoomY();}
 };
 
 //==============================

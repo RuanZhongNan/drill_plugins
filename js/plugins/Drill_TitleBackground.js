@@ -5,6 +5,10 @@
 /*:
  * @plugindesc [v1.4]        标题 - 多层标题背景
  * @author Drill_up
+ * 
+ * @Drill_LE_param "背景-%d"
+ * @Drill_LE_parentKey "---背景组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_TBa_list_length"
  *
  * @help
  * =============================================================================

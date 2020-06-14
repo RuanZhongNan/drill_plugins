@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.4]        物体 - 独立开关
+ * @plugindesc [v1.5]        物体 - 独立开关
  * @author Drill_up
  * 
  * 
@@ -20,49 +20,86 @@
  * ----设定注意事项
  * 1.插件的作用域：地图界面。
  *   只作用于事件。
- * 2.独立开关可以通过注释设置<<出现条件>>。
- *   你需要注意事件页是否有这个指令。
- * 3.详细机制可以去看看"独立开关与事件页.docx"。
- *
+ * 出现条件：
+ *   (1.事件页的条件可以受到注释<<出现条件>>的影响。
+ *      看条件时，你需要留意事件页是否有这个注释。
+ *   (2.通常事件页的出现条件分为三种：开关、变量、独立开关。
+ *      所有其他复杂条件，都可以先绑定开关/变量，再对开关/变量进行赋值。
+ *   (3.详细机制可以去看看"独立开关与事件页.docx"。
+ * 独立开关：
+ *   (1.注释与独立开关设置同时存在，注释会覆盖设置。
+ *      独立开关的出现条件写多条注释也没有效果，只以第一个注释为准。
+ *   (2.你可以通过插件指令控制额外的 E、F、G 等的独立开关。
+ *      也可以直接操作其他的事件的独立开关。
+ *   (3.操作其他事件独立开关不建议放在 并行事件 中频繁使用，因为容易使得
+ *      游戏刷新过于频繁，造成卡顿。
+ * 
  * -----------------------------------------------------------------------------
  * ----激活条件 - 设置
  * 要设置更多的独立开关，直接在指定页添加下面的注释即可：
  * 
- * 事件注释：<<出现条件>> : 独立开关 : A1 : 为NO
- * 事件注释：<<出现条件>> : 独立开关 : A2 : 为NO
+ * 事件注释：<<出现条件>> : 独立开关 : A : 为NO
+ * 事件注释：<<出现条件>> : 独立开关 : B : 为NO
  * 事件注释：<<出现条件>> : 独立开关 : E : 为NO
  * 事件注释：<<出现条件>> : 独立开关 : F : 为NO
+ * 事件注释：<<出现条件>> : 独立开关 : A1 : 为NO
+ * 事件注释：<<出现条件>> : 独立开关 : A2 : 为NO
  * 
  * 1.由于注释修改的是"出现条件"，指令特殊，所以与其他注释有区别。
- * 2.开关后面的字符串是完全自定义的字符串，ABCD是标准的原开关设置。
- * 3.如果注释与独立开关设置同时存在，注释会覆盖设置。
- *   并且该注释写多个没有效果，只认准第一个注释。
+ * 2.E、F、A1、A2 是可完全自定义的字符串，ABCD是标准的原开关设置。
+ * 3.注释与独立开关设置同时存在，注释会覆盖设置。
+ *   独立开关的出现条件写多条注释也没有效果，只以第一个注释为准。
  * 
  * -----------------------------------------------------------------------------
  * ----激活条件 - 使用
  * 要设置开启指定的独立开关，直接使用插件指令即可：
  * 
- * 插件指令：>独立开关 : E : 开启
- * 插件指令：>独立开关 : F : 关闭
- * 插件指令：>独立开关 : G : 获取值 : 开关[21]
- *
- * 1.指令只作用于本事件，并且对默认独立开关A、B、C、D也有效果。
- * 2."获取值"表示，将独立开关NO/OFF情况，赋值给指定的 开关 。
+ * 插件指令：>独立开关 : 本事件 : A : 开启
+ * 插件指令：>独立开关 : 全图事件 : A : 开启
+ * 插件指令：>独立开关 : 事件[10] : A : 开启
+ * 插件指令：>独立开关 : 事件变量[21] : A : 开启
+ * 插件指令：>独立开关 : 批量事件[10,11] : A : 开启
+ * 插件指令：>独立开关 : 批量事件变量[21,22] : A : 开启
+ * 
+ * 插件指令：>独立开关 : 本事件 : A : 开启
+ * 插件指令：>独立开关 : 本事件 : B : 开启
+ * 插件指令：>独立开关 : 本事件 : E : 开启
+ * 插件指令：>独立开关 : 本事件 : F : 开启
+ * 插件指令：>独立开关 : 本事件 : A1 : 开启
+ * 插件指令：>独立开关 : 本事件 : A2 : 开启
+ * 
+ * 插件指令：>独立开关 : 本事件 : A : 开启
+ * 插件指令：>独立开关 : 本事件 : A : 关闭
+ * 插件指令：>独立开关 : 本事件 : A : 获取值 : 开关[21]
+ * 插件指令：>独立开关 : 本事件 : A : 给予值 : 开关[21]
+ * 
+ * 1.前半部分（本事件）中间部分（A）和 后半部分（开启）的参数
+ *   可以随意组合。一共有 6*n*4 种组合方式。
+ * 2."获取值"表示，开关的值 -> 独立开关 。
+ *   "给予值"表示，独立开关的值 -> 开关 。
+ *   "批量事件"中，事件独立开关和开关是多对一的关系，独立开关可以批
+ *   量获取开关的值，但是不能批量给予值给开关。
+ * 3.操作其他事件独立开关不建议放在并行事件中频繁使用，因为容易使得
+ *   游戏刷新过于频繁，造成卡顿。
  * 
  * -----------------------------------------------------------------------------
- * ----可选设定
- * 你还可以通过插件指令控制其他独立开关：
+ * ----可选设定 - 旧指令
+ * 旧指令的格式相对没有那么规范，但是一样有效：
  * 
- * 插件指令：>指定事件的独立开关 : 1 : E : 开启
- * 插件指令：>指定事件的独立开关 : 1 : F : 关闭
+ * 插件指令(旧)：>独立开关 : E : 开启
+ * 插件指令(旧)：>独立开关 : F : 关闭
+ * 插件指令(旧)：>独立开关 : G : 获取值 : 开关[21]
+ * 插件指令(旧)：>独立开关 : G : 给予值 : 开关[21]
  * 
- * 插件指令：>指定事件的独立开关 : 1,2,3,4,5 : A : 开启
+ * 插件指令(旧)：>指定事件的独立开关 : 1 : E : 开启
+ * 插件指令(旧)：>指定事件的独立开关 : 1 : F : 关闭
+ * 插件指令(旧)：>指定事件的独立开关 : 1,2,3,4,5 : A : 开启
+ * 插件指令(旧)：>指定事件的独立开关 : 1,2,3,4,5 : A : 关闭
  *
- * 1.数字对应了当前地图的事件的id。
- * 2.你可以用逗号隔开，表示多个事件的id，批量控制。
- * 3.该插件指令不建议放在并行事件中频繁使用，因为频繁去干扰其它事件的独立开关，
- *   容易造成游戏卡顿。
- *
+ * 1.">独立开关 : E : 开启"没有指明事件，表示本事件。
+ * 2.">指定事件的独立开关"的数字表示事件id，
+ *   你可以用逗号隔开，表示多个事件的id，批量控制独立开关。
+ * 
  * -----------------------------------------------------------------------------
  * ----插件性能
  * 测试仪器：   4G 内存，Intel Core i5-2520M CPU 2.5GHz 处理器
@@ -97,6 +134,8 @@
  * 添加了插件性能说明。
  * [v1.4]
  * 优化了指令设置，添加了获取值功能。
+ * [v1.5]
+ * 优化了内部结构，并修改了插件指令格式。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -144,7 +183,118 @@
 var _drill_ESS_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ESS_pluginCommand.call(this, command, args);
-	if (command === '>独立开关') {		//>独立开关 : E : 开启
+	
+	if (command === ">独立开关") {
+		
+		/*-----------------对象组获取------------------*/
+		var e_chars = null;			// 事件对象组
+		if( args.length >= 2 ){
+			var unit = String(args[1]);
+			if( e_chars == null && unit == "本事件" ){
+				var e = $gameMap.event( this._eventId );
+				e_chars = [ e ];
+			}
+			if( e_chars == null && unit.indexOf("批量事件[") != -1 ){
+				unit = unit.replace("批量事件[","");
+				unit = unit.replace("]","");
+				e_chars = [];
+				var temp_arr = unit.split(/[,，]/);
+				for( var k=0; k < temp_arr.length; k++ ){
+					var e = $gameMap.event( Number(temp_arr[k]) );
+					e_chars.push( e );
+				}
+			}
+			if( e_chars == null && unit.indexOf("批量事件变量[") != -1 ){
+				unit = unit.replace("批量事件变量[","");
+				unit = unit.replace("]","");
+				e_chars = [];
+				var temp_arr = unit.split(/[,，]/);
+				for( var k=0; k < temp_arr.length; k++ ){
+					var e = $gameMap.event( $gameVariables.value(Number(temp_arr[k])) );
+					e_chars.push( e );
+				}
+			}
+			if( e_chars == null && unit.indexOf("事件变量[") != -1 ){
+				unit = unit.replace("事件变量[","");
+				unit = unit.replace("]","");
+				var e = $gameMap.event( $gameVariables.value(Number(unit)) );
+				e_chars = [ e ];
+			}
+			if( e_chars == null && unit.indexOf("事件[") != -1 ){
+				unit = unit.replace("事件[","");
+				unit = unit.replace("]","");
+				var e = $gameMap.event( Number(unit) );
+				e_chars = [ e ];
+			}
+			if( e_chars == null && unit == "全图事件" ){
+				var all_e = $gameMap._events;
+				e_chars = [];
+				for( var i=0; i < all_e.length; i++ ){
+					if( !all_e[i] ){ continue; }
+					e_chars.push( all_e[i] );
+				}
+			}
+		}
+		
+		/*-----------------开启/关闭------------------*/
+		if( args.length == 6 ){
+			var temp1 = String(args[3]);
+			var temp2 = String(args[5]);
+			
+			if( temp2 == "开启" ){
+				if( e_chars != null){
+					for( var k=0; k < e_chars.length; k++ ){
+						if( !e_chars[k] ){ continue; }
+						var key = [this._mapId, e_chars[k]._eventId, temp1 ];
+						$gameSelfSwitches.setValue(key,true);
+					}
+				}
+			}
+			if( temp2 == "关闭" ){
+				if( e_chars != null){
+					for( var k=0; k < e_chars.length; k++ ){
+						if( !e_chars[k] ){ continue; }
+						var key = [this._mapId, e_chars[k]._eventId, temp1 ];
+						$gameSelfSwitches.setValue(key,false);
+					}
+				}
+			}
+		}
+		/*-----------------获取值/给予值------------------*/
+		if( args.length == 8 ){
+			var temp1 = String(args[3]);
+			var temp2 = String(args[5]);
+			var temp3 = String(args[7]);
+			
+			if( temp3.indexOf("开关[") != -1 ){
+				temp3 = temp3.replace("开关[","");
+				temp3 = temp3.replace("]","");
+				if( temp2 == "获取值" ){
+					if( e_chars != null){
+						for( var k=0; k < e_chars.length; k++ ){
+							if( !e_chars[k] ){ continue; }
+							var key = [this._mapId, e_chars[k]._eventId, temp1 ];
+							var value_ = $gameSwitches.value( Number(temp3) );
+							$gameSelfSwitches.setValue( key, value_ );
+						}
+					}
+				}
+				if( temp2 == "给予值" ){		//独立开关和开关 多对一
+					if( e_chars != null){
+						var key = [this._mapId, e_chars[0]._eventId, temp1 ];
+						var value_ = $gameSelfSwitches.value(key);
+						$gameSwitches.setValue( Number(temp3), value_);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	/*-----------------------------------------*/
+	/*-----------------旧指令------------------*/
+	/*-----------------------------------------*/
+	if (command === ">独立开关") {		//>独立开关 : E : 开启
 		if(args.length == 4){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
@@ -161,16 +311,23 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
 			var temp3 = String(args[5]);
-			if( type == "获取值" && temp3.indexOf("开关[") != -1 ){
-				var key = [this._mapId, this._eventId, temp1 ];
-				var value_ = $gameSelfSwitches.value(key);
+			if( temp3.indexOf("开关[") != -1 ){
 				temp3 = temp3.replace("开关[","");
 				temp3 = temp3.replace("]","");
-				$gameSwitches.setValue( Number(temp3), value_);
+				if( type == "获取值" ){
+					var key = [this._mapId, this._eventId, temp1 ];
+					var value_ = $gameSwitches.value( Number(temp3) );
+					$gameSelfSwitches.setValue( key, value_ );
+				}
+				if( type == "给予值" ){
+					var key = [this._mapId, this._eventId, temp1 ];
+					var value_ = $gameSelfSwitches.value(key);
+					$gameSwitches.setValue( Number(temp3), value_);
+				}
 			}
 		}
 	}
-	if (command === '>指定事件的独立开关') {
+	if (command === ">指定事件的独立开关" ){
 		if(args.length == 6){
 			var temp1 = String(args[1]);
 			var temp2 = String(args[3]);
@@ -220,45 +377,59 @@ Game_SelfSwitches.prototype.drill_setValueWithOutChange = function(key, value) {
     }
 };
 
+//=============================================================================
+// ** 参数绑定
+//=============================================================================
 //==============================
-// * 独立开关
+// * 绑定 - 初始参数转换
 //==============================
 var _drill_ESS_onMapLoaded = Scene_Map.prototype.onMapLoaded;
 Scene_Map.prototype.onMapLoaded = function() {
-	//该位置$dataMap数据正好载入完全，在这里重刷独立开关
+	
+	// > 事件data源（该位置$dataMap数据正好载入完全）
 	for( var i in $dataMap.events ){
-		var e = $dataMap.events[i];
-		if ( e ) { for( var j in e.pages ){
-			var page = e.pages[j];
-			if ( page ) { for( var k in page.list ){
-				var l = page.list[k];
-				if (l.code === 108) {
-					var args = l.parameters[0].split(' ');
-					var command = args.shift();
-					if (command == "=>独立开关为ON条件"){	//=>独立开关为ON条件 : A
-						if(args.length == 2){
-							var temp1 = String(args[1]);
-							page.conditions.selfSwitchValid = true;
-							page.conditions.selfSwitchCh = temp1;
-							break;
-						}
-					};
-					if (command == "<<出现条件>>"){	//<<出现条件>> : 独立开关 : A2 : 为NO
-						if(args.length == 6){
-							var type = String(args[1]);
-							var temp2 = String(args[3]);
-							var temp3 = String(args[5]);
-							if( type == "独立开关" && temp3 == "为NO" ){	
-								page.conditions.selfSwitchValid = true;
-								page.conditions.selfSwitchCh = temp2;
-								break;
-							}
-						}
-					}
-				};
-			}};
-		}}
+		this.drill_ESS_dataCovert( $dataMap.events[i] );
 	}
+	
 	_drill_ESS_onMapLoaded.call(this);
 };
+//==============================
+// * 绑定 - 转换 事件data源
+//==============================
+Scene_Map.prototype.drill_ESS_dataCovert = function( data_e ) {
+	if( !data_e ){ return; }
+	
+	for(var j in data_e.pages ){
+		// > 事件页
+		var page = data_e.pages[j];	
+		if(!page ){ continue; }	
+		for(var k in page.list ){
+			var l = page.list[k];
+			if( l.code != 108 ){ continue; }
+			// > 事件注释
+			var args = l.parameters[0].split(' ');
+			var command = args.shift();
+			if (command == "=>独立开关为ON条件"){	//=>独立开关为ON条件 : A
+				if(args.length == 2){
+					var temp1 = String(args[1]);
+					page.conditions.selfSwitchValid = true;
+					page.conditions.selfSwitchCh = temp1;
+					break;
+				}
+			};
+			if (command == "<<出现条件>>"){	//<<出现条件>> : 独立开关 : A2 : 为NO
+				if(args.length == 6){
+					var type = String(args[1]);
+					var temp2 = String(args[3]);
+					var temp3 = String(args[5]);
+					if( type == "独立开关" && temp3 == "为NO" ){	
+						page.conditions.selfSwitchValid = true;
+						page.conditions.selfSwitchCh = temp2;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
 
