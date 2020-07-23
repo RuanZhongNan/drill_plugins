@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        对话框 - 方块粉碎效果
+ * @plugindesc [v1.2]        对话框 - 方块粉碎效果
  * @author Drill_up
  * 
  *
@@ -21,7 +21,7 @@
  * ----插件扩展
  * 该插件不能单独运行，必须要基于核心才能运行：
  * 基于：
- *   - Drill_CoreOfShatterEffect       系统 - 方块粉碎核心
+ *   - Drill_CoreOfShatterEffect    系统-方块粉碎核心★★v1.3及以上版本★★
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
@@ -116,6 +116,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 修改了部分插件注释内容。
+ * [v1.2]
+ * 修改了与核心的部分兼容设置。
  * 
  * 
  * @param 默认图片碎片消失方式
@@ -400,7 +402,6 @@ Scene_Map.prototype.drill_DSE_updateMessageContentsSprite = function() {
 		if( datafrom['shatter_command'] == true && $gameTemp.drill_DSE_tc_time > datafrom['shatter_delay'] ) {
 			datafrom['shatter_command'] = false;
 			var data = {
-				"bitmap":window_sprite.bitmap,
 				"frameX":this._drill_DSE_tc_frame_x,
 				"frameY":this._drill_DSE_tc_frame_y,
 				"frameW":this._drill_DSE_tc_frame_w,
@@ -409,7 +410,7 @@ Scene_Map.prototype.drill_DSE_updateMessageContentsSprite = function() {
 				"shatter_converted":datafrom['shatter_converted'],				//反向弹道
 				"shatter_opacityType":$gameSystem._drill_DSE_opacityType,		//透明度变化方式
 			};
-			window_sprite.drill_COSE_setShatter( data );										//方块粉碎核心 - 初始化
+			window_sprite.drill_COSE_setShatter( data,window_sprite.bitmap );	//方块粉碎核心 - 初始化
 			window_sprite._drill_DSE_activated = true;
 		}
 		
@@ -451,7 +452,6 @@ Scene_Map.prototype.drill_DSE_updateMessageChoiceSprite = function() {
 		if( datafrom['shatter_command'] == true && $gameTemp.drill_DSE_cc_time > datafrom['shatter_delay'] ) {
 			datafrom['shatter_command'] = false;
 			var data = {
-				"bitmap":window_sprite.bitmap,
 				"frameX":this._drill_DSE_cc_frame_x,
 				"frameY":this._drill_DSE_cc_frame_y,
 				"frameW":this._drill_DSE_cc_frame_w,
@@ -460,7 +460,7 @@ Scene_Map.prototype.drill_DSE_updateMessageChoiceSprite = function() {
 				"shatter_converted":datafrom['shatter_converted'],				//反向弹道
 				"shatter_opacityType":$gameSystem._drill_DSE_opacityType,		//透明度变化方式
 			};
-			window_sprite.drill_COSE_setShatter( data );										//方块粉碎核心 - 初始化
+			window_sprite.drill_COSE_setShatter( data,window_sprite.bitmap );	//方块粉碎核心 - 初始化
 			window_sprite._drill_DSE_activated = true;
 		}
 		
@@ -501,7 +501,6 @@ Scene_Map.prototype.drill_DSE_updateMessageNameSprite = function() {
 		if( datafrom['shatter_command'] == true && $gameTemp.drill_DSE_nc_time > datafrom['shatter_delay'] ) {
 			datafrom['shatter_command'] = false;
 			var data = {
-				"bitmap":window_sprite.bitmap,
 				"frameX":this._drill_DSE_nc_frame_x,
 				"frameY":this._drill_DSE_nc_frame_y,
 				"frameW":this._drill_DSE_nc_frame_w,
@@ -510,7 +509,7 @@ Scene_Map.prototype.drill_DSE_updateMessageNameSprite = function() {
 				"shatter_converted":datafrom['shatter_converted'],				//反向弹道
 				"shatter_opacityType":$gameSystem._drill_DSE_opacityType,		//透明度变化方式
 			};
-			window_sprite.drill_COSE_setShatter( data );										//方块粉碎核心 - 初始化
+			window_sprite.drill_COSE_setShatter( data,window_sprite.bitmap );	//方块粉碎核心 - 初始化
 			window_sprite._drill_DSE_activated = true;
 		}
 		

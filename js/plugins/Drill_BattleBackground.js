@@ -1941,7 +1941,7 @@ Scene_Battle.prototype.drill_BBa_create = function() {
 	
 	for (var i = 0; i < $gameSystem._drill_BBa_data.length; i++) {
 		if( $gameSystem._drill_BBa_data[i] != null ){
-			var temp_sprite_data = JSON.parse(JSON.stringify( $gameSystem._drill_BBa_data[i] ));	//拷贝object（杜绝引用造成的修改）
+			var temp_sprite_data = JSON.parse(JSON.stringify( $gameSystem._drill_BBa_data[i] ));	//深拷贝数据（杜绝引用造成的修改）
 			var temp_sprite = new TilingSprite(ImageManager.load_BattleLayer(temp_sprite_data['src_img']));	//TilingSprite平铺图层
 			if( Imported.Drill_BattleCamera ){
 				temp_sprite.move(

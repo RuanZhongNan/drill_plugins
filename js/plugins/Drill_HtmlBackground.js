@@ -3,8 +3,12 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        系统 - 黑边背景
+ * @plugindesc [v1.3]        系统 - 黑边背景
  * @author Drill_up
+ * 
+ * @Drill_LE_param "黑边背景-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "DrillUp.g_HB_background_list_length"
  * 
  * 
  * @help  
@@ -14,19 +18,27 @@
  * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
- * 当你的窗口比例与游戏屏幕不一致时，会出现小黑边。
- * 你可以在这个黑边添加额外背景。
+ * 当你的窗口大小与游戏屏幕大小不一致时，左右或上下会出现黑边区域。
+ * 你可以在这个黑边区域内添加额外的背景。
  * 【该插件支持文件关联加密打包】
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
  * 1.插件的作用域：地图界面、战斗界面、菜单界面。
- *   作用于html页面，游戏的框架外的布局结构。
- * 2.黑边背景不在游戏中的任何层级，而是直接在游戏窗口后面。
- *   但是他们自己之间可以通过图片层级控制先后顺序。
- * 3.背景不要做得太鲜艳，以免抢眼。
- * 4.黑边背景虽然是跨存档的全局界面，但是并不是全局存储，而是存档数据为主。
- *   读取存档时，背景会根据存档的 图像和背景数据 进行变化。
+ *   作用于html最外层。
+ * 细节：
+ *   (1.黑边背景之间可以通过图片层级控制先后顺序。
+ *   (2.插件指令修改黑边背景后，修改的数据可以普通存储到存档中。
+ *      读取存档后，背景会根据存档的 图像和背景数据 进行变化。
+ * html：
+ *   (1.黑边背景不在游戏界面中的任何层级，而是直接在html层面上整个
+ *      游戏框架的后面。
+ *   (2.如果你的黑边背景外框的厚度为0，浏览器很可能会自动显示出网页
+ *      滚动条，因为背景挤占了html的空间。
+ *      这时候，你需要设置 隐藏网页滚动条 。
+ * 设计：
+ *   (1.你可以在边界左右放两个高清萌妹图像。
+ *      不过背景不建议做得太鲜艳，以免抢眼。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -109,77 +121,35 @@
  * 添加了插件性能测试说明。
  * [v1.2]
  * 修改了插件关联的资源文件夹。
+ * [v1.3]
+ * 改进了html在边框外围出现滚动条的问题。
+ * 
  *
  *
- * @param ---黑边背景组---
+ * @param ---常规---
  * @default
  *
  * @param 背景显现时长
- * @parent ---黑边背景组---
+ * @parent ---常规---
  * @type number
  * @min 1
  * @desc 背景切换显现/隐藏的时间，单位帧。（1秒60帧）
  * @default 120
  *
- * @param 黑边背景-1
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-2
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-3
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-4
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-5
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-6
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-7
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-8
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-9
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
- *
- * @param 黑边背景-10
- * @parent ---黑边背景组---
- * @type struct<BlackBackground>
- * @desc 黑边背景的详细配置信息。
- * @default 
+ * @param 背景外框厚度
+ * @parent ---常规---
+ * @type number
+ * @min 0
+ * @desc 背景外围的一层黑色的边界外框的厚度，设置0时建议隐藏网页滚动条。
+ * @default 4
+ * 
+ * @param 是否隐藏网页滚动条
+ * @parent ---常规---
+ * @type boolean
+ * @on 隐藏
+ * @off 不隐藏
+ * @desc 如果你的黑边背景边框的厚度为0，浏览器非常有可能会自动显示滚动条，因为背景挤占了html的空间。
+ * @default false
  *
  * @param ---贴边图像---
  * @desc 
@@ -244,6 +214,69 @@
  * @require 1
  * @dir img/Special__layer/
  * @type file[]
+ *
+ * @param ---黑边背景组---
+ * @default
+ *
+ * @param 黑边背景-1
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-2
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-3
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-4
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-5
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-6
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-7
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-8
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-9
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
+ *
+ * @param 黑边背景-10
+ * @parent ---黑边背景组---
+ * @type struct<BlackBackground>
+ * @desc 黑边背景的详细配置信息。
+ * @default 
  */
 /*~struct~BlackBackground:
  * 
@@ -308,13 +341,15 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			黑边背景：
-//				->获取body、创建div、修改背景属性（摒弃）
-//				->建立canvas和render
-//				->建立场景
-//				->四贴边图像贴边
-//				->淡入淡出的显示/隐藏
-//				->贴边图像的条件显示/隐藏
-//				->贴边图像切换插件指令
+//				->html
+//					->获取body、创建div、修改背景属性（摒弃）
+//					->建立canvas和render
+//					->建立场景
+//				->贴图
+//					->四贴边图像贴边
+//					->淡入淡出的显示/隐藏
+//					->贴边图像的条件显示/隐藏
+//					->贴边图像切换插件指令
 //
 //		★私有类如下：
 //			* Scene_Drill_HB【黑边场景】
@@ -329,7 +364,7 @@
 //			3.Scene_Drill_HB里面的结构可能比较混乱，这是由于全局作用下，场景必须自己进行一套自己的流程，$gameSystem是例外改变的参数。
 //
 //		★存在的问题：
-//			1.canvas不能完全等于innerWidth，不然会出现滚动条。
+//			1.canvas不能完全等于innerWidth，不然会出现滚动条。（已改进）
 //
  
 //=============================================================================
@@ -340,21 +375,24 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_HtmlBackground');
 	
+	/*----------------常规---------------*/
 	DrillUp.g_HB_background_time = Number(DrillUp.parameters["背景显现时长"] || 120);
+	DrillUp.g_HB_padding = Number(DrillUp.parameters["背景外框厚度"] || 4);
+	DrillUp.g_HB_scrollDisable = String(DrillUp.parameters["是否隐藏网页滚动条"] || "false" ) == "true";
 	
+	/*----------------贴边图像---------------*/
 	DrillUp.g_HB_weltImg_width = Number(DrillUp.parameters["显现条件-宽度"] || 100);
 	DrillUp.g_HB_weltImg_height = Number(DrillUp.parameters["显现条件-高度"] || 100);
 	DrillUp.g_HB_weltImg_time = Number(DrillUp.parameters["图像显现时长"] || 120);
-	DrillUp.g_HB_weltImg_left = String(DrillUp.parameters['资源-左侧图像'] || "" );
-	DrillUp.g_HB_weltImg_right = String(DrillUp.parameters['资源-右侧图像'] || "" );
-	DrillUp.g_HB_weltImg_up = String(DrillUp.parameters['资源-上侧图像'] || "" );
-	DrillUp.g_HB_weltImg_down = String(DrillUp.parameters['资源-下侧图像'] || "" );
-	DrillUp.g_HB_weltImg_backImg = JSON.parse(DrillUp.parameters['资源-备用替换图像'] || [] );
+	DrillUp.g_HB_weltImg_left = String(DrillUp.parameters["资源-左侧图像"] || "" );
+	DrillUp.g_HB_weltImg_right = String(DrillUp.parameters["资源-右侧图像"] || "" );
+	DrillUp.g_HB_weltImg_up = String(DrillUp.parameters["资源-上侧图像"] || "" );
+	DrillUp.g_HB_weltImg_down = String(DrillUp.parameters["资源-下侧图像"] || "" );
+	DrillUp.g_HB_weltImg_backImg = JSON.parse(DrillUp.parameters["资源-备用替换图像"] || [] );
 	
-	
+	/*----------------黑边背景---------------*/
 	DrillUp.g_HB_background_list_length = 10;
 	DrillUp.g_HB_background_list = [];
-	
 	for (var i = 0; i < DrillUp.g_HB_background_list_length; i++) {
 		if( DrillUp.parameters['黑边背景-' + String(i+1) ] != "" ){
 			DrillUp.g_HB_background_list[i] = JSON.parse(DrillUp.parameters['黑边背景-' + String(i+1) ]);
@@ -457,8 +495,8 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 //=============================================================================
 // ** 全局临时变化数据
 //=============================================================================
-DrillUp.drill_HB_width = function() { return window.innerWidth - 8; }
-DrillUp.drill_HB_height = function() { return window.innerHeight - 8; }
+DrillUp.drill_HB_width = function() { return Math.floor(window.innerWidth) - DrillUp.g_HB_padding *2; }
+DrillUp.drill_HB_height = function() { return Math.floor(window.innerHeight) - DrillUp.g_HB_padding *2; }
 
 //=============================================================================
 // ** 存储数据初始化
@@ -510,9 +548,12 @@ Graphics.drill_HB_createCanvas = function() {
 	this._drill_HB_canvas = document.createElement('canvas');
 	this._drill_HB_canvas.id = 'drill_HB_canvas';
 	this._drill_HB_canvas.style.position = "absolute";
-	this._drill_HB_canvas.style.top = "0px";
-	this._drill_HB_canvas.style.left = "0px";
+	this._drill_HB_canvas.style.top = DrillUp.g_HB_padding + "px";
+	this._drill_HB_canvas.style.left = DrillUp.g_HB_padding + "px";
 	this.drill_HB_updateCanvas();
+	if( DrillUp.g_HB_scrollDisable == true ){
+		document.body.parentNode.style.overflow = "hidden";
+	}
 	document.body.appendChild(this._drill_HB_canvas);
 };
 //==============================

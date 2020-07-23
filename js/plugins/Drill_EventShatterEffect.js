@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        行走图 - 方块粉碎效果
+ * @plugindesc [v1.2]        行走图 - 方块粉碎效果
  * @author Drill_up
  * 
  * 
@@ -21,7 +21,7 @@
  * ----插件扩展
  * 该插件不能单独运行，必须要基于核心才能运行：
  * 基于：
- *   - Drill_CoreOfShatterEffect       系统 - 方块粉碎核心
+ *   - Drill_CoreOfShatterEffect    系统-方块粉碎核心★★v1.3及以上版本★★
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
@@ -99,6 +99,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 优化了内部结构，修改了注释内容。
+ * [v1.2]
+ * 修改了与核心的部分兼容设置。
  * 
  * 
  * @param 默认事件碎片消失方式
@@ -360,8 +362,8 @@ Sprite_Character.prototype.update = function() {
 			
 			// > 新建粉碎
 			this.drill_ESE_createShatterSprite();
-			this._drill_ESE['shatter_enable'] = true;									//贴图同步 - 碎片初始化
-			this._drill_ESE['shatter_time'] = this._drill_COSE_data['cur_time'];		//贴图同步 - 碎片当前时间
+			this._drill_ESE['shatter_enable'] = true;							//贴图同步 - 碎片初始化
+			this._drill_ESE['shatter_time'] = this._drill_COSE_curTime;			//贴图同步 - 碎片当前时间
 			
 		}else{
 			// > 控制旧粉碎
@@ -389,7 +391,7 @@ Sprite_Character.prototype.update = function() {
 		}else{
 			this._drill_ESE['shatter_time'] += 1;
 		}
-		this._drill_COSE_data['cur_time'] = this._drill_ESE['shatter_time'];		//真正控制时间的是shatter_time，覆盖了核心的cur_time
+		this._drill_COSE_curTime = this._drill_ESE['shatter_time'];		//真正控制时间的是shatter_time，覆盖了核心的cur_time
 	}
 	
 	// > 粉碎时图像隐藏
@@ -412,7 +414,6 @@ Sprite_Character.prototype.drill_ESE_createShatterSprite = function() {
 		//注意，这里的函数，是直接取材于当前的data内容，是一个过程函数
 	
 	var data = {
-		"bitmap":this._drill_ESE_bitmap,
 		"frameX":this._drill_ESE_frame_x,		//与行走图类型无关
 		"frameY":this._drill_ESE_frame_y,
 		"frameW":this._drill_ESE_frame_w,
@@ -421,7 +422,7 @@ Sprite_Character.prototype.drill_ESE_createShatterSprite = function() {
 		"shatter_converted":this._drill_ESE['shatter_converted'],			//反向弹道
 		"shatter_opacityType":$gameSystem._drill_ESE_opacityType,			//透明度变化方式
 	};
-	this.drill_COSE_setShatter( data );										//方块粉碎核心 - 初始化
+	this.drill_COSE_setShatter( data,this._drill_ESE_bitmap );				//方块粉碎核心 - 初始化
 }
 //=============================================================================
 // ** 贴图框架

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        系统 - 滚轴核心
+ * @plugindesc [v1.1]        系统 - 滚轴核心
  * @author Drill_up
  * 
  * @help  
@@ -59,6 +59,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 优化了内部接口的结构。
  *
  */
  
@@ -94,7 +96,11 @@
 //		★其它说明细节：
 //			1.空的阶段时，阶段高度为0，根据滚轴推进可以快速跳过大量空阶段。
 //			  空阶段也会建立sprite，但是是空的sprite。
-//
+//		
+//		★核心接口说明：
+//			1.整个核心只提供了一个封装好的【Sprite独立子类】。
+//			  具体见类的说明。
+//		
 //		★存在的问题：
 //			暂无
 //		
@@ -117,6 +123,17 @@ if( Imported.Drill_CoreOfWindowAuxiliary ){
 	
 //=============================================================================
 // ** 长画布
+// **
+// **		类型：Sprite独立子类
+// **		功能：通过长画布设置，能够自我进行画布滚动。
+// **		接口：调用方法如下，数据格式见 >默认值 
+// **				// > 滚轴 贴图初始化
+// **				var temp_sprite = new Drill_COSR_Sprite( temp_data );
+// **				this.addChild( temp_sprite );
+// **				// > 滚轴启动
+// **				temp_sprite.drill_COSR_start();	
+// **		说明：1.【temp_data配置参数】都在drill_initData中，其他的都为私有参数。
+// **			  2.只要建立起该类，然后start启动就可以了，画布会自动update。
 //=============================================================================
 function Drill_COSR_Sprite() {
     this.initialize.apply(this, arguments);
@@ -129,56 +146,42 @@ Drill_COSR_Sprite.prototype.constructor = Drill_COSR_Sprite;
 //==============================
 Drill_COSR_Sprite.prototype.initialize = function( data ) {
 	Sprite.prototype.initialize.call(this);
-	this._drill_data = data;
-	this._drill_spriteTank = [];
-	this._drill_bitmapTank = [];
-	this._drill_start = false;
-	this._drill_end = false;
-	this._drill_speed_up = false;
-	this._drill_cur_step = 0;
-	this.visible = false;
+	this._drill_data = JSON.parse(JSON.stringify( data ));	//深拷贝数据
 	
-	this.drill_initRollerData();
-	this.drill_initRollerSprite();
-	
+	this.drill_initData();				//初始化数据
+	this.drill_initSprite();			//初始化对象
 };
 //==============================
 // * 长画布 - 帧刷新
 //==============================
 Drill_COSR_Sprite.prototype.update = function() {
 	Sprite.prototype.update.call(this);
-	if( this.drill_isAllBitmapReady() == false ){ return; }		//图片准备
-	if( this._drill_start == false ){ return; }					//开始开关
-	if( this._drill_end == true ){ return; }					//结束开关
-	this.drill_updateShowUp();
-	this.drill_updateRollSpeed();
-	this.drill_updateGIF();
-	this.drill_updateMusic();
+	
+	this.drill_updateSprite();			//帧刷新对象
 }
 //==============================
-// * 长画布 - 开始滚动（接口，需要父类调用激活）
+// * 长画布 - 开始滚动（接口，单次调用）
 //==============================
 Drill_COSR_Sprite.prototype.drill_COSR_start = function() {
 	this._drill_start = true;
 	this.visible = true;
 }
 //==============================
-// * 长画布 - 画面结束（接口，需要父类实时调用）
+// * 长画布 - 画面结束（接口，实时调用）
 //==============================
 Drill_COSR_Sprite.prototype.drill_COSR_isAtEnd = function() {
 	return this._drill_end;
 }
 //==============================
-// * 长画布 - 加速（接口，需要父类实时调用）
+// * 长画布 - 加速（接口，实时调用）
 //==============================
 Drill_COSR_Sprite.prototype.drill_COSR_speedUp = function( b ) {
 	this._drill_speed_up = b;
 }
-
 //==============================
 // * 初始化 - 数据
 //==============================
-Drill_COSR_Sprite.prototype.drill_initRollerData = function() {
+Drill_COSR_Sprite.prototype.drill_initData = function() {
 	var data = this._drill_data;
 	
 	// > 默认值
@@ -218,24 +221,40 @@ Drill_COSR_Sprite.prototype.drill_initRollerData = function() {
 		if( temp_step['bgm_src'] == undefined ){ temp_step['bgm_src'] = "" };							//阶段 - 资源-BGM
 	}
 	
-	// > 初始值
+}
+//==============================
+// * 初始化 - 对象
+//==============================
+Drill_COSR_Sprite.prototype.drill_initSprite = function() {
+	var data = this._drill_data;
+	
+	// > 私有对象初始化
+	this._drill_spriteTank = [];			//贴图容器
+	this._drill_bitmapTank = [];			//资源容器
+	this._drill_cur_step = 0;				//当前所在阶段
+	
+	this._drill_start = false;				//接口控制 - 开始开关
+	this._drill_end = false;				//接口控制 - 结束开关
+	this._drill_speed_up = false;			//接口控制 - 按键加速
+	
+	
+	// > 主体属性
 	this.x = data['x'];
 	this.y = data['y'];
 	this.anchor.x = data['anchorX'];
 	this.anchor.y = data['anchorY'];
 	this.opacity = data['opacity'];
 	this.blendMode = data['blendMode'];
-}
-
-//==============================
-// * 初始化 - 贴图
-//==============================
-Drill_COSR_Sprite.prototype.drill_initRollerSprite = function() {
-	var data = this._drill_data;
-	this._drill_spriteTank = [];
-	this._drill_bitmapTank = [];
+	this.visible = false;
 	
-	// > 阶段准备
+	// > 创建函数
+	this.drill_createStep();				//创建 - 阶段
+}
+//==============================
+// * 创建 - 阶段准备
+//==============================
+Drill_COSR_Sprite.prototype.drill_createStep = function() {
+	var data = this._drill_data;
 	var cur_height = 0;
 	for( var j = 0; j < data['steps'].length ;j++){
 		var temp_step = data['steps'][j];
@@ -281,9 +300,21 @@ Drill_COSR_Sprite.prototype.drill_initRollerSprite = function() {
 		cur_height += temp_step['height'];
 		temp_step['next_step_height'] = cur_height;
 	}
-	
 }
 
+//==============================
+// * 帧刷新对象
+//==============================
+Drill_COSR_Sprite.prototype.drill_updateSprite = function() {
+	if( this.drill_isAllBitmapReady() == false ){ return; }		//图片准备
+	if( this._drill_start == false ){ return; }					//开始开关
+	if( this._drill_end == true ){ return; }					//结束开关
+	
+	this.drill_updateShowUp();			//初始阶段渐变
+	this.drill_updateRollSpeed();		//滚轴速度
+	this.drill_updateGIF();				//GIF刷新
+	this.drill_updateMusic();			//背景音乐切换
+}
 //==============================
 // * 帧刷新 - 图片准备
 //==============================
@@ -295,7 +326,6 @@ Drill_COSR_Sprite.prototype.drill_isAllBitmapReady = function() {
 	}
 	return true;
 }
-
 //==============================
 // * 帧刷新 - 初始阶段渐变显示
 //==============================
@@ -309,7 +339,6 @@ Drill_COSR_Sprite.prototype.drill_updateShowUp = function() {
 		this.opacity = 255;
 	}
 }
-
 //==============================
 // * 帧刷新 - 滚轴速度
 //==============================
@@ -368,9 +397,8 @@ Drill_COSR_Sprite.prototype.drill_updateGIF = function() {
 		}
 	}
 }
-
 //==============================
-// ** 帧刷新 - 建立背景音乐
+// ** 帧刷新 - 背景音乐切换
 //==============================
 Drill_COSR_Sprite.prototype.drill_updateMusic = function() {
 	var data = this._drill_data;
@@ -391,13 +419,13 @@ Drill_COSR_Sprite.prototype.drill_updateMusic = function() {
 };
 
 
+
 //=============================================================================
 // ** Drill_COSR_WindowSprite 文本域
 //=============================================================================
 function Drill_COSR_WindowSprite() {
     this.initialize.apply(this, arguments);
 };
-
 Drill_COSR_WindowSprite.prototype = Object.create(Window_Base.prototype);
 Drill_COSR_WindowSprite.prototype.constructor = Drill_COSR_WindowSprite;
 
@@ -429,7 +457,7 @@ Drill_COSR_WindowSprite.prototype.update = function() {
 	Window_Base.prototype.update.call(this);
 }
 //==============================
-// * 文本 - 绘制文本
+// * 文本域 - 绘制文本
 //==============================
 Drill_COSR_WindowSprite.prototype.drill_createText = function(context_list, options) {
 	
@@ -461,7 +489,7 @@ Drill_COSR_WindowSprite.prototype.drill_createText = function(context_list, opti
 	
 }
 //==============================
-// * 文本 - 配置
+// * 文本域 - 配置
 //==============================
 Drill_COSR_WindowSprite.prototype.standardFontSize = function() {
     return this._drill_fontSize;

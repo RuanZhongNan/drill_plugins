@@ -41,13 +41,13 @@
  *   只作用于事件。
  * 触发：
  *   (1.当前触发分为两种：主动触发的事件 与 被触发的事件。
- *   (2.被触发是一个点，主动触发是一个范围，范围内所有符合的点会触发。
- *   (3.触发需要通过 插件指令 ，只触发一次，不是连续触发。
- *   (4.触发独立开关后都是设置为ON。硬性规定。
+ *   (2.触发需要通过 插件指令 ，只触发一次。
+ *      主动触发是一个区域范围，被触发是一个点，区域内所有符合的点会触发。
+ *   (3.触发独立开关后都是设置为ON。硬性规定。
  *      程序上可以OFF独立开关，但是OFF情况更复杂，会使得事件页变混乱。
- *   (5.玩家自己没有独立开关的说法，不过你可以设置一个事件，时刻与玩家的
+ *   (4.玩家自己没有独立开关的说法，不过你可以设置一个事件，时刻与玩家的
  *      位置一致，跟随控制玩家的状态、HP、死亡效果。
- *   (6.你需要留意 触发与动画 的关系，
+ *   (5.你需要留意 触发与动画 的关系，
  *      有些图块的触发有效,但不会播放动画，比如炸弹炸到的可炸物。
  *      也有可能只播放一次动画，却触发了多次，比如连续的爆炸伤害。
  * 条件：
@@ -56,7 +56,7 @@
  *      你可以在同一个事件里设置多个被触发条件，主动触发的指令也可以多个。
  * 固定区域：
  *   (1.默认有 菱形、方形、圆形、十字、横条、竖条 六种形状，都与方向无关。
- *   (2.你可以 自定义区域，自定义区域与方向有关，可在核心中配置。
+ *   (2.你可以使用 自定义区域，自定义区域与方向有关，可在核心中配置。
  *   (3.上述的区域都可经过筛选器筛选，筛选条件见 固定区域核心 。
  * 记录区域：
  *   (1.记录区域只记录触发的区域。与动画区域无关。
@@ -578,7 +578,7 @@ Game_Map.prototype.drill_ERT_triggerArea = function( area, tag ) {
 			var temp_point = area[j];
 		
 			if( DrillUp.g_ERT_fix ){	//修正
-				if( temp_event.drill_isInPosEntirely(  temp_point['x'], temp_point['y'] ) &&
+				if( temp_event.drill_ERT_isInPosEntirely(  temp_point['x'], temp_point['y'] ) &&
 					temp_event._drill_ERT.tags[tag] == true ){	
 					
 					var key = [this._mapId, temp_event._eventId, temp_event._drill_ERT.self_switchs[tag] ];
@@ -611,7 +611,7 @@ Game_SelfSwitches.prototype.drill_setValueWithOutChange = function(key, value) {
 //==============================
 // * 事件触发 - 判定区域修正
 //==============================
-Game_CharacterBase.prototype.drill_isInPosEntirely = function(x,y) {
+Game_CharacterBase.prototype.drill_ERT_isInPosEntirely = function(x,y) {
 	if ( Math.abs( x - this._realX) < 0.5 && 
 		Math.abs( y - this._realY) < 0.5) {
 		return true;

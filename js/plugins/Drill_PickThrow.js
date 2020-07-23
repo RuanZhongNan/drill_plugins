@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.4]        互动 - 举起花盆能力
+ * @plugindesc [v1.5]        互动 - 举起花盆能力
  * @author Drill_up
  * 
  * @param 举起音效
@@ -207,6 +207,8 @@
  * 添加了插件性能测试说明。
  * [v1.4]
  * 修复了举起花盆时，声音变小的bug。
+ * [v1.5]
+ * 修复了插件单独使用时，出错的bug。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -506,19 +508,24 @@ SoundManager.drill_playBuzzer_buffered = function() {
 //==============================
 // * 事件帧刷新
 //==============================
-var _drill_PT_c_update = Game_Character.prototype.update;
-Game_Character.prototype.update = function() {
-	if (this._drill_PT_throw_wait > 0) {	//等待投掷
+var _drill_PT_c_update = Game_CharacterBase.prototype.update;
+Game_CharacterBase.prototype.update = function() {
+	if( this._drill_PT_pick_enabled == undefined || this._drill_PT_throw_enabled == undefined ){
+		_drill_PT_c_update.call(this); 
+		return;
+	}
+	
+	if( this._drill_PT_throw_wait > 0 ){	//等待投掷
 		this._drill_PT_throw_wait -= 1;
 	    if (this.isJumping()) {this.updateJump()};		//跳跃时 等待投掷
 		return;
 	};
-	if (this._drill_PT_pick_wait > 0) {	//等待举起
+	if( this._drill_PT_pick_wait > 0 ){		//等待举起
 		this._drill_PT_pick_wait -= 1;
 	    if (this.isJumping()) {this.updateJump()};		//跳跃时 等待投掷
 		return;
 	};
-	if (this._drill_PT_is_being_lift ) {	//运输中帧刷新
+	if( this._drill_PT_is_being_lift ){		//运输中帧刷新
 		this.drill_PT_updateLifting();
 		this.updateAnimation();
 		return;	//阻止自动寻路控制
@@ -932,7 +939,7 @@ Game_Character.prototype.drill_PT_canPassThrow = function(x, y ) {
     if ( this.drill_PT_isInThrowForbiddenArea(x, y) ) {//是否为投掷禁区
         return false;
     };
-    if (!$gameMap.drill_isAnyPassable(x, y)) {		//图块可通行状况
+    if (!$gameMap.drill_PT_isAnyPassable(x, y)) {		//图块可通行状况
         return false;
     };
     if (this.isCollidedWithCharacters(x, y)) {		//事件碰撞（与玩家相同层的碰撞）
@@ -952,3 +959,11 @@ Game_Character.prototype.drill_PT_isInThrowForbiddenArea = function(x, y) {
 	}
 	return false;
 }
+//==============================
+// * 投掷 - 判断图块可通行情况
+//==============================
+Game_Map.prototype.drill_PT_isAnyPassable = function( x, y ) {
+	return this.isPassable(x, y, 2)||this.isPassable(x, y, 4)||this.isPassable(x, y, 6)||this.isPassable(x, y, 8);
+}
+
+

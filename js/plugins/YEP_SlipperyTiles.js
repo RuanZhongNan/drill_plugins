@@ -339,7 +339,7 @@ Game_CharacterBase.prototype.canPassDiagonally = function(x, y, horz, vert) {
 	if( $gameSystem._drill_yep_SlipperyTiles_direction != null && Yanfly.Param.SlipDiagonallyThrough == true ){ //滑行中时设置斜向判断
 		var x2 = $gameMap.roundXWithDirection(x, horz);
 		var y2 = $gameMap.roundYWithDirection(y, vert);
-		return $gameMap.drill_isAnyPassable(x2, y2);
+		return $gameMap.drill_yepST_isAnyPassable(x2, y2);
 	}else{
 		return _drill_yep_SlipperyTiles_canPassDiagonally.call(this,x, y, horz, vert);
 	}
@@ -348,7 +348,7 @@ Game_CharacterBase.prototype.canPassDiagonally = function(x, y, horz, vert) {
 //==============================
 // * 判断图块可通行情况（isPassable需要指定方向是否可通行，这里任意一个方向可通行则返回true）
 //==============================
-Game_Map.prototype.drill_isAnyPassable = function( x, y ) {
+Game_Map.prototype.drill_yepST_isAnyPassable = function( x, y ) {
 	return this.isPassable(x, y, 2)||this.isPassable(x, y, 4)||this.isPassable(x, y, 6)||this.isPassable(x, y, 8);
 }
 

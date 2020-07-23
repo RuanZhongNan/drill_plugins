@@ -1022,7 +1022,7 @@ Scene_MenuBase.prototype.drill_MBa_create = function() {
 	for (var i = 1; i < DrillUp.g_MBa_list.length; i++) {
 		if( this.drill_MBa_checkKeyword(i) ){
 			// > 背景贴图
-			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBa_list[i] ));	//拷贝object（杜绝引用造成的修改）
+			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBa_list[i] ));	//深拷贝数据（杜绝引用造成的修改）
 			var temp_sprite = new TilingSprite(ImageManager.load_MenuLayer(temp_sprite_data['src_img']));	//TilingSprite平铺图层
 			temp_sprite.move(0, 0, Graphics.width, Graphics.height);
 			temp_sprite.origin.x = temp_sprite_data['x'];
@@ -1058,7 +1058,7 @@ Scene_MenuBase.prototype.drill_MBa_create = function() {
 		var i = $gameSystem._drill_MBa_default;
 		if( DrillUp.g_MBa_list[i] != undefined ){
 			// > 背景贴图
-			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBa_list[i] ));	//拷贝object（杜绝引用造成的修改）
+			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBa_list[i] ));	//深拷贝数据（杜绝引用造成的修改）
 			var temp_sprite = new TilingSprite(ImageManager.load_MenuLayer(temp_sprite_data['src_img']));	//TilingSprite平铺图层
 			temp_sprite.move(0, 0, Graphics.width, Graphics.height);
 			temp_sprite.origin.x = temp_sprite_data['x'];

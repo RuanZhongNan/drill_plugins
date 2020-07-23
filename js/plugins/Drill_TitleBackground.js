@@ -894,7 +894,7 @@ Scene_Title.prototype.drill_TBa_create = function() {
 	for (var i = 0; i < DrillUp.g_TBa_list.length; i++) {
 		if( DrillUp.g_TBa_list[i] == undefined ){ continue; }
 		// > 背景贴图
-		var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_TBa_list[i] ));	//拷贝object（杜绝引用造成的修改）
+		var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_TBa_list[i] ));	//深拷贝数据（杜绝引用造成的修改）
 		var temp_sprite = new TilingSprite(ImageManager.loadTitle1(temp_sprite_data['src_img']));	//TilingSprite平铺图层
 		temp_sprite.move(0, 0, Graphics.width, Graphics.height);
 		temp_sprite.origin.x = temp_sprite_data['x'];

@@ -990,7 +990,7 @@ Scene_Battle.prototype.drill_BGi_create = function() {
 	
 	for (var i = 0; i < $gameSystem._drill_BGi_data.length; i++) {
 		if( $gameSystem._drill_BGi_data[i] != null ){
-			var temp_sprite_data = JSON.parse(JSON.stringify( $gameSystem._drill_BGi_data[i] ));	//拷贝object（杜绝引用造成的修改）
+			var temp_sprite_data = JSON.parse(JSON.stringify( $gameSystem._drill_BGi_data[i] ));	//深拷贝数据（杜绝引用造成的修改）
 			
 			if(temp_sprite_data['src_img'] == null){ 
 				this._drill_BGi_sprite.push(null);

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        图片 - 方块粉碎效果
+ * @plugindesc [v1.1]        图片 - 方块粉碎效果
  * @author Drill_up
  * 
  *
@@ -21,7 +21,7 @@
  * ----插件扩展
  * 该插件不能单独运行，必须要基于核心才能运行：
  * 基于：
- *   - Drill_CoreOfShatterEffect       系统 - 方块粉碎核心
+ *   - Drill_CoreOfShatterEffect    系统-方块粉碎核心★★v1.3及以上版本★★
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
@@ -94,6 +94,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修改了与核心的部分兼容设置。
  * 
  * 
  * @param 默认图片碎片消失方式
@@ -281,7 +283,6 @@ Sprite_Picture.prototype.update = function() {
 		this._drill_PSE['shatter_command'] = false;
 		
 		var data = {
-			"bitmap":this._drill_PSE_bitmap,
 			"frameX":this._drill_PSE_frame_x,
 			"frameY":this._drill_PSE_frame_y,
 			"frameW":this._drill_PSE_frame_w,
@@ -290,7 +291,7 @@ Sprite_Picture.prototype.update = function() {
 			"shatter_converted":this._drill_PSE['shatter_converted'],			//反向弹道
 			"shatter_opacityType":$gameSystem._drill_PSE_opacityType,			//透明度变化方式
 		};
-		this.drill_COSE_setShatter( data );										//方块粉碎核心 - 初始化
+		this.drill_COSE_setShatter( data,this._drill_PSE_bitmap );				//方块粉碎核心 - 初始化
 		this._drill_PSE['shatter_activated'] = true;
 	}
 	

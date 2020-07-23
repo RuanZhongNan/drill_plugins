@@ -6,86 +6,6 @@
  * @plugindesc [v1.0]        物体 - 事件跳跃
  * @author Drill_up
  * 
- * @param 资源-跳跃音效
- * @desc 事件进行普通跳跃时播放音效。
- * @default ["Jump1"]
- * @require 1
- * @dir audio/se/
- * @type file[]
- *
- * @param ----事件属性----
- * @desc 
- *
- * @param 默认跳跃音效
- * @parent ----事件属性----
- * @type number
- * @min 0
- * @desc 事件跳跃时，默认播放资源配置的音效的序号。0表示不播放音效。
- * @default 0
- *
- * @param 默认跳跃距离
- * @parent ----事件属性----
- * @type number
- * @min 0
- * @desc 事件跳跃到目的地的距离长度，单位图块。0表示只能原地跳跃。
- * @default 2
- *
- * @param 默认跳跃延迟
- * @parent ----事件属性----
- * @type number
- * @min 0
- * @desc 事件跳跃后，下次跳跃需要等待的时间，单位帧。（1秒60帧）
- * @default 0
- *
- * @param ----悬崖----
- * @desc 
- * 
- * @param 悬崖高度1
- * @parent ----悬崖----
- * @type number[]
- * @min 0
- * @max 255
- * @desc 填入区域id，会被视作高度1，即绘图的R选项中的区域，未填的区域默认高度0。
- * @default ["1"]
- * 
- * @param 悬崖高度2
- * @parent ----悬崖----
- * @type number[]
- * @min 0
- * @max 255
- * @desc 填入区域id，会被视作高度2，即绘图的R选项中的区域，未填的区域默认高度0。
- * @default ["2"]
- * 
- * @param 悬崖高度3
- * @parent ----悬崖----
- * @type number[]
- * @min 0
- * @max 255
- * @desc 填入区域id，会被视作高度3，即绘图的R选项中的区域，未填的区域默认高度0。
- * @default ["3"]
- * 
- * @param 悬崖高度4
- * @parent ----悬崖----
- * @type number[]
- * @min 0
- * @max 255
- * @desc 填入区域id，会被视作高度4，即绘图的R选项中的区域，未填的区域默认高度0。
- * @default ["4"]
- * 
- * @param 悬崖高度5
- * @parent ----悬崖----
- * @type number[]
- * @min 0
- * @max 255
- * @desc 填入区域id，会被视作高度5，即绘图的R选项中的区域，未填的区域默认高度0。
- * @default ["5"]
- * 
- * @param 禁止跳跃区
- * @type number[]
- * @min 0
- * @max 255
- * @desc 填入区域id，会被视作禁止跳跃区，玩家不能在该区域跳跃，并且悬崖高度为最高，无法翻越。
- * @default ["8"]
  * 
  * @help  
  * =============================================================================
@@ -256,6 +176,89 @@
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
  * 
+ * 
+ * 
+ * @param 资源-跳跃音效
+ * @desc 事件进行普通跳跃时播放音效。
+ * @default ["Jump1"]
+ * @require 1
+ * @dir audio/se/
+ * @type file[]
+ *
+ * @param ----事件属性----
+ * @desc 
+ *
+ * @param 默认跳跃音效
+ * @parent ----事件属性----
+ * @type number
+ * @min 0
+ * @desc 事件跳跃时，默认播放资源配置的音效的序号。0表示不播放音效。
+ * @default 0
+ *
+ * @param 默认跳跃距离
+ * @parent ----事件属性----
+ * @type number
+ * @min 0
+ * @desc 事件跳跃到目的地的距离长度，单位图块。0表示只能原地跳跃。
+ * @default 2
+ *
+ * @param 默认跳跃延迟
+ * @parent ----事件属性----
+ * @type number
+ * @min 0
+ * @desc 事件跳跃后，下次跳跃需要等待的时间，单位帧。（1秒60帧）
+ * @default 0
+ *
+ * @param ----悬崖----
+ * @desc 
+ * 
+ * @param 悬崖高度1
+ * @parent ----悬崖----
+ * @type number[]
+ * @min 0
+ * @max 255
+ * @desc 填入区域id，会被视作高度1，即绘图的R选项中的区域，未填的区域默认高度0。
+ * @default ["1"]
+ * 
+ * @param 悬崖高度2
+ * @parent ----悬崖----
+ * @type number[]
+ * @min 0
+ * @max 255
+ * @desc 填入区域id，会被视作高度2，即绘图的R选项中的区域，未填的区域默认高度0。
+ * @default ["2"]
+ * 
+ * @param 悬崖高度3
+ * @parent ----悬崖----
+ * @type number[]
+ * @min 0
+ * @max 255
+ * @desc 填入区域id，会被视作高度3，即绘图的R选项中的区域，未填的区域默认高度0。
+ * @default ["3"]
+ * 
+ * @param 悬崖高度4
+ * @parent ----悬崖----
+ * @type number[]
+ * @min 0
+ * @max 255
+ * @desc 填入区域id，会被视作高度4，即绘图的R选项中的区域，未填的区域默认高度0。
+ * @default ["4"]
+ * 
+ * @param 悬崖高度5
+ * @parent ----悬崖----
+ * @type number[]
+ * @min 0
+ * @max 255
+ * @desc 填入区域id，会被视作高度5，即绘图的R选项中的区域，未填的区域默认高度0。
+ * @default ["5"]
+ * 
+ * @param 禁止跳跃区
+ * @type number[]
+ * @min 0
+ * @max 255
+ * @desc 填入区域id，会被视作禁止跳跃区，玩家不能在该区域跳跃，并且悬崖高度为最高，无法翻越。
+ * @default ["8"]
+ * 
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -306,47 +309,48 @@
     DrillUp.parameters = PluginManager.parameters('Drill_EventJump');
 	
 	
-	if( DrillUp.parameters['资源-跳跃音效'] != undefined ){
-		DrillUp.g_EJu_se = JSON.parse(DrillUp.parameters['资源-跳跃音效']);
+	if( DrillUp.parameters["资源-跳跃音效"] != undefined ){
+		DrillUp.g_EJu_se = JSON.parse(DrillUp.parameters["资源-跳跃音效"]);
 	}else{
 		DrillUp.g_EJu_se = [""];
 	}
-	DrillUp.g_EJu_se_id = Number(DrillUp.parameters['默认跳跃音效'] || 0);
-	DrillUp.g_EJu_distance = Number(DrillUp.parameters['默认跳跃距离'] || 2);
-	DrillUp.g_EJu_delay = Number(DrillUp.parameters['默认跳跃延迟'] || 0);
+	DrillUp.g_EJu_se_id = Number(DrillUp.parameters["默认跳跃音效"] || 0);
+	DrillUp.g_EJu_distance = Number(DrillUp.parameters["默认跳跃距离"] || 2);
+	DrillUp.g_EJu_delay = Number(DrillUp.parameters["默认跳跃延迟"] || 0);
+	
 	DrillUp.g_EJu_cliff_1 = [];
 	DrillUp.g_EJu_cliff_2 = [];
 	DrillUp.g_EJu_cliff_3 = [];
 	DrillUp.g_EJu_cliff_4 = [];
 	DrillUp.g_EJu_cliff_5 = [];
 	DrillUp.g_EJu_forbidden_area = [];
-	if( DrillUp.parameters['悬崖高度1'] != undefined ){
-		DrillUp.g_EJu_cliff_1 = JSON.parse(DrillUp.parameters['悬崖高度1']);
+	if( DrillUp.parameters["悬崖高度1"] != undefined ){
+		DrillUp.g_EJu_cliff_1 = JSON.parse(DrillUp.parameters["悬崖高度1"]);
 	}else{
 		DrillUp.g_EJu_cliff_1 = [] ;
 	}
-	if( DrillUp.parameters['悬崖高度2'] != undefined ){
-		DrillUp.g_EJu_cliff_2 = JSON.parse(DrillUp.parameters['悬崖高度2']);
+	if( DrillUp.parameters["悬崖高度2"] != undefined ){
+		DrillUp.g_EJu_cliff_2 = JSON.parse(DrillUp.parameters["悬崖高度2"]);
 	}else{
 		DrillUp.g_EJu_cliff_2 = [] ;
 	}
-	if( DrillUp.parameters['悬崖高度3'] != undefined ){
-		DrillUp.g_EJu_cliff_3 = JSON.parse(DrillUp.parameters['悬崖高度3']);
+	if( DrillUp.parameters["悬崖高度3"] != undefined ){
+		DrillUp.g_EJu_cliff_3 = JSON.parse(DrillUp.parameters["悬崖高度3"]);
 	}else{
 		DrillUp.g_EJu_cliff_3 = [] ;
 	}
-	if( DrillUp.parameters['悬崖高度4'] != undefined ){
-		DrillUp.g_EJu_cliff_4 = JSON.parse(DrillUp.parameters['悬崖高度4']);
+	if( DrillUp.parameters["悬崖高度4"] != undefined ){
+		DrillUp.g_EJu_cliff_4 = JSON.parse(DrillUp.parameters["悬崖高度4"]);
 	}else{
 		DrillUp.g_EJu_cliff_4 = [] ;
 	}
-	if( DrillUp.parameters['悬崖高度5'] != undefined ){
-		DrillUp.g_EJu_cliff_5 = JSON.parse(DrillUp.parameters['悬崖高度5']);
+	if( DrillUp.parameters["悬崖高度5"] != undefined ){
+		DrillUp.g_EJu_cliff_5 = JSON.parse(DrillUp.parameters["悬崖高度5"]);
 	}else{
 		DrillUp.g_EJu_cliff_5 = [] ;
 	}
-	if( DrillUp.parameters['禁止跳跃区'] != undefined  && DrillUp.parameters['禁止跳跃区'] != "" ){
-		DrillUp.g_EJu_forbidden_area = JSON.parse(DrillUp.parameters['禁止跳跃区']);
+	if( DrillUp.parameters["禁止跳跃区"] != undefined  && DrillUp.parameters["禁止跳跃区"] != "" ){
+		DrillUp.g_EJu_forbidden_area = JSON.parse(DrillUp.parameters["禁止跳跃区"]);
 	}else{
 		DrillUp.g_EJu_forbidden_area = [] ;
 	}
@@ -355,18 +359,22 @@
 //=============================================================================
 // ** 插件指令
 //=============================================================================
+//==============================
+// * 插件指令 - 指令
+//==============================
 var _drill_EJu_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_EJu_pluginCommand.call(this, command, args);
-	this.drill_EJu_forceJumpCommand(command, args);
-	this.drill_EJu_commonJumpCommand(command, args);
-	this.drill_EJu_tileCommand(command, args);
+	this.drill_EJu_forceJumpCommand(command, args);		//强制跳跃
+	this.drill_EJu_commonJumpCommand(command, args);	//普通跳跃
+	this.drill_EJu_tileCommand(command, args);			//地形条件获取
 }
 //==============================
-// * 插件指令 - 强制跳跃指令
+// * 插件指令 - 强制跳跃
 //==============================
 Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) {
 	if (command === ">事件跳跃")  {
+		
 		/*-----------------事件------------------*/
 		if(args.length == 6){
 			var unit = String(args[1]);
@@ -512,8 +520,8 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 					}
 				}
 			}
-			
 		}
+		
 		/*-----------------玩家------------------*/
 		if(args.length == 6){
 			var unit = String(args[1]);
@@ -608,10 +616,11 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 	}
 }
 //==============================
-// * 插件指令 - 普通跳跃指令
+// * 插件指令 - 普通跳跃
 //==============================
 Game_Interpreter.prototype.drill_EJu_commonJumpCommand = function(command, args) {
 	if (command === ">事件跳跃")  {
+		
 		/*-----------------事件------------------*/
 		if(args.length == 8){
 			var unit = String(args[1]);
@@ -669,8 +678,8 @@ Game_Interpreter.prototype.drill_EJu_commonJumpCommand = function(command, args)
 					}
 				}
 			}
-			
 		}
+		
 		/*-----------------玩家------------------*/
 		if(args.length == 8){
 			var unit = String(args[1]);
@@ -693,7 +702,7 @@ Game_Interpreter.prototype.drill_EJu_commonJumpCommand = function(command, args)
 }
 
 //==============================
-// * 插件指令 - 地形条件指令
+// * 插件指令 - 地形条件获取
 //==============================
 Game_Interpreter.prototype.drill_EJu_tileCommand = function(command, args) {
 	if (command === ">事件跳跃")  {
@@ -866,6 +875,7 @@ Game_Character.prototype.drill_EJu_moveRouteTransform = function(route_list) {
 //=============================================================================
 //==============================
 // * 普通跳跃 - 执行普通跳跃
+// 
 //				说明：根据角色当前朝向、距离，向前跳。
 //==============================
 Game_CharacterBase.prototype.drill_EJu_commonJump = function() {
@@ -874,12 +884,12 @@ Game_CharacterBase.prototype.drill_EJu_commonJump = function() {
 }
 //==============================
 // * 普通跳跃 - 执行普通跳跃（插件指令）
+// 
 //				说明：根据朝向字符串，转换成实际方向。
 //			    参数：最大距离，朝向字符串
 //			    返回：无 
 //==============================
 Game_CharacterBase.prototype.drill_EJu_commonJumpCommand = function( distance,direction_str ) {
-	
 	var direction = 2;
 	if( this._direction == 2 ){//下
 		if( direction_str == "前" ){ direction = 2; }
@@ -921,12 +931,11 @@ Game_CharacterBase.prototype.drill_EJu_commonJumpCommand = function( distance,di
 		if( direction_str == "左后方" ){ direction = 42; }
 		if( direction_str == "右后方" ){ direction = 62; }
 	}
-	
 	this.drill_EJu_jumpWithCheckLockDir( distance, direction );	//条件跳跃（锁定朝向）
 }
-
 //==============================
 // * 普通跳跃 - 条件跳跃（锁定朝向）
+// 
 //				说明：只多了一个锁定朝向的步骤。
 //			    参数：最大距离，朝向(2/4/6/8/62/68/48/42)
 //			    返回：无 
@@ -945,6 +954,7 @@ Game_CharacterBase.prototype.setDirection = function(d) {
 	_drill_EJu_lock_setDirection.call(this,d);
 }
 
+
 //=============================================================================
 // ** 普通跳跃（基础功能）
 //=============================================================================
@@ -954,6 +964,7 @@ Game_CharacterBase.prototype.setDirection = function(d) {
 var _drill_EJu_initMembers = Game_CharacterBase.prototype.initMembers;
 Game_CharacterBase.prototype.initMembers = function() {
 	_drill_EJu_initMembers.call(this);
+	
 	this._drill_EJu_jump = {};
 	this._drill_EJu_jump['distance'] = DrillUp.g_EJu_distance;
 	this._drill_EJu_jump['delay'] = DrillUp.g_EJu_delay;
@@ -974,6 +985,7 @@ Game_CharacterBase.prototype.initMembers = function() {
 
 //==============================
 // * 普通跳跃 - 条件跳跃
+// 
 //				说明：识别悬崖+识别可通行+识别禁止区域 的跳跃
 //			    参数：最大距离，朝向(2/4/6/8/62/68/48/42)
 //			    返回：无 

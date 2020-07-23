@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        系统 - 输入设备核心
+ * @plugindesc [v1.2]        系统 - 输入设备核心
  * @author Drill_up、汗先生
  * 
  * @param 键盘双击判定时长
@@ -153,6 +153,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 修改了注释说明。
+ * [v1.2]
+ * 优化了内部接口的结构。
  *
  */
  
@@ -194,6 +196,10 @@
 //
 //		★其它说明细节：
 //			1.目前只有键盘按键设置了打盹，因为鼠标和手柄按键非常少。
+//		
+//		★核心接口说明：
+//			1.核心提供一系列零散碎片函数。	
+//				具体看看下面的类。鼠标、触屏、键盘、手柄。
 //
 //		★存在的问题：
 //			1.按键核 与 键盘改键设置 的按键范围不一样。
@@ -260,20 +266,255 @@ TouchInput._onCancel = function(x, y) {
 };
 
 //=============================================================================
-// ** 鼠标 - 实时获取 鼠标位置
+// ** 鼠标
+// **
+// **		类型：装饰函数集
+// **		功能：获取鼠标指针、鼠标按键数据。
+// **		接口：	var xx = _drill_mouse_x;						// 鼠标指针位置（全局变量，直接使用即可）
+// **				var yy = _drill_mouse_y;
+// **				if( TouchInput.drill_isWheelUp() ){ }			// 滚轮向上[一帧]
+// **				if( TouchInput.drill_isWheelDown() ){ }			// 滚轮向下[一帧]
+// **				if( TouchInput.drill_isLeftPressed() ){ }		// 左键按下[持续]
+// **				if( TouchInput.drill_isLeftTriggerd() ){ }		// 左键按下[一帧]
+// **				if( TouchInput.drill_isLeftReleased() ){ }		// 左键释放[一帧]
+// **				if( TouchInput.drill_isLeftDoubled() ){ }		// 左键双击[一帧]
+// **				if( TouchInput.drill_isMiddlePressed() ){ }		// 中键按下[持续]
+// **				if( TouchInput.drill_isMiddleTriggerd() ){ }	// 中键按下[一帧]
+// **				if( TouchInput.drill_isMiddleReleased() ){ }	// 中键释放[一帧]
+// **				if( TouchInput.drill_isMiddleDoubled() ){ }		// 中键双击[一帧]
+// **				if( TouchInput.drill_isRightPressed() ){ }		// 右键按下[持续]
+// **				if( TouchInput.drill_isRightTriggerd() ){ }		// 右键按下[一帧]
+// **				if( TouchInput.drill_isRightReleased() ){ }		// 右键释放[一帧]
+// **				if( TouchInput.drill_isRightDoubled() ){ }		// 右键双击[一帧]
+// **		说明：1.上述的判定可以放在update帧刷新中进行持续判定。
 //=============================================================================
-if( typeof(_drill_mouse_getCurPos) == "undefined" ){	//防止重复定义
+//==============================
+// ** 鼠标 - 指针位置
+//==============================
+if( typeof(_drill_mouse_getCurPos) == "undefined" ){	//防止重复定义（该函数在许多插件都用到了）
 
 	var _drill_mouse_getCurPos = TouchInput._onMouseMove;
 	var _drill_mouse_x = 0;
 	var _drill_mouse_y = 0;
-	TouchInput._onMouseMove = function(event) {		//鼠标位置
+	TouchInput._onMouseMove = function(event) {			//鼠标位置
 		_drill_mouse_getCurPos.call(this,event);
 		
         _drill_mouse_x = Graphics.pageToCanvasX(event.pageX);
         _drill_mouse_y = Graphics.pageToCanvasY(event.pageY);
 	};
 }
+
+//==============================
+// ** 鼠标 - 滚轮监听
+//==============================
+var _drill_mouseWheel_onWheel = TouchInput._onWheel;
+TouchInput._onWheel = function(event) {
+	//if( event.deltaY != 0 ){					//暂时用rmmv原函数
+	//	this._drill_COI_wheel_delta = event.deltaY;
+	//}
+	_drill_mouseWheel_onWheel.call(this,event);
+};
+//==============================
+// ** 鼠标 - 滚轮监听（可用函数集）
+//==============================
+TouchInput.drill_isWheelUp = function(){		//滚轮向上[一帧]
+	var threshold = 20;
+	return TouchInput.wheelY <= -threshold;
+}
+TouchInput.drill_isWheelDown = function(){		//滚轮向下[一帧]
+	var threshold = 20;
+	return TouchInput.wheelY >= threshold;
+}
+
+//==============================
+// ** 鼠标 - 按下
+//==============================
+var _drill_mouseInput_pressed = TouchInput._onMouseDown;
+TouchInput._onMouseDown = function(event) {	
+	if (event.button === 0) {
+		this.drill_onLeftDown(event);
+	} else if (event.button === 1) {
+		this.drill_onMiddleDown(event);
+	} else if (event.button === 2) {
+		this.drill_onRightDown(event);
+	}
+	_drill_mouseInput_pressed.call(this,event);
+};
+TouchInput.drill_onLeftDown = function(event) {	//鼠标左键按下事件
+	var x = Graphics.pageToCanvasX(event.pageX);
+	var y = Graphics.pageToCanvasY(event.pageY);
+	if (Graphics.isInsideCanvas(x, y)) {
+		if( this._drill_LeftPressedTime >= 1 ){
+			this._drill_LeftDoubledTime = 0;		//双击
+		}
+		this._drill_LeftPressed = true;
+		this._drill_LeftPressedTime = 0;
+	}
+}
+TouchInput.drill_onMiddleDown = function(event) {	//鼠标滚轮按下事件
+	var x = Graphics.pageToCanvasX(event.pageX);
+	var y = Graphics.pageToCanvasY(event.pageY);
+	if (Graphics.isInsideCanvas(x, y)) {
+		if( this._drill_MiddlePressedTime >= 1 ){
+			this._drill_MiddleDoubledTime = 0;		//双击
+		}
+		this._drill_MiddlePressed = true;
+		this._drill_MiddlePressedTime = 0;
+	}
+}
+TouchInput.drill_onRightDown = function(event) {	//鼠标右键按下事件
+	var x = Graphics.pageToCanvasX(event.pageX);
+	var y = Graphics.pageToCanvasY(event.pageY);
+	if (Graphics.isInsideCanvas(x, y)) {
+		if( this._drill_RightPressedTime >= 1 ){
+			this._drill_RightDoubledTime = 0;		//双击
+		}
+		this._drill_RightPressed = true;
+		this._drill_RightPressedTime = 0;
+	}
+}
+
+//==============================
+// ** 鼠标 - 释放
+//==============================
+var _drill_mouseInput_released = TouchInput._onMouseUp;
+TouchInput._onMouseUp = function(event) {
+	if (event.button === 0) {
+		this.drill_onLeftUp(event);
+	} else if (event.button === 1) {
+		this.drill_onMiddleUp(event);
+	} else if (event.button === 2) {
+		this.drill_onRightUp(event);
+	}
+	_drill_mouseInput_released.call(this,event);
+};
+TouchInput.drill_onLeftUp = function(event) {		//鼠标左键释放事件
+	this._drill_LeftPressed = false;
+	this._drill_LeftReleasedTime = 0;
+}
+TouchInput.drill_onMiddleUp = function(event) {		//鼠标滚轮释放事件
+	this._drill_MiddlePressed = false;
+	this._drill_MiddleReleasedTime = 0;
+}
+TouchInput.drill_onRightUp = function(event) {	//鼠标右键释放事件
+	this._drill_RightPressed = false;
+	this._drill_RightReleasedTime = 0;
+}
+
+//==============================
+// ** 鼠标 - 帧刷新
+//==============================
+var _drill_mouseInput_update = TouchInput.update;
+TouchInput.update = function() {
+	_drill_mouseInput_update.call(this);
+	
+	if (this.drill_isLeftPressed()) {
+		if(this._drill_LeftPressedTime != -1){ this._drill_LeftPressedTime++; }
+	}else{
+		if(this._drill_LeftReleasedTime != -1){ this._drill_LeftReleasedTime++; }
+	}
+	if(this._drill_LeftDoubledTime != -1){ this._drill_LeftDoubledTime ++; }
+	
+	if( this._drill_LeftReleasedTime > DrillUp.g_COI_mouse_judgeTime ){	//释放时间超过一定值时，重置
+		this._drill_LeftPressedTime = -1;
+		this._drill_LeftReleasedTime = -1;
+		this._drill_LeftDoubledTime = -1;
+	}
+	
+	if (this.drill_isMiddlePressed()) {
+		if(this._drill_MiddlePressedTime != -1){ this._drill_MiddlePressedTime++; }
+	}else{
+		if(this._drill_MiddleReleasedTime != -1){ this._drill_MiddleReleasedTime++; }
+	}
+	if(this._drill_MiddleDoubledTime != -1){ this._drill_MiddleDoubledTime ++; }
+	
+	if( this._drill_MiddleReleasedTime > DrillUp.g_COI_mouse_judgeTime ){	//释放时间超过一定值时，重置
+		this._drill_MiddlePressedTime = -1;
+		this._drill_MiddleReleasedTime = -1;
+		this._drill_MiddleDoubledTime = -1;
+	}
+	
+	if (this.drill_isRightPressed()) {
+		if(this._drill_RightPressedTime != -1){ this._drill_RightPressedTime++; }
+	}else{
+		if(this._drill_RightReleasedTime != -1){ this._drill_RightReleasedTime++; }
+	}
+	if(this._drill_RightDoubledTime != -1){ this._drill_RightDoubledTime ++; }
+	
+	if( this._drill_RightReleasedTime > DrillUp.g_COI_mouse_judgeTime ){	//释放时间超过一定值时，重置
+		this._drill_RightPressedTime = -1;
+		this._drill_RightReleasedTime = -1;
+		this._drill_RightDoubledTime = -1;
+	}
+}
+
+//==============================
+// ** 鼠标 - 按键（可用函数集）
+//==============================
+TouchInput.drill_isLeftPressed = function(){		//左键按下[持续]
+	return this._drill_LeftPressed;
+}
+TouchInput.drill_isLeftTriggerd = function(){		//左键按下[一帧]
+	return (this._drill_LeftPressed && this._drill_LeftPressedTime == 1);
+}
+TouchInput.drill_isLeftReleased = function(){		//左键释放[一帧]
+	return (!this._drill_LeftPressed && this._drill_LeftReleasedTime == 1);
+}
+TouchInput.drill_isLeftDoubled = function(){		//左键双击[一帧]
+	return this._drill_LeftDoubledTime == 1 ;
+}
+TouchInput.drill_isMiddlePressed = function(){		//滚轮按下[持续]
+	return this._drill_MiddlePressed;
+}
+TouchInput.drill_isMiddleTriggerd = function(){		//滚轮按下[一帧]
+	return (this._drill_MiddlePressed && this._drill_MiddlePressedTime == 1);
+}
+TouchInput.drill_isMiddleReleased = function(){		//滚轮释放[一帧]
+	return (!this._drill_MiddlePressed && this._drill_MiddleReleasedTime == 1);
+}
+TouchInput.drill_isMiddleDoubled = function(){		//滚轮双击[一帧]
+	return this._drill_MiddleDoubledTime == 1 ;
+}
+TouchInput.drill_isRightPressed = function(){		//右键按下[持续]
+	return this._drill_RightPressed;
+}
+TouchInput.drill_isRightTriggerd = function(){		//右键按下[一帧]
+	return (this._drill_RightPressed && this._drill_RightPressedTime == 1);
+}
+TouchInput.drill_isRightReleased = function(){		//右键释放[一帧]
+	return (!this._drill_RightPressed && this._drill_RightReleasedTime == 1);
+}
+TouchInput.drill_isRightDoubled = function(){		//右键双击[一帧]
+	return this._drill_RightDoubledTime == 1 ;
+}
+
+
+//=============================================================================
+// ** 触屏
+// **
+// **		类型：装饰函数集
+// **		功能：获取触屏指针、触屏按键数据。
+// **		接口：	var xx = _drill_mouse_x;						// 触屏指针位置（全局变量，直接使用即可）
+// **				var yy = _drill_mouse_y;
+// **				if( TouchInput.drill_isLeftPressed() ){ }		// 左键按下[持续] （触屏联动）
+// **				if( TouchInput.drill_isLeftTriggerd() ){ }		// 左键按下[一帧] （触屏联动）
+// **				if( TouchInput.drill_isLeftReleased() ){ }		// 左键释放[一帧] （触屏联动）
+// **				if( TouchInput.drill_isLeftDoubled() ){ }		// 左键双击[一帧] （触屏联动）
+// **				if( TouchInput.drill_isMiddlePressed() ){ }		// 中键按下[持续] （触屏联动）
+// **				if( TouchInput.drill_isMiddleTriggerd() ){ }	// 中键按下[一帧] （触屏联动）
+// **				if( TouchInput.drill_isMiddleReleased() ){ }	// 中键释放[一帧] （触屏联动）
+// **				if( TouchInput.drill_isMiddleDoubled() ){ }		// 中键双击[一帧] （触屏联动）
+// **				if( TouchInput.drill_isRightPressed() ){ }		// 右键按下[持续] （触屏联动）
+// **				if( TouchInput.drill_isRightTriggerd() ){ }		// 右键按下[一帧] （触屏联动）
+// **				if( TouchInput.drill_isRightReleased() ){ }		// 右键释放[一帧] （触屏联动）
+// **				if( TouchInput.drill_isRightDoubled() ){ }		// 右键双击[一帧] （触屏联动）
+// **		说明：1.上述的判定可以放在update帧刷新中进行持续判定。
+// **			  2.触屏的接口使用的与鼠标 一模一样 。
+// **			    通过触屏联动，可以使得触屏能够触发和鼠标按键一样的功能。但是仅限使用了上述条件的插件。
+//=============================================================================
+//==============================
+// ** 触屏 - 位置
+//==============================
 if( typeof(_drill_touchPad_getCurPos) == "undefined" ){	//防止重复定义
 	
 	var _drill_touchPad_getCurPos = TouchInput._onTouchMove;
@@ -287,527 +528,364 @@ if( typeof(_drill_touchPad_getCurPos) == "undefined" ){	//防止重复定义
 		}
 	};
 }
-
-
-//=============================================================================
-// ** 鼠标 - 滚轮监听
-//=============================================================================
-if( typeof(_drill_mouseWheel_onWheel) == "undefined" ){	//防止重复定义
-
-	//==============================
-	// ** 滚轮监听
-	//==============================
-	var _drill_mouseWheel_onWheel = TouchInput._onWheel;
-	TouchInput._onWheel = function(event) {
-		//if( event.deltaY != 0 ){					//暂时用rmmv原函数
-		//	this._drill_COI_wheel_delta = event.deltaY;
-		//}
-		_drill_mouseWheel_onWheel.call(this,event);
-	};
-	
-	//==============================
-	// ** 可用函数集
-	//==============================
-	TouchInput.drill_isWheelUp = function(){		//滚轮向上[一帧]
-        var threshold = 20;
-		return TouchInput.wheelY <= -threshold;
-	}
-	TouchInput.drill_isWheelDown = function(){		//滚轮向下[一帧]
-        var threshold = 20;
-		return TouchInput.wheelY >= threshold;
-	}
-}
-
-//=============================================================================
-// ** 鼠标 - 实时监听 左键、滚轮和右键 （不用rmmv自带的，有局限）
-//=============================================================================
-if( typeof(_drill_mouseInput_pressed) == "undefined" ){	//防止重复定义
-
-	//==============================
-	// ** 鼠标按下
-	//==============================
-	var _drill_mouseInput_pressed = TouchInput._onMouseDown;
-	TouchInput._onMouseDown = function(event) {	
-        if (event.button === 0) {
-			this.drill_onLeftDown(event);
-		} else if (event.button === 1) {
-			this.drill_onMiddleDown(event);
-		} else if (event.button === 2) {
-			this.drill_onRightDown(event);
+//==============================
+// ** 触屏 - 按下（与鼠标联动）
+//==============================
+var _drill_touchPad_pressed = TouchInput._onTouchStart;
+TouchInput._onTouchStart = function(event) {
+	_drill_touchPad_pressed.call(this,event);
+	if( this._screenPressed == true){
+		if(event.changedTouches && event.changedTouches[0]){	//强制触屏位移
+			var touch = event.changedTouches[0];
+			_drill_mouse_x = Graphics.pageToCanvasX(touch.pageX);
+			_drill_mouse_y = Graphics.pageToCanvasY(touch.pageY);
 		}
-		_drill_mouseInput_pressed.call(this,event);
-	};
-	TouchInput.drill_onLeftDown = function(event) {	//鼠标左键按下事件
-		var x = Graphics.pageToCanvasX(event.pageX);
-		var y = Graphics.pageToCanvasY(event.pageY);
-		if (Graphics.isInsideCanvas(x, y)) {
+	
+		if(DrillUp.g_COI_touchPad_l_down){		//确认触屏后，直接生效
 			if( this._drill_LeftPressedTime >= 1 ){
-				this._drill_LeftDoubledTime = 0;		//双击
+				this._drill_LeftDoubledTime = 0;	
 			}
 			this._drill_LeftPressed = true;
 			this._drill_LeftPressedTime = 0;
 		}
-	}
-	TouchInput.drill_onMiddleDown = function(event) {	//鼠标滚轮按下事件
-		var x = Graphics.pageToCanvasX(event.pageX);
-		var y = Graphics.pageToCanvasY(event.pageY);
-		if (Graphics.isInsideCanvas(x, y)) {
+		if(DrillUp.g_COI_touchPad_m_down){ 
 			if( this._drill_MiddlePressedTime >= 1 ){
-				this._drill_MiddleDoubledTime = 0;		//双击
+				this._drill_MiddleDoubledTime = 0;	
 			}
 			this._drill_MiddlePressed = true;
 			this._drill_MiddlePressedTime = 0;
 		}
-	}
-	TouchInput.drill_onRightDown = function(event) {	//鼠标右键按下事件
-		var x = Graphics.pageToCanvasX(event.pageX);
-		var y = Graphics.pageToCanvasY(event.pageY);
-		if (Graphics.isInsideCanvas(x, y)) {
+		if(DrillUp.g_COI_touchPad_r_down){ 
 			if( this._drill_RightPressedTime >= 1 ){
-				this._drill_RightDoubledTime = 0;		//双击
+				this._drill_RightDoubledTime = 0;	
 			}
 			this._drill_RightPressed = true;
 			this._drill_RightPressedTime = 0;
 		}
 	}
+};
+//==============================
+// ** 触屏 - 释放（与鼠标联动）
+//==============================
+var _drill_touchPad_released = TouchInput._onTouchEnd;
+TouchInput._onTouchEnd = function(event) {
+	_drill_touchPad_released.call(this,event);
+	if( this._screenPressed == false ){//确认触屏结束后，直接生效
+		if(event.changedTouches && event.changedTouches[0]){	//强制触屏位移
+			var touch = event.changedTouches[0];
+			_drill_mouse_x = Graphics.pageToCanvasX(touch.pageX);
+			_drill_mouse_y = Graphics.pageToCanvasY(touch.pageY);
+		}
+		
+		if(DrillUp.g_COI_touchPad_l_up){ this.drill_onLeftUp(null); }
+		if(DrillUp.g_COI_touchPad_m_up){ this.drill_onMiddleUp(null); }
+		if(DrillUp.g_COI_touchPad_r_up){ this.drill_onRightUp(null); }
+	}
+};
 	
-	//==============================
-	// ** 鼠标释放
-	//==============================
-	var _drill_mouseInput_released = TouchInput._onMouseUp;
-	TouchInput._onMouseUp = function(event) {
-        if (event.button === 0) {
-			this.drill_onLeftUp(event);
-		} else if (event.button === 1) {
-			this.drill_onMiddleUp(event);
-		} else if (event.button === 2) {
-			this.drill_onRightUp(event);
-		}
-		_drill_mouseInput_released.call(this,event);
-	};
-	TouchInput.drill_onLeftUp = function(event) {		//鼠标左键释放事件
-        this._drill_LeftPressed = false;
-		this._drill_LeftReleasedTime = 0;
-	}
-	TouchInput.drill_onMiddleUp = function(event) {		//鼠标滚轮释放事件
-        this._drill_MiddlePressed = false;
-		this._drill_MiddleReleasedTime = 0;
-	}
-	TouchInput.drill_onRightUp = function(event) {	//鼠标右键释放事件
-        this._drill_RightPressed = false;
-		this._drill_RightReleasedTime = 0;
-	}
-	
-	//==============================
-	// ** 鼠标刷新
-	//==============================
-	var _drill_mouseInput_update = TouchInput.update;
-	TouchInput.update = function() {
-		_drill_mouseInput_update.call(this);
-		
-		if (this.drill_isLeftPressed()) {
-			if(this._drill_LeftPressedTime != -1){ this._drill_LeftPressedTime++; }
-		}else{
-			if(this._drill_LeftReleasedTime != -1){ this._drill_LeftReleasedTime++; }
-		}
-		if(this._drill_LeftDoubledTime != -1){ this._drill_LeftDoubledTime ++; }
-		
-		if( this._drill_LeftReleasedTime > DrillUp.g_COI_mouse_judgeTime ){	//释放时间超过一定值时，重置
-			this._drill_LeftPressedTime = -1;
-			this._drill_LeftReleasedTime = -1;
-			this._drill_LeftDoubledTime = -1;
-		}
-		
-		if (this.drill_isMiddlePressed()) {
-			if(this._drill_MiddlePressedTime != -1){ this._drill_MiddlePressedTime++; }
-		}else{
-			if(this._drill_MiddleReleasedTime != -1){ this._drill_MiddleReleasedTime++; }
-		}
-		if(this._drill_MiddleDoubledTime != -1){ this._drill_MiddleDoubledTime ++; }
-		
-		if( this._drill_MiddleReleasedTime > DrillUp.g_COI_mouse_judgeTime ){	//释放时间超过一定值时，重置
-			this._drill_MiddlePressedTime = -1;
-			this._drill_MiddleReleasedTime = -1;
-			this._drill_MiddleDoubledTime = -1;
-		}
-		
-		if (this.drill_isRightPressed()) {
-			if(this._drill_RightPressedTime != -1){ this._drill_RightPressedTime++; }
-		}else{
-			if(this._drill_RightReleasedTime != -1){ this._drill_RightReleasedTime++; }
-		}
-		if(this._drill_RightDoubledTime != -1){ this._drill_RightDoubledTime ++; }
-		
-		if( this._drill_RightReleasedTime > DrillUp.g_COI_mouse_judgeTime ){	//释放时间超过一定值时，重置
-			this._drill_RightPressedTime = -1;
-			this._drill_RightReleasedTime = -1;
-			this._drill_RightDoubledTime = -1;
-		}
-	}
-	
-	//==============================
-	// ** 可用函数集
-	//==============================
-	TouchInput.drill_isLeftPressed = function(){		//左键按下[持续]
-		return this._drill_LeftPressed;
-	}
-	TouchInput.drill_isLeftTriggerd = function(){		//左键按下[一帧]
-		return (this._drill_LeftPressed && this._drill_LeftPressedTime == 1);
-	}
-	TouchInput.drill_isLeftReleased = function(){		//左键释放[一帧]
-		return (!this._drill_LeftPressed && this._drill_LeftReleasedTime == 1);
-	}
-	TouchInput.drill_isLeftDoubled = function(){		//左键双击[一帧]
-		return this._drill_LeftDoubledTime == 1 ;
-	}
-	TouchInput.drill_isMiddlePressed = function(){		//滚轮按下[持续]
-		return this._drill_MiddlePressed;
-	}
-	TouchInput.drill_isMiddleTriggerd = function(){		//滚轮按下[一帧]
-		return (this._drill_MiddlePressed && this._drill_MiddlePressedTime == 1);
-	}
-	TouchInput.drill_isMiddleReleased = function(){		//滚轮释放[一帧]
-		return (!this._drill_MiddlePressed && this._drill_MiddleReleasedTime == 1);
-	}
-	TouchInput.drill_isMiddleDoubled = function(){		//滚轮双击[一帧]
-		return this._drill_MiddleDoubledTime == 1 ;
-	}
-	TouchInput.drill_isRightPressed = function(){		//右键按下[持续]
-		return this._drill_RightPressed;
-	}
-	TouchInput.drill_isRightTriggerd = function(){		//右键按下[一帧]
-		return (this._drill_RightPressed && this._drill_RightPressedTime == 1);
-	}
-	TouchInput.drill_isRightReleased = function(){		//右键释放[一帧]
-		return (!this._drill_RightPressed && this._drill_RightReleasedTime == 1);
-	}
-	TouchInput.drill_isRightDoubled = function(){		//右键双击[一帧]
-		return this._drill_RightDoubledTime == 1 ;
-	}
-}
-if( typeof(_drill_touchPad_pressed) == "undefined" ){	//防止重复定义
-	
-	//==============================
-	// ** 触屏按下
-	//==============================
-	var _drill_touchPad_pressed = TouchInput._onTouchStart;
-	TouchInput._onTouchStart = function(event) {
-		_drill_touchPad_pressed.call(this,event);
-		if( this._screenPressed == true){
-			if(event.changedTouches && event.changedTouches[0]){	//强制触屏位移
-				var touch = event.changedTouches[0];
-				_drill_mouse_x = Graphics.pageToCanvasX(touch.pageX);
-				_drill_mouse_y = Graphics.pageToCanvasY(touch.pageY);
-			}
-		
-			if(DrillUp.g_COI_touchPad_l_down){		//确认触屏后，直接生效
-				if( this._drill_LeftPressedTime >= 1 ){
-					this._drill_LeftDoubledTime = 0;	
-				}
-				this._drill_LeftPressed = true;
-				this._drill_LeftPressedTime = 0;
-			}
-			if(DrillUp.g_COI_touchPad_m_down){ 
-				if( this._drill_MiddlePressedTime >= 1 ){
-					this._drill_MiddleDoubledTime = 0;	
-				}
-				this._drill_MiddlePressed = true;
-				this._drill_MiddlePressedTime = 0;
-			}
-			if(DrillUp.g_COI_touchPad_r_down){ 
-				if( this._drill_RightPressedTime >= 1 ){
-					this._drill_RightDoubledTime = 0;	
-				}
-				this._drill_RightPressed = true;
-				this._drill_RightPressedTime = 0;
-			}
-		}
-	};
-	//==============================
-	// ** 触屏释放
-	//==============================
-	var _drill_touchPad_released = TouchInput._onTouchEnd;
-	TouchInput._onTouchEnd = function(event) {
-		_drill_touchPad_released.call(this,event);
-		if( this._screenPressed == false ){//确认触屏结束后，直接生效
-			if(event.changedTouches && event.changedTouches[0]){	//强制触屏位移
-				var touch = event.changedTouches[0];
-				_drill_mouse_x = Graphics.pageToCanvasX(touch.pageX);
-				_drill_mouse_y = Graphics.pageToCanvasY(touch.pageY);
-			}
-			
-			if(DrillUp.g_COI_touchPad_l_up){ this.drill_onLeftUp(null); }
-			if(DrillUp.g_COI_touchPad_m_up){ this.drill_onMiddleUp(null); }
-			if(DrillUp.g_COI_touchPad_r_up){ this.drill_onRightUp(null); }
-		}
-	};
-}
 
 //=============================================================================
-// ** 键盘 - 实时监听键盘按键（不用rmmv自带的，有局限）
+// ** 键盘
+// **
+// **		类型：装饰函数集
+// **		功能：获取键盘按键数据。
+// **		接口：	if( Input.drill_isKeyPressed("a") ){ }			// A键按下[持续]
+// **				if( Input.drill_isKeyTriggerd("a") ){ }			// A键按下[一帧]
+// **				if( Input.drill_isKeyReleased("a") ){ }			// A键释放[一帧]
+// **				if( Input.drill_isKeyDoubled("a") ){ }			// A键双击[一帧]
+// **				if( Input.drill_isKeyPressed("b") ){ }			// B键按下[持续]
+// **				if( Input.drill_isKeyTriggerd("b") ){ }			// B键按下[一帧]
+// **				if( Input.drill_isKeyReleased("b") ){ }			// B键释放[一帧]
+// **				if( Input.drill_isKeyDoubled("b") ){ }			// B键双击[一帧]
+// **				……												// ……
+// **				if( Input.drill_isAnyKeyTriggerd() ){ }			// 任意键按下[一帧]
+// **				if( Input.drill_isAnyKeyReleased() ){ }			// 任意键释放[一帧]
+// **		说明：1.上述的判定可以放在update帧刷新中进行持续判定。
+// **			  2.输入的按键字符必须小写。
 //=============================================================================
-if( typeof(_drill_keyInput_pressed) == "undefined" ){	//防止重复定义
-	
-	DrillUp.g_COI_keys_listenerTime = 0;		//自动打盹
-	DrillUp.g_COI_keys_pressed = {};
-	DrillUp.g_COI_keys_pressedTime = {};
-	DrillUp.g_COI_keys_releasedTime = {};
-	DrillUp.g_COI_keys_doubleTime = {};
-	DrillUp.g_COI_keys = {
-		//'~':192,   '!':49,  '@':50,   '#':51,  '$':52,  '%':53,   '^':54,  '&':55,  '*':56,  '(':57,  ')':48,  '_':189,  '+':187,
-		'`':192,   '1':49,  '2':50,   '3':51,  '4':52,  '5':53,   '6':54,  '7':55,  '8':56,  '9':57,  '0':48,  '-':189,  '=':187,
-		//'TAB':109, 'Q':81,  'W':87,   'E':69,  'R':82,  'T':84,   'Y':89,  'U':85,  'I':73,  'O':79,  'P':80,  '{':219,  '}':221,  '|':220,
-		'tab':109, 'q':81,  'w':87,   'e':69,  'r':82,  't':84,   'y':89,  'u':85,  'i':73,  'o':79,  'p':80,  '[':219,  ']':221,  '\\':220,
-		//           'A':65,  'S':83,   'D':68,  'F':70,  'G':71,   'H':72,  'J':74,  'K':75,  'L':76,  ':':186,  '"':222,
-		           'a':65,  's':83,   'd':68,  'f':70,  'g':71,   'h':72,  'j':74,  'k':75,  'l':76,  ';':186,  "'":222,
-		//'SHIFT':16,'Z':90,  'X':88,   'C':67,  'V':86,  'B':66,   'N':78,  'M':77,  '<':188,  '>':190,  '?':191,
-		'shift':16,'z':90,  'x':88,   'c':67,  'v':86,  'b':66,   'n':78,  'm':77,  ',':188,  '.':190,  '/':191,
-		/*'CTRL':17, 'ALT':18,'空格':32,*/' ':32,  'alt':18,'ctrl':17,'上':38, '下':40, '左':37,  '右':39,  
-	};//（全部小写，按键值和字符 一对一）
-	
+//==============================
+// ** 键盘 - 映射键位
+//==============================
+DrillUp.g_COI_keys_listenerTime = 0;		//自动打盹
+DrillUp.g_COI_keys_pressed = {};
+DrillUp.g_COI_keys_pressedTime = {};
+DrillUp.g_COI_keys_releasedTime = {};
+DrillUp.g_COI_keys_doubleTime = {};
+DrillUp.g_COI_keys = {
+	//'~':192,   '!':49,  '@':50,   '#':51,  '$':52,  '%':53,   '^':54,  '&':55,  '*':56,  '(':57,  ')':48,  '_':189,  '+':187,
+	'`':192,   '1':49,  '2':50,   '3':51,  '4':52,  '5':53,   '6':54,  '7':55,  '8':56,  '9':57,  '0':48,  '-':189,  '=':187,
+	//'TAB':109, 'Q':81,  'W':87,   'E':69,  'R':82,  'T':84,   'Y':89,  'U':85,  'I':73,  'O':79,  'P':80,  '{':219,  '}':221,  '|':220,
+	'tab':109, 'q':81,  'w':87,   'e':69,  'r':82,  't':84,   'y':89,  'u':85,  'i':73,  'o':79,  'p':80,  '[':219,  ']':221,  '\\':220,
+	//           'A':65,  'S':83,   'D':68,  'F':70,  'G':71,   'H':72,  'J':74,  'K':75,  'L':76,  ':':186,  '"':222,
+			   'a':65,  's':83,   'd':68,  'f':70,  'g':71,   'h':72,  'j':74,  'k':75,  'l':76,  ';':186,  "'":222,
+	//'SHIFT':16,'Z':90,  'X':88,   'C':67,  'V':86,  'B':66,   'N':78,  'M':77,  '<':188,  '>':190,  '?':191,
+	'shift':16,'z':90,  'x':88,   'c':67,  'v':86,  'b':66,   'n':78,  'm':77,  ',':188,  '.':190,  '/':191,
+	/*'CTRL':17, 'ALT':18,'空格':32,*/' ':32,  'alt':18,'ctrl':17,'上':38, '下':40, '左':37,  '右':39,  
+};//（全部小写，按键值和字符 一对一）
+
+for( var key in DrillUp.g_COI_keys ){
+	DrillUp.g_COI_keys_pressed[key] = false;
+	DrillUp.g_COI_keys_pressedTime[key] = -1;
+	DrillUp.g_COI_keys_releasedTime[key] = -1;
+	DrillUp.g_COI_keys_doubleTime[key] = -1;
+}
+
+//==============================
+// ** 键盘 - 按下
+//==============================
+var _drill_keyInput_pressed = Input._onKeyDown;
+Input._onKeyDown = function(event) {
 	for( var key in DrillUp.g_COI_keys ){
-		DrillUp.g_COI_keys_pressed[key] = false;
-		DrillUp.g_COI_keys_pressedTime[key] = -1;
-		DrillUp.g_COI_keys_releasedTime[key] = -1;
-		DrillUp.g_COI_keys_doubleTime[key] = -1;
-	}
-	
-	//==============================
-	// ** 键盘按下
-	//==============================
-	var _drill_keyInput_pressed = Input._onKeyDown;
-	Input._onKeyDown = function(event) {
-		for( var key in DrillUp.g_COI_keys ){
-			if( DrillUp.g_COI_keys[key] == event.keyCode ){
-				if( DrillUp.g_COI_keys_pressed[key] == true ){	//未释放的情况下，出现重复按下问题
-					DrillUp.g_COI_keys_pressedTime[key] = -1;
-					DrillUp.g_COI_keys_releasedTime[key] = -1;
-					DrillUp.g_COI_keys_doubleTime[key] = -1;
-				}
-				if( DrillUp.g_COI_keys_pressedTime[key] >= 1 ){
-					DrillUp.g_COI_keys_doubleTime[key] = 0;		//双击
-				}
-				DrillUp.g_COI_keys_pressed[key] = true;
-				DrillUp.g_COI_keys_pressedTime[key] = 0;
-				DrillUp.g_COI_keys_listenerTime = DrillUp.g_COI_keys_judgeTime + 5;
-				break;
-			}
-		}
-		_drill_keyInput_pressed.call(this,event);
-	}
-	//==============================
-	// ** 键盘释放
-	//==============================
-	var _drill_keyInput_released = Input._onKeyUp;
-	Input._onKeyUp = function(event) {
-		for( var key in DrillUp.g_COI_keys ){
-			if( DrillUp.g_COI_keys[key] == event.keyCode ){
-				DrillUp.g_COI_keys_pressed[key] = false;
-				DrillUp.g_COI_keys_releasedTime[key] = 0;
-				DrillUp.g_COI_keys_listenerTime = DrillUp.g_COI_keys_judgeTime + 5;
-				break;
-			}
-		}
-		_drill_keyInput_released.call(this,event);
-	}
-	
-	//==============================
-	// ** 键盘刷新
-	//==============================
-	var _drill_keyInput_update = Input.update;
-	Input.update = function() {
-		_drill_keyInput_update.call(this);
-		
-		if( DrillUp.g_COI_keys_listenerTime > 0 ){		//自动打盹
-			this.drill_COI_updateKeysAction();
-			DrillUp.g_COI_keys_listenerTime -= 1;
-		}
-	}
-	//==============================
-	// ** 帧刷新 - 键盘动作监听
-	//==============================
-	Input.drill_COI_updateKeysAction = function() {
-		for( var key in DrillUp.g_COI_keys ){
-			if ( this.drill_isKeyPressed(key) ) {
-				if( DrillUp.g_COI_keys_pressedTime[key] != -1){ DrillUp.g_COI_keys_pressedTime[key] += 1; }
-			}else{
-				if( DrillUp.g_COI_keys_releasedTime[key] != -1){ DrillUp.g_COI_keys_releasedTime[key] += 1; }
-			}
-			if( DrillUp.g_COI_keys_doubleTime[key] != -1){ DrillUp.g_COI_keys_doubleTime[key] += 1; }
-			
-			if( DrillUp.g_COI_keys_releasedTime[key] > DrillUp.g_COI_keys_judgeTime ){	//释放时间超过一定值时，重置
+		if( DrillUp.g_COI_keys[key] == event.keyCode ){
+			if( DrillUp.g_COI_keys_pressed[key] == true ){	//未释放的情况下，出现重复按下问题
 				DrillUp.g_COI_keys_pressedTime[key] = -1;
 				DrillUp.g_COI_keys_releasedTime[key] = -1;
 				DrillUp.g_COI_keys_doubleTime[key] = -1;
 			}
-		}
-	}
-	
-	//==============================
-	// ** 可用函数集
-	//==============================
-	Input.drill_isKeyPressed = function( key ){		//键盘按下[持续]
-		if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
-		return DrillUp.g_COI_keys_pressed[key] == true;
-	}
-	Input.drill_isKeyTriggerd = function( key ){	//键盘按下[一帧]
-		if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
-		return (DrillUp.g_COI_keys_pressed[key] == true && DrillUp.g_COI_keys_pressedTime[key] == 1 );
-	}
-	Input.drill_isKeyReleased = function( key ){	//键盘释放[一帧]
-		if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
-		return (DrillUp.g_COI_keys_pressed[key] == false && DrillUp.g_COI_keys_releasedTime[key] == 1 );
-	}
-	Input.drill_isKeyDoubled = function( key ){		//键盘双击[一帧]
-		if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
-		return DrillUp.g_COI_keys_doubleTime[key] == 1  ;
-	}
-	Input.drill_isAnyKeyTriggerd = function(){		//任意键按下[一帧]
-		if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
-		for( var key in DrillUp.g_COI_keys ){
-			if( DrillUp.g_COI_keys_pressed[key] == true && DrillUp.g_COI_keys_pressedTime[key] == 1 ){
-				return true;
+			if( DrillUp.g_COI_keys_pressedTime[key] >= 1 ){
+				DrillUp.g_COI_keys_doubleTime[key] = 0;		//双击
 			}
+			DrillUp.g_COI_keys_pressed[key] = true;
+			DrillUp.g_COI_keys_pressedTime[key] = 0;
+			DrillUp.g_COI_keys_listenerTime = DrillUp.g_COI_keys_judgeTime + 5;
+			break;
 		}
-		return false;
 	}
-	Input.drill_isAnyKeyReleased = function(){		//任意键释放[一帧]
-		if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
-		for( var key in DrillUp.g_COI_keys ){
-			if( DrillUp.g_COI_keys_pressed[key] == false && DrillUp.g_COI_keys_releasedTime[key] == 1 ){
-				return true;
-			}
+	_drill_keyInput_pressed.call(this,event);
+}
+//==============================
+// ** 键盘 - 释放
+//==============================
+var _drill_keyInput_released = Input._onKeyUp;
+Input._onKeyUp = function(event) {
+	for( var key in DrillUp.g_COI_keys ){
+		if( DrillUp.g_COI_keys[key] == event.keyCode ){
+			DrillUp.g_COI_keys_pressed[key] = false;
+			DrillUp.g_COI_keys_releasedTime[key] = 0;
+			DrillUp.g_COI_keys_listenerTime = DrillUp.g_COI_keys_judgeTime + 5;
+			break;
 		}
-		return false;
 	}
-	
+	_drill_keyInput_released.call(this,event);
 }
 
-//=============================================================================
-// ** 手柄 - 实时监听手柄按键（可能会出现多个手柄连接情况，这里只考虑一个手柄情况）
-//=============================================================================
-if( typeof(_drill_padInput_updateGamepadState) == "undefined" ){	//防止重复定义
-
-	DrillUp.g_COI_pads_listenerTime = 0;		//自动打盹
-	DrillUp.g_COI_pads_pressed = {};
-	DrillUp.g_COI_pads_pressedTime = {};
-	DrillUp.g_COI_pads_releasedTime = {};
-	DrillUp.g_COI_pads_doubleTime = {};
-	DrillUp.g_COI_pads = {
-		'A': 0,  'B': 1,  'X': 2,  'Y': 3,  'LB':4,  'RB':5,
-		'上':12, '下':13, '左':14, '右':15,
-	};	
-	for( var pad in DrillUp.g_COI_pads ){
-		DrillUp.g_COI_pads_pressed[pad] = false;
-		DrillUp.g_COI_pads_pressedTime[pad] = -1;
-		DrillUp.g_COI_pads_releasedTime[pad] = -1;
-		DrillUp.g_COI_pads_doubleTime[pad] = -1;
+//==============================
+// ** 键盘 - 帧刷新
+//==============================
+var _drill_keyInput_update = Input.update;
+Input.update = function() {
+	_drill_keyInput_update.call(this);
+	
+	if( DrillUp.g_COI_keys_listenerTime > 0 ){		//自动打盹
+		this.drill_COI_updateKeysAction();
+		DrillUp.g_COI_keys_listenerTime -= 1;
 	}
+}
+//==============================
+// ** 帧刷新 - 键盘动作监听
+//==============================
+Input.drill_COI_updateKeysAction = function() {
+	for( var key in DrillUp.g_COI_keys ){
+		if ( this.drill_isKeyPressed(key) ) {
+			if( DrillUp.g_COI_keys_pressedTime[key] != -1){ DrillUp.g_COI_keys_pressedTime[key] += 1; }
+		}else{
+			if( DrillUp.g_COI_keys_releasedTime[key] != -1){ DrillUp.g_COI_keys_releasedTime[key] += 1; }
+		}
+		if( DrillUp.g_COI_keys_doubleTime[key] != -1){ DrillUp.g_COI_keys_doubleTime[key] += 1; }
+		
+		if( DrillUp.g_COI_keys_releasedTime[key] > DrillUp.g_COI_keys_judgeTime ){	//释放时间超过一定值时，重置
+			DrillUp.g_COI_keys_pressedTime[key] = -1;
+			DrillUp.g_COI_keys_releasedTime[key] = -1;
+			DrillUp.g_COI_keys_doubleTime[key] = -1;
+		}
+	}
+}
 
-	var _drill_padInput_updateGamepadState = Input._updateGamepadState;
-	Input._updateGamepadState = function(gamepad) {
-		//在core修改newstate前，遍历刷新按下和释放动作
-		var lastStates = JSON.parse(JSON.stringify( this._gamepadStates[gamepad.index] || [] ));
-		_drill_padInput_updateGamepadState.call( this,gamepad );
-		var newStates = this._gamepadStates[gamepad.index] || [];
-		for(var j=0; j<lastStates.length; j++){
-			if (newStates[j] !== lastStates[j]) {
-				for( var pad in DrillUp.g_COI_pads ){
-					if( DrillUp.g_COI_pads[pad] == j ){
-						
-						if( newStates[j] == true ){	//手柄按下
-							if( DrillUp.g_COI_pads_pressed[pad] == true ){	//未释放的情况下，出现重复按下问题
-								DrillUp.g_COI_pads_pressedTime[pad] = -1;
-								DrillUp.g_COI_pads_releasedTime[pad] = -1;
-								DrillUp.g_COI_pads_doubleTime[pad] = -1;
-							}
-							if( DrillUp.g_COI_pads_pressedTime[pad] >= 1 ){
-								DrillUp.g_COI_pads_doubleTime[pad] = 0;		//双击
-							}
-							DrillUp.g_COI_pads_pressed[pad] = true;
-							DrillUp.g_COI_pads_pressedTime[pad] = 0;	
-							DrillUp.g_COI_pads_listenerTime = DrillUp.g_COI_pads_judgeTime + 5;
-							
-						}else{	//手柄释放
-							DrillUp.g_COI_pads_pressed[pad] = false;
-							DrillUp.g_COI_pads_releasedTime[pad] = 0;
-							DrillUp.g_COI_pads_listenerTime = DrillUp.g_COI_pads_judgeTime + 5;
-						
+//==============================
+// ** 键盘 - 键位判断（可用函数集）
+//==============================
+Input.drill_isKeyPressed = function( key ){		//键盘按下[持续]
+	if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
+	return DrillUp.g_COI_keys_pressed[key] == true;
+}
+Input.drill_isKeyTriggerd = function( key ){	//键盘按下[一帧]
+	if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
+	return (DrillUp.g_COI_keys_pressed[key] == true && DrillUp.g_COI_keys_pressedTime[key] == 1 );
+}
+Input.drill_isKeyReleased = function( key ){	//键盘释放[一帧]
+	if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
+	return (DrillUp.g_COI_keys_pressed[key] == false && DrillUp.g_COI_keys_releasedTime[key] == 1 );
+}
+Input.drill_isKeyDoubled = function( key ){		//键盘双击[一帧]
+	if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
+	return DrillUp.g_COI_keys_doubleTime[key] == 1  ;
+}
+Input.drill_isAnyKeyTriggerd = function(){		//任意键按下[一帧]
+	if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
+	for( var key in DrillUp.g_COI_keys ){
+		if( DrillUp.g_COI_keys_pressed[key] == true && DrillUp.g_COI_keys_pressedTime[key] == 1 ){
+			return true;
+		}
+	}
+	return false;
+}
+Input.drill_isAnyKeyReleased = function(){		//任意键释放[一帧]
+	if( DrillUp.g_COI_keys_listenerTime <= 0 ){ return false }
+	for( var key in DrillUp.g_COI_keys ){
+		if( DrillUp.g_COI_keys_pressed[key] == false && DrillUp.g_COI_keys_releasedTime[key] == 1 ){
+			return true;
+		}
+	}
+	return false;
+}
+	
+
+	
+
+//=============================================================================
+// ** 手柄
+// **
+// **		类型：装饰函数集
+// **		功能：获取手柄按键数据。
+// **		接口：	if( Input.drill_isPadPressed("LB") ){ }			// LB键按下[持续]
+// **				if( Input.drill_isPadTriggerd("LB") ){ }		// LB键按下[一帧]
+// **				if( Input.drill_isPadReleased("LB") ){ }		// LB键释放[一帧]
+// **				if( Input.drill_isPadDoubled("LB") ){ }			// LB键双击[一帧]
+// **				if( Input.drill_isPadPressed("RB") ){ }			// RB键按下[持续]
+// **				if( Input.drill_isPadTriggerd("RB") ){ }		// RB键按下[一帧]
+// **				if( Input.drill_isPadReleased("RB") ){ }		// RB键释放[一帧]
+// **				if( Input.drill_isPadDoubled("RB") ){ }			// RB键双击[一帧]
+// **				……												// ……
+// **				if( Input.drill_isAnyPadTriggerd() ){ }			// 任意键按下[一帧]
+// **				if( Input.drill_isAnyPadReleased() ){ }			// 任意键释放[一帧]
+// **		说明：1.上述的判定可以放在update帧刷新中进行持续判定。
+// **			  2.可能会出现多个手柄连接情况，这里只考虑一个手柄情况。
+// **			  3.输入的按键字符必须对应 DrillUp.g_COI_pads 中的键。
+//=============================================================================
+//==============================
+// ** 手柄 - 映射键位
+//==============================
+DrillUp.g_COI_pads_listenerTime = 0;		//自动打盹
+DrillUp.g_COI_pads_pressed = {};
+DrillUp.g_COI_pads_pressedTime = {};
+DrillUp.g_COI_pads_releasedTime = {};
+DrillUp.g_COI_pads_doubleTime = {};
+DrillUp.g_COI_pads = {
+	'A': 0,  'B': 1,  'X': 2,  'Y': 3,  'LB':4,  'RB':5,
+	'上':12, '下':13, '左':14, '右':15,
+};	
+for( var pad in DrillUp.g_COI_pads ){
+	DrillUp.g_COI_pads_pressed[pad] = false;
+	DrillUp.g_COI_pads_pressedTime[pad] = -1;
+	DrillUp.g_COI_pads_releasedTime[pad] = -1;
+	DrillUp.g_COI_pads_doubleTime[pad] = -1;
+}
+
+//==============================
+// ** 手柄 - 键位扫描
+//==============================
+var _drill_padInput_updateGamepadState = Input._updateGamepadState;
+Input._updateGamepadState = function(gamepad) {
+	//在core修改newstate前，遍历刷新按下和释放动作
+	var lastStates = JSON.parse(JSON.stringify( this._gamepadStates[gamepad.index] || [] ));
+	_drill_padInput_updateGamepadState.call( this,gamepad );
+	var newStates = this._gamepadStates[gamepad.index] || [];
+	for(var j=0; j<lastStates.length; j++){
+		if (newStates[j] !== lastStates[j]) {
+			for( var pad in DrillUp.g_COI_pads ){
+				if( DrillUp.g_COI_pads[pad] == j ){
+					
+					if( newStates[j] == true ){	//手柄按下
+						if( DrillUp.g_COI_pads_pressed[pad] == true ){	//未释放的情况下，出现重复按下问题
+							DrillUp.g_COI_pads_pressedTime[pad] = -1;
+							DrillUp.g_COI_pads_releasedTime[pad] = -1;
+							DrillUp.g_COI_pads_doubleTime[pad] = -1;
 						}
+						if( DrillUp.g_COI_pads_pressedTime[pad] >= 1 ){
+							DrillUp.g_COI_pads_doubleTime[pad] = 0;		//双击
+						}
+						DrillUp.g_COI_pads_pressed[pad] = true;
+						DrillUp.g_COI_pads_pressedTime[pad] = 0;	
+						DrillUp.g_COI_pads_listenerTime = DrillUp.g_COI_pads_judgeTime + 5;
+						
+					}else{	//手柄释放
+						DrillUp.g_COI_pads_pressed[pad] = false;
+						DrillUp.g_COI_pads_releasedTime[pad] = 0;
+						DrillUp.g_COI_pads_listenerTime = DrillUp.g_COI_pads_judgeTime + 5;
+					
 					}
 				}
 			}
 		}
 	}
+}
+
+//==============================
+// ** 手柄 - 帧刷新
+//==============================
+var _drill_padInput_update = Input.update;
+Input.update = function() {
+	_drill_padInput_update.call(this);
 	
-	//==============================
-	// ** 手柄刷新
-	//==============================
-	var _drill_padInput_update = Input.update;
-	Input.update = function() {
-		_drill_padInput_update.call(this);
+	if( DrillUp.g_COI_pads_listenerTime > 0 ){		//自动打盹
+		this.drill_COI_updatePadsAction();
+		DrillUp.g_COI_pads_listenerTime -= 1;
+	}
+}
+//==============================
+// ** 帧刷新 - 手柄动作监听
+//==============================
+Input.drill_COI_updatePadsAction = function() {
+	for( var pad in DrillUp.g_COI_pads ){
+		if ( this.drill_isPadPressed(pad) ) {
+			if( DrillUp.g_COI_pads_pressedTime[pad] != -1){ DrillUp.g_COI_pads_pressedTime[pad] += 1; }
+		}else{
+			if( DrillUp.g_COI_pads_releasedTime[pad] != -1){ DrillUp.g_COI_pads_releasedTime[pad] += 1; }
+		}
+		if( DrillUp.g_COI_pads_doubleTime[pad] != -1){ DrillUp.g_COI_pads_doubleTime[pad] += 1; }
 		
-		if( DrillUp.g_COI_pads_listenerTime > 0 ){		//自动打盹
-			this.drill_COI_updatePadsAction();
-			DrillUp.g_COI_pads_listenerTime -= 1;
+		if( DrillUp.g_COI_pads_releasedTime[pad] > DrillUp.g_COI_pads_judgeTime ){	//释放时间超过一定值时，重置
+			DrillUp.g_COI_pads_pressedTime[pad] = -1;
+			DrillUp.g_COI_pads_releasedTime[pad] = -1;
+			DrillUp.g_COI_pads_doubleTime[pad] = -1;
 		}
 	}
-	//==============================
-	// ** 帧刷新 - 手柄动作监听
-	//==============================
-	Input.drill_COI_updatePadsAction = function() {
-		for( var pad in DrillUp.g_COI_pads ){
-			if ( this.drill_isPadPressed(pad) ) {
-				if( DrillUp.g_COI_pads_pressedTime[pad] != -1){ DrillUp.g_COI_pads_pressedTime[pad] += 1; }
-			}else{
-				if( DrillUp.g_COI_pads_releasedTime[pad] != -1){ DrillUp.g_COI_pads_releasedTime[pad] += 1; }
-			}
-			if( DrillUp.g_COI_pads_doubleTime[pad] != -1){ DrillUp.g_COI_pads_doubleTime[pad] += 1; }
-			
-			if( DrillUp.g_COI_pads_releasedTime[pad] > DrillUp.g_COI_pads_judgeTime ){	//释放时间超过一定值时，重置
-				DrillUp.g_COI_pads_pressedTime[pad] = -1;
-				DrillUp.g_COI_pads_releasedTime[pad] = -1;
-				DrillUp.g_COI_pads_doubleTime[pad] = -1;
-			}
+}
+//==============================
+// ** 键盘 - 键位判断（可用函数集）
+//==============================
+Input.drill_isPadPressed = function( pad ){		//手柄按下[持续]
+	if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
+	return DrillUp.g_COI_pads_pressed[pad] == true;
+}
+Input.drill_isPadTriggerd = function( pad ){	//手柄按下[一帧]
+	if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
+	return (DrillUp.g_COI_pads_pressed[pad] == true && DrillUp.g_COI_pads_pressedTime[pad] == 1 );
+}
+Input.drill_isPadReleased = function( pad ){	//手柄释放[一帧]
+	if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
+	return (DrillUp.g_COI_pads_pressed[pad] == false && DrillUp.g_COI_pads_releasedTime[pad] == 1 );
+}
+Input.drill_isPadDoubled = function( pad ){		//手柄双击[一帧]
+	if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
+	return DrillUp.g_COI_pads_doubleTime[pad] == 1  ;
+}
+Input.drill_isAnyPadTriggerd = function(){		//任意键按下[一帧]
+	if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
+	for( var pad in DrillUp.g_COI_pads ){
+		if( DrillUp.g_COI_pads_pressed[pad] == true && DrillUp.g_COI_pads_pressedTime[pad] == 1 ){
+			return true;
 		}
 	}
+	return false;
+}
+Input.drill_isAnyPadReleased = function(){		//任意键释放[一帧]
+	if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
+	for( var pad in DrillUp.g_COI_pads ){
+		if( DrillUp.g_COI_pads_pressed[pad] == false && DrillUp.g_COI_pads_releasedTime[pad] == 1 ){
+			return true;
+		}
+	}
+	return false;
+}
 	
-	//==============================
-	// ** 可用函数集
-	//==============================
-	Input.drill_isPadPressed = function( pad ){		//手柄按下[持续]
-		if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
-		return DrillUp.g_COI_pads_pressed[pad] == true;
-	}
-	Input.drill_isPadTriggerd = function( pad ){	//手柄按下[一帧]
-		if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
-		return (DrillUp.g_COI_pads_pressed[pad] == true && DrillUp.g_COI_pads_pressedTime[pad] == 1 );
-	}
-	Input.drill_isPadReleased = function( pad ){	//手柄释放[一帧]
-		if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
-		return (DrillUp.g_COI_pads_pressed[pad] == false && DrillUp.g_COI_pads_releasedTime[pad] == 1 );
-	}
-	Input.drill_isPadDoubled = function( pad ){		//手柄双击[一帧]
-		if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
-		return DrillUp.g_COI_pads_doubleTime[pad] == 1  ;
-	}
-	Input.drill_isAnyPadTriggerd = function(){		//任意键按下[一帧]
-		if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
-		for( var pad in DrillUp.g_COI_pads ){
-			if( DrillUp.g_COI_pads_pressed[pad] == true && DrillUp.g_COI_pads_pressedTime[pad] == 1 ){
-				return true;
-			}
-		}
-		return false;
-	}
-	Input.drill_isAnyPadReleased = function(){		//任意键释放[一帧]
-		if( DrillUp.g_COI_pads_listenerTime <= 0 ){ return false }
-		for( var pad in DrillUp.g_COI_pads ){
-			if( DrillUp.g_COI_pads_pressed[pad] == false && DrillUp.g_COI_pads_releasedTime[pad] == 1 ){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-};

@@ -1037,7 +1037,7 @@ Scene_MenuBase.prototype.drill_MPa_create = function() {
 			
 			// > 粒子集合
 			for( var j = 0; j < temp_layer_data['count'] ; j++ ){	
-				var temp_sprite_data = JSON.parse(JSON.stringify( temp_layer_data ));	//拷贝object（杜绝引用造成的修改）
+				var temp_sprite_data = JSON.parse(JSON.stringify( temp_layer_data ));	//深拷贝数据（杜绝引用造成的修改）
 				var temp_sprite = new Sprite(ImageManager.load_MenuLayer(temp_sprite_data['src_img']));
 				temp_sprite.anchor.x = 0.5;
 				temp_sprite.anchor.y = 0.5;
@@ -1074,7 +1074,7 @@ Scene_MenuBase.prototype.drill_MPa_create = function() {
 		
 		// > 粒子集合
 		for( var j = 0; j < temp_layer_data['count'] ; j++ ){	
-			var temp_sprite_data = JSON.parse(JSON.stringify( temp_layer_data ));	//拷贝object（杜绝引用造成的修改）
+			var temp_sprite_data = JSON.parse(JSON.stringify( temp_layer_data ));	//深拷贝数据（杜绝引用造成的修改）
 			var temp_sprite = new Sprite(ImageManager.load_MenuLayer(temp_sprite_data['src_img']));
 			temp_sprite.anchor.x = 0.5;
 			temp_sprite.anchor.y = 0.5;

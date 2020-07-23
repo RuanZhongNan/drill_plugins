@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        系统 - 弹道核心
+ * @plugindesc [v1.2]        系统 - 弹道核心
  * @author Drill_up
  *
  * 
@@ -22,6 +22,8 @@
  * ----插件扩展
  * 该插件为基础插件，作用于下列插件：
  * 作用于：
+ *   - Drill_CoreOfGaugeMeter        系统 - 参数条核心
+ *   - Drill_CoreOfGaugeNumber       系统 - 参数数字核心
  *   - Drill_CoreOfShatterEffect     系统 - 方块粉碎核心
  *   - Drill_CoreOfParticle          系统 - 粒子核心（待填坑）
  *   - Drill_STG_ShootingCore        STG - 子弹发射核心（待填坑）
@@ -54,12 +56,16 @@
  * 测试结果：   战斗界面，消耗为：【5ms以下】
  *              地图界面，消耗为：【5ms以下】
  *              菜单界面，消耗为：【5ms以下】
+ * 特殊测试：   参数条核心，制造了210个弹出条，反复调用弹道核心
+ *              进行数学推演，造成消耗【208.17ms】
  *
  * 1.插件只在自己作用域下工作消耗性能，在其它作用域下是不工作的。
  *   测试结果并不是精确值，范围在给定值的10ms范围内波动。
  *   更多了解插件性能，可以去看看"关于插件性能.docx"。
  * 2.由于核心只进行一次粒子路程的数学计算，计算完毕后不再工作，
  *   所以消耗可以忽略不计。
+ * 3.插件原理上，属于单次执行的核心，而如果子插件反复调用数学计
+ *   算，消耗一样会上去。而且都算核心的消耗，不算子插件消耗。
  * 
  * -----------------------------------------------------------------------------
  * ----更新日志
@@ -67,6 +73,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 添加了两点式计算功能。
+ * [v1.2]
+ * 优化了内部接口的结构。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -113,18 +121,31 @@
 //					->透明度公式	x
 //
 //		★必要注意事项：
-//			1.用法：
-//				$gameTemp.drill_COBa_setBallisticsMove( data_tank );						//初始化
-//				$gameTemp.drill_COBa_preBallisticsMove( data_tank2, index , orgX, orgY );	//推演赋值
-//			  data_tank2用于放配置数据，执行完后，结果集会放到下面两个数组中：
-//			  	data_tank2['_drill_COBa_x']
-//			  	data_tank2['_drill_COBa_y']
-//			  （data['movementTime'] 时长 就是数组的长度。）
-//				data_tank2可以是个空对象，只要能放结果就可以。
+//			1.插件提供数学计算，setBallistics初始化配置，preBallistics预推演数据。
+//			  注意，初始化和预推演都没有返回值。且预推演函数中的 obj 是一个对象指针。
 //			
 //		★其它说明细节：
 //			1.随机因子是一个非常特殊的结构，作用是使得轨迹既有随机性，又不会在重新赋值时出现轨迹重置现象。
 //			  如果你要锁定随机因子，在data中加上因子的设定即可。【通常情况下随机因子是不需要赋值的。】
+//		
+//		★核心接口说明：
+//			1.整个核心提供多个可调用的函数接口。	
+//			2.用法：
+//					// > 移动
+//					$gameTemp.drill_COBa_setBallisticsMove( data );							//初始化
+//					$gameTemp.drill_COBa_preBallisticsMove( obj, index , orgX, orgY );		//推演赋值
+//					// > 透明度
+//					$gameTemp.drill_COBa_setBallisticsOpacity( data );						//初始化
+//					$gameTemp.drill_COBa_preBallisticsOpacity( obj, index , orgX, orgY );	//推演赋值
+//					// > 旋转
+//					$gameTemp.drill_COBa_setBallisticsRotate( data );						//初始化
+//					$gameTemp.drill_COBa_preBallisticsRotate( obj, index , orgX, orgY );	//推演赋值
+//	
+//			  【注意，初始化和推演函数不要隔得太远】因为有可能会被重叠推演盖掉。
+//			  obj用于放配置数据，执行完后，结果集会放到下面两个数组中：
+//			  		obj['_drill_COBa_x']
+//			  		obj['_drill_COBa_y']
+//			  obj可以是个对象，空数组也可以，只要能放结果就可以。（data['movementTime'] 时长 就是数组的长度。）
 //
 //		★存在的问题：
 //			暂无
@@ -145,20 +166,24 @@
 var _drill_COBa_initialize = Game_Temp.prototype.initialize;
 Game_Temp.prototype.initialize = function(bitmap){
 	_drill_COBa_initialize.call(this, bitmap);
-	this._drill_COBa_data = {};
+	this._drill_COBa_moveData = {};
+	this._drill_COBa_opacityData = {};
+	this._drill_COBa_rotateData = {};
 }
 
 //=============================================================================
-// ** 弹道
+// ** 移动弹道
 //=============================================================================
 //==============================
-// * 弹道 - 初始化（功能接口）
+// * 移动弹道 - 初始化（接口，单次调用）
 //
 //			说明：给传来的data进行初始赋值，主要功能为数学计算。
 //			参数：见默认值，执行接口后，data指针中将被赋值弹道数据。
 //			返回：无
 //==============================
 Game_Temp.prototype.drill_COBa_setBallisticsMove = function( data ){
+	this._drill_COBa_moveData = JSON.parse(JSON.stringify( data ));	//深拷贝数据
+	var data = this._drill_COBa_moveData;
 	
 	//   移动（movement）
 	if( data['movementNum'] == undefined ){ data['movementNum'] = 1 };								//移动 - 子弹数量
@@ -193,7 +218,7 @@ Game_Temp.prototype.drill_COBa_setBallisticsMove = function( data ){
 	if( data['cartYSpeedMin'] == undefined ){ data['cartYSpeedMin'] = 0 };							//直角坐标 - y - 最小速度
 	if( data['cartYDistanceFormula'] == undefined ){ data['cartYDistanceFormula'] = "return 0" };	//直角坐标 - y - 路程计算公式
 	//   两点式（twoPoint）
-	if( data['twoPointType'] == undefined ){ data['twoPointType'] = "匀速移动" };					//两点式 - 类型（匀速移动/弹性移动）
+	if( data['twoPointType'] == undefined ){ data['twoPointType'] = "匀速移动" };					//两点式 - 类型（匀速移动/弹性移动/……）
 	if( data['twoPointDifferenceX'] == undefined ){ data['twoPointDifferenceX'] = 0 };				//两点式 - 距离差值x
 	if( data['twoPointDifferenceY'] == undefined ){ data['twoPointDifferenceY'] = 0 };				//两点式 - 距离差值y
 	if( data['twoPointInc'] == undefined ){ data['twoPointInc'] = 0 };								//两点式 - 加速度比
@@ -209,11 +234,9 @@ Game_Temp.prototype.drill_COBa_setBallisticsMove = function( data ){
 	if( data['cartXSpeedRandomFactor'] == undefined ){ data['cartXSpeedRandomFactor'] = -1 };		//直角坐标 - x - 随机因子（锁定随机值专用,0-1之间）
 	if( data['cartYSpeedRandomFactor'] == undefined ){ data['cartYSpeedRandomFactor'] = -1 };		//直角坐标 - y - 随机因子（锁定随机值专用,0-1之间）
 	
-	// > 存入容器
-	this._drill_COBa_data = data;
 }
 //==============================
-// * 弹道 - 预推演（功能接口）
+// * 移动弹道 - 预推演（接口，单次调用）
 //
 //			说明：根据当前的弹道参数设置，开始计算轨迹，主要功能为数学计算。
 //			参数：对象容器，对象编号，初始x位置，初始y位置
@@ -221,7 +244,8 @@ Game_Temp.prototype.drill_COBa_setBallisticsMove = function( data ){
 //			返回：无
 //==============================
 Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index, orgX, orgY ){
-	var data = this._drill_COBa_data;
+	var data = this._drill_COBa_moveData;
+	
 	obj_data['_drill_COBa_x'] = [];
 	obj_data['_drill_COBa_y'] = [];
 	obj_data['_drill_COBa_x'][0] = orgX;
@@ -434,16 +458,21 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 	if( data['movementMode'] == "两点式"){
 		
 		for(var time=1; time < data['movementTime']; time++){
-			
 			// > 速度
 			var xx = 0;
 			var yy = 0;
+			
+			if( data['twoPointType'] == "不移动"){
+				xx = data['twoPointDifferenceX'];
+				yy = data['twoPointDifferenceY'];
+			}
+			
 			if( data['twoPointType'] == "匀速移动"){
 				xx = time * data['twoPointDifferenceX']/data['movementTime'];
 				yy = time * data['twoPointDifferenceY']/data['movementTime'];
 			}
-			if( data['twoPointType'] == "弹性移动"){
-				
+			
+			if( data['twoPointType'] == "增减速移动"){	
 				var d = data['twoPointDifferenceX'];		//先加速后减速
 				var t = data['movementTime'];
 				var v_max = d/t*2;
@@ -465,9 +494,19 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 					var t_p = time - t/2;
 					yy = d/2 + v_max*t_p - a*t_p*t_p/2;
 				}
-				
-				
 			}
+			
+			if( data['twoPointType'] == "弹性移动"){
+				var dx = data['twoPointDifferenceX'];	//r = 1/2*a*t^2
+				var dy = data['twoPointDifferenceY'];
+				var t = data['movementTime'];
+				var ax = 2 * dx / t / t;
+				var ay = 2 * dy / t / t;	
+				var c_time = t - time;
+				xx = -1 * 0.5 * ax * c_time * c_time ;
+				yy = -1 * 0.5 * ay * c_time * c_time ;
+			}
+			
 			xx = orgX + xx;
 			yy = orgY + yy;
 			obj_data['_drill_COBa_x'].push(xx);
@@ -478,16 +517,18 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 
 
 //=============================================================================
-// ** 透明度
+// ** 透明度弹道
 //=============================================================================
 //==============================
-// * 透明度 - 初始化（功能接口）
+// * 透明度弹道 - 初始化（接口，单次调用）
 //
 //			说明：给传来的data进行初始赋值，主要功能为数学计算。
 //			参数：见默认值，执行接口后，data指针中将被赋值旋转角数据。
 //			返回：无
 //==============================
 Game_Temp.prototype.drill_COBa_setBallisticsOpacity = function( data ){
+	this._drill_COBa_opacityData = JSON.parse(JSON.stringify( data ));	//深拷贝数据
+	var data = this._drill_COBa_opacityData;
 	
 	// > 默认值
 	if( data['opacityTime'] == undefined ){ data['opacityTime'] = 1 };						//透明度 - 变化时长
@@ -507,10 +548,9 @@ Game_Temp.prototype.drill_COBa_setBallisticsOpacity = function( data ){
 	//随机因子
 	if( data['opacityRandomFactor'] == undefined ){ data['opacityRandomFactor'] = -1 };		//极坐标 - 速度 - 随机因子（锁定随机值专用,0-1之间）
 	
-	this._drill_COBa_data = data;
 }
 //==============================
-// * 透明度 - 预推演（功能接口）
+// * 透明度弹道 - 预推演（接口，单次调用）
 //
 //			说明：根据当前的弹道参数设置，开始计算轨迹，主要功能为数学计算。
 //			参数：对象容器，对象编号，初始旋转角
@@ -518,7 +558,7 @@ Game_Temp.prototype.drill_COBa_setBallisticsOpacity = function( data ){
 //			返回：无
 //==============================
 Game_Temp.prototype.drill_COBa_preBallisticsOpacity = function( obj_data, obj_index, orgOpacity ){
-	var data = this._drill_COBa_data;
+	var data = this._drill_COBa_opacityData;
 	obj_data['_drill_COBa_opacity'] = [];
 	obj_data['_drill_COBa_opacity'][0] = orgOpacity;
 
@@ -569,22 +609,24 @@ Game_Temp.prototype.drill_COBa_preBallisticsOpacity = function( obj_data, obj_in
 }
 
 //=============================================================================
-// ** 旋转角
+// ** 旋转角弹道
 //=============================================================================
 //==============================
-// * 旋转角 - 初始化（功能接口）
+// * 旋转角弹道 - 初始化（接口，单次调用）
 //
 //			说明：给传来的data进行初始赋值，主要功能为数学计算。
 //			参数：见默认值，执行接口后，data指针中将被赋值旋转角数据。
 //			返回：无
 //==============================
 Game_Temp.prototype.drill_COBa_setBallisticsRotate = function( data ){
+	this._drill_COBa_rotateData = JSON.parse(JSON.stringify( data ));	//深拷贝数据
+	var data = this._drill_COBa_rotateData;
 	
 	// > 默认值
 	
 }
 //==============================
-// * 旋转角 - 预推演（功能接口）
+// * 旋转角弹道 - 预推演（接口，单次调用）
 //
 //			说明：根据当前的弹道参数设置，开始计算轨迹，主要功能为数学计算。
 //			参数：对象容器，对象编号，初始旋转角
@@ -592,6 +634,7 @@ Game_Temp.prototype.drill_COBa_setBallisticsRotate = function( data ){
 //			返回：无
 //==============================
 Game_Temp.prototype.drill_COBa_preBallisticsRotate = function( obj_data, obj_index, orgRotation ){
+	var data = this._drill_COBa_rotateData;
 	
 }
 

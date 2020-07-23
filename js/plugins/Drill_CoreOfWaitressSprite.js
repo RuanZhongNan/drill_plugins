@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        主菜单 - 服务员核心
+ * @plugindesc [v1.1]        主菜单 - 服务员核心
  * @author Drill_up
  *
  *
@@ -57,7 +57,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
- * 
+ * [v1.1]
+ * 优化了内部结构。
  *
  * 
  */
@@ -85,28 +86,18 @@
 // 
 //		★私有类如下：
 //			* Drill_COWS_WaitressSprite【服务员】
-//
-//		★必要注意事项：
-//			1.使用方法：
-//				this._sprite_waitress = new Drill_COWS_WaitressSprite( 【default数据】 );
-//				this._sprite_waitress.drill_COWS_pushNewAct("【aaa】", 【aaa的数据】);
-//				this._sprite_waitress.drill_COWS_pushNewAct("【bbb】", 【bbb的数据】);
-//				this._sprite_waitress.drill_COWS_pushNewAct("【ccc】", 【ccc的数据】);
-//				this._sprite_waitress.drill_COWS_pushNewAct("【ddd】", 【ddd的数据】);
-//				this._sprite_waitress.drill_COWS_pushNewAct("【eee】", 【eee的数据】);
-//			初始化的时候，将你要操作的数据push。
-//				默认行为 参数见drill_COWS_initDefaultWaitress函数
-//				一般行为 参数见drill_COWS_pushNewAct函数
-//			调用时，直接用playAct就可以了。
-//
+//			
 //		★其它说明细节：
-//			1. 2020-3-20初次分离服务员核心，感觉功能比较少。可能还是个未完全成形的结构。
-//			2. 如果把服务员当成一个现实的人物来看，可以开的坑非常多：
+//			2. 2020-3-20初次分离服务员核心，感觉功能比较少。可能还是个未完全成形的结构。
+//			3. 如果把服务员当成一个现实的人物来看，可以开的坑非常多：
 //					卖的垃圾太多，服务员会和你打起来。（触发战斗）
 //					买的物品越多，服务员穿的越少。（黄油？）
 //			        你可以欠钱购买物品，但是事后服务员会找你要利息。
-//				
 //
+//		★核心接口说明：
+//			1.整个核心只提供了一个封装好的【Sprite独立子类】。
+//			  具体见类的说明。
+//				
 //		★存在的问题：
 //			暂无
 //
@@ -122,6 +113,19 @@
 
 //=============================================================================
 // ** 服务员
+// **
+// **		类型：Sprite独立子类
+// **		功能：通过输入指令，让贴图呈现不同的形态序列。
+// **		接口：调用方法如下，数据格式见 >默认值 
+// **				// > 初始化
+// **				waitress = new Drill_COWS_WaitressSprite( 【default数据】 );
+// **				waitress.drill_COWS_pushNewAct("【aaa】", 【aaa的数据】);
+// **				waitress.drill_COWS_pushNewAct("【bbb】", 【bbb的数据】);
+// **				waitress.drill_COWS_pushNewAct("【ccc】", 【ccc的数据】);
+// **				// > 播放行为
+// **				waitress.drill_COWS_playAct("【aaa】");
+// **				waitress.drill_COWS_playAct("【bbb】");
+// **		说明：1.初始化后bitmap加载可能会要一些时间，期间不会显示出任何图片。
 //=============================================================================
 //==============================
 // * 服务员 - 定义
@@ -137,94 +141,60 @@ Drill_COWS_WaitressSprite.prototype.constructor = Drill_COWS_WaitressSprite;
 //==============================
 Drill_COWS_WaitressSprite.prototype.initialize = function( default_act_data ) {
 	Sprite_Base.prototype.initialize.call(this);
-	this._drill_time = 0;							//持续时间
-	this._drill_act_commands = [];					//行为指令列表
-	this._drill_act_curIndex = "";					//当前行为
-	this._drill_acts = {};							//行为数据
+	this._drill_defaultData = JSON.parse(JSON.stringify( default_act_data ));	//深拷贝数据
 	
-	this.drill_COWS_initDefaultWaitress( default_act_data );	//初始化默认行为
+	this.drill_initSprite();			//初始化对象
+	this.drill_initDefaultData();		//初始化默认行为
 };
 //==============================
 // * 服务员 - 帧刷新
 //==============================
 Drill_COWS_WaitressSprite.prototype.update = function() {
 	Sprite_Base.prototype.update.call(this);
-	this._drill_time += 1;
-	this.drill_COWS_updateGif();	//刷新gif
+	
+	this.drill_updateSprite();			//帧刷新对象
 };
 
 //==============================
-// * 创建 - 默认值初始化
-//
-//			说明：注意，默认行为参数和一般行为参数不一样。
-//==============================
-Drill_COWS_WaitressSprite.prototype.drill_COWS_initDefaultWaitress = function( default_act_data ) {
-	
-	// > 初始化
-	if( default_act_data == undefined ){ default_act_data = {} };
-	this._drill_act_commands.push("act-default");
-	this._drill_acts["act-default"] = JSON.parse(JSON.stringify( default_act_data ));
-	
-	// > 默认值
-	var act = this._drill_acts["act-default"];
-	if( act['gif_src'] == undefined ){ act['gif_src'] = [] };							//资源
-	if( act['gif_src_file'] == undefined ){ act['gif_src_file'] = "img/system/" };		//资源文件夹
-	if( act['gif_interval'] == undefined ){ act['gif_interval'] = 4 };					//帧间隔
-	if( act['gif_back_run'] == undefined ){ act['gif_back_run'] = false };				//是否倒放
-	
-	// > bitmap对象
-	act['gif_src_bitmaps'] = [];
-	for(var j = 0; j < act['gif_src'].length ; j++){
-		act['gif_src_bitmaps'].push(
-			ImageManager.loadBitmap( act['gif_src_file'], act['gif_src'][j], 0, true)
-		);
-	}
-	
-	// >创建贴图
-	this.bitmap = this._drill_acts["act-default"]['gif_src_bitmaps'][0] ;
-}
-
-//==============================
-// * 操作 - 一般行为初始化（接口）
+// * 服务员 - 一般行为初始化（接口，单次调用）
 //
 //			说明：定义一般行为的数据。
 //			参数：行为关键字，行为数据
+//			返回：无
 //==============================
 Drill_COWS_WaitressSprite.prototype.drill_COWS_pushNewAct = function( act_command, act_data ) {
-	if( act_command == "" ){ return; }
 	if(!act_data ){ return; }
+	if(!act_command ){ return; }
+	if( act_command == "" ){ return; }
 	if( this._drill_act_commands.indexOf(act_command) != -1 ){ return; }
-	
-	// > 初始化
-	this._drill_act_commands.push(act_command);
-	this._drill_acts[ act_command ] = JSON.parse(JSON.stringify( act_data ));
+	var temp_data = JSON.parse(JSON.stringify( act_data ));
 	
 	// > 默认值
-	var act = this._drill_acts[ act_command ];
-	if( act['gif_src'] == undefined ){ act['gif_src'] = [] };							//资源
-	if( act['gif_src_file'] == undefined ){ act['gif_src_file'] = "img/system/" };		//资源文件夹
-	if( act['gif_interval'] == undefined ){ act['gif_interval'] = 4 };					//帧间隔
-	if( act['gif_back_run'] == undefined ){ act['gif_back_run'] = false };				//是否倒放
-	if( act['gif_replay'] == undefined ){ act['gif_replay'] = true };					//末尾重播
+	if( temp_data['gif_src'] == undefined ){ temp_data['gif_src'] = [] };							//资源
+	if( temp_data['gif_src_file'] == undefined ){ temp_data['gif_src_file'] = "img/system/" };		//资源文件夹
+	if( temp_data['gif_interval'] == undefined ){ temp_data['gif_interval'] = 4 };					//帧间隔
+	if( temp_data['gif_back_run'] == undefined ){ temp_data['gif_back_run'] = false };				//是否倒放
+	if( temp_data['gif_replay'] == undefined ){ temp_data['gif_replay'] = true };					//末尾重播
 	
-	if( act['enable'] == undefined ){ act['enable'] = false };							//行为开关
-	if( act['sustain'] == undefined ){ act['sustain'] = 60 };							//动作持续时间
-	if( act['delay'] == undefined ){ act['delay'] = 0 };								//动作延迟
-	if( act['se'] == undefined ){ act['se'] = "" };										//动作声音
+	if( temp_data['enable'] == undefined ){ temp_data['enable'] = false };							//行为开关
+	if( temp_data['sustain'] == undefined ){ temp_data['sustain'] = 60 };							//动作持续时间
+	if( temp_data['delay'] == undefined ){ temp_data['delay'] = 0 };								//动作延迟
+	if( temp_data['se'] == undefined ){ temp_data['se'] = "" };										//动作声音
 		
 	// > bitmap对象
-	act['gif_src_bitmaps'] = [];
-	for(var j = 0; j < act['gif_src'].length ; j++){
-		act['gif_src_bitmaps'].push(
-			ImageManager.loadBitmap( act['gif_src_file'], act['gif_src'][j], 0, true)
+	temp_data['gif_src_bitmaps'] = [];
+	for(var j = 0; j < temp_data['gif_src'].length ; j++){
+		temp_data['gif_src_bitmaps'].push(
+			ImageManager.loadBitmap( temp_data['gif_src_file'], temp_data['gif_src'][j], 0, true)
 		);
 	}
+	
+	// > 加入队列
+	this._drill_act_commands.push(act_command);
+	this._drill_acts[ act_command ] = temp_data;
 }
-
 //==============================
-// * 操作 - 播放行为（接口）
-//
-//			说明：要播放，直接调用即可。
+// * 服务员 - 播放行为（接口，单次调用）
 //==============================
 Drill_COWS_WaitressSprite.prototype.drill_COWS_playAct = function( act_command ) {
 	if( act_command == "" ){ return; }
@@ -239,6 +209,49 @@ Drill_COWS_WaitressSprite.prototype.drill_COWS_playAct = function( act_command )
 	this._drill_act_recordTime = this._drill_time;
 }
 
+//==============================
+// * 创建 - 初始化对象
+//==============================
+Drill_COWS_WaitressSprite.prototype.drill_initSprite = function() {
+	
+	// > 私有变量初始化
+	this._drill_time = 0;							//持续时间
+	this._drill_act_commands = [];					//行为指令列表
+	this._drill_act_curIndex = "";					//当前行为
+	this._drill_acts = {};							//行为数据
+}
+//==============================
+// * 创建 - 初始化默认行为
+//==============================
+Drill_COWS_WaitressSprite.prototype.drill_initDefaultData = function() {
+	var temp_data = this._drill_defaultData;		//默认行为属于数据，先有框架（初始化对象、私有变量），后填入数据。
+	
+	// > 默认值
+	if( temp_data['gif_src'] == undefined ){ temp_data['gif_src'] = [] };							//资源
+	if( temp_data['gif_src_file'] == undefined ){ temp_data['gif_src_file'] = "img/system/" };		//资源文件夹
+	if( temp_data['gif_interval'] == undefined ){ temp_data['gif_interval'] = 4 };					//帧间隔
+	if( temp_data['gif_back_run'] == undefined ){ temp_data['gif_back_run'] = false };				//是否倒放
+	
+	// > bitmap对象
+	temp_data['gif_src_bitmaps'] = [];
+	for(var j = 0; j < temp_data['gif_src'].length ; j++){
+		var obj_bitmap = ImageManager.loadBitmap( temp_data['gif_src_file'], temp_data['gif_src'][j], 0, true);
+		temp_data['gif_src_bitmaps'].push( obj_bitmap );
+	};
+	this.bitmap = temp_data['gif_src_bitmaps'][0] ;
+	
+	// >加入队列
+	this._drill_act_commands.push("act-default");
+	this._drill_acts["act-default"] = this._drill_defaultData;
+}
+
+//==============================
+// * 帧刷新对象
+//==============================
+Drill_COWS_WaitressSprite.prototype.drill_updateSprite = function() {
+	this._drill_time += 1;				//时间+1
+	this.drill_COWS_updateGif();		//刷新gif
+}
 //==============================
 // * 帧刷新 - 刷新gif
 //==============================

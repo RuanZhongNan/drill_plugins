@@ -124,7 +124,8 @@
 var _drill_EBV_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_EBV_pluginCommand.call(this, command, args);
-	if (command === '>事件缓存变量') {
+	if (command === ">事件缓存变量") {
+		
 		/*-----------------自定义区域------------------*/
 		if(args.length == 8){
 			var unit = String(args[1]);

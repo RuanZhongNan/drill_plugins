@@ -688,7 +688,7 @@ if( typeof(Game_Map.prototype.drill_getLaserArea) == "undefined" ){	//防止重�
 			if (!$gameMap.isValid(x2, y2)) {
 				return false;
 			}
-			if (!$gameMap.drill_isAnyPassable( x2, y2 )) {
+			if (!$gameMap.drill_ELA_isAnyPassable( x2, y2 )) {
 				return false;
 			}
 			if (this.isCollidedWithCharacters(x2, y2)) {
@@ -700,7 +700,7 @@ if( typeof(Game_Map.prototype.drill_getLaserArea) == "undefined" ){	//防止重�
 	//==============================
 	// * 通用 - 判断图块可通行情况
 	//==============================
-	Game_Map.prototype.drill_isAnyPassable = function( x, y ) {
+	Game_Map.prototype.drill_ELA_isAnyPassable = function( x, y ) {
 		return this.isPassable(x, y, 2)||this.isPassable(x, y, 4)||this.isPassable(x, y, 6)||this.isPassable(x, y, 8);
 	}
 }

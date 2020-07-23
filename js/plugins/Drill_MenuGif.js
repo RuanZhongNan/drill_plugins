@@ -995,7 +995,7 @@ Scene_MenuBase.prototype.drill_MGi_create = function() {
 	for (var i = 0; i < DrillUp.g_MGi_list.length; i++) {
 		if( this.drill_MGi_checkKeyword(i) ){
 			// > GIF贴图
-			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MGi_list[i] ));	//拷贝object（杜绝引用造成的修改）
+			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MGi_list[i] ));	//深拷贝数据（杜绝引用造成的修改）
 			for(var j = 0; j < temp_sprite_data['src_img'].length ; j++){
 				temp_sprite_data['src_bitmaps'].push(ImageManager.load_MenuLayerGIF(temp_sprite_data['src_img'][j]));
 			}

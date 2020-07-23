@@ -883,32 +883,32 @@ Game_Map.prototype.drill_EIG_getAvailablePosList = function( x, y, range, type )
 			var _y = this.roundY( y + j );
 			var events = this.eventsXyNt( _x,_y );
 			if( type == "方形区域" && Math.abs(i) <= range && Math.abs(j) <= range ){				//deltaX()函数考虑了循环地图的情况（公式：dx <= r，dy <= r）
-				if( this.isValid(_x,_y) && this.drill_isAnyPassable(_x,_y) && events.length == 0  ){
+				if( this.isValid(_x,_y) && this.drill_EIG_isAnyPassable(_x,_y) && events.length == 0  ){
 					available_list.push( {'x':_x ,'y':_y } );
 				}
 			}
 			if( type == "菱形区域" && Math.abs(i) + Math.abs(j) <= range ){							//（公式：dx + dy <= r）
-				if( this.isValid(_x,_y) && this.drill_isAnyPassable(_x,_y) && events.length == 0  ){
+				if( this.isValid(_x,_y) && this.drill_EIG_isAnyPassable(_x,_y) && events.length == 0  ){
 					available_list.push( {'x':_x ,'y':_y } );
 				}
 			}
 			if( type == "圆形区域" && Math.pow( i ,2) + Math.pow( j ,2) <= Math.pow(range,2) ){		//（公式：dx^2 + dy^2 <= r^2）
-				if( this.isValid(_x,_y) && this.drill_isAnyPassable(_x,_y) && events.length == 0  ){
+				if( this.isValid(_x,_y) && this.drill_EIG_isAnyPassable(_x,_y) && events.length == 0  ){
 					available_list.push( {'x':_x ,'y':_y } );
 				}
 			}
 			if( type == "十字区域" && ( i == 0 || j == 0 ) ){										//（公式：dx + dy <= r 且 (dx==0 或 dy==0) ）
-				if( this.isValid(_x,_y) && this.drill_isAnyPassable(_x,_y) && events.length == 0  ){
+				if( this.isValid(_x,_y) && this.drill_EIG_isAnyPassable(_x,_y) && events.length == 0  ){
 					available_list.push( {'x':_x ,'y':_y } );
 				}
 			}
 			if( type == "横条区域" && ( j == 0 )  ){												//（公式：dx + dy <= r 且 (dy==0) ）
-				if( this.isValid(_x,_y) && this.drill_isAnyPassable(_x,_y) && events.length == 0  ){
+				if( this.isValid(_x,_y) && this.drill_EIG_isAnyPassable(_x,_y) && events.length == 0  ){
 					available_list.push( {'x':_x ,'y':_y } );
 				}
 			}
 			if( type == "竖条区域" && ( i == 0 )  ){												//（公式：dx + dy <= r 且 (dx==0) ）
-				if( this.isValid(_x,_y) && this.drill_isAnyPassable(_x,_y) && events.length == 0  ){
+				if( this.isValid(_x,_y) && this.drill_EIG_isAnyPassable(_x,_y) && events.length == 0  ){
 					available_list.push( {'x':_x ,'y':_y } );
 				}
 			}
@@ -922,7 +922,7 @@ Game_Map.prototype.drill_EIG_getAvailablePosList = function( x, y, range, type )
 //==============================
 // ** 获取点 - 不可通行判断
 //==============================
-Game_Map.prototype.drill_isAnyPassable = function( x, y ) {
+Game_Map.prototype.drill_EIG_isAnyPassable = function( x, y ) {
 	return this.isPassable(x, y, 2)||this.isPassable(x, y, 4)||this.isPassable(x, y, 6)||this.isPassable(x, y, 8);
 }
 

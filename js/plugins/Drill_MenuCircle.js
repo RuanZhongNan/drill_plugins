@@ -917,7 +917,7 @@ Scene_MenuBase.prototype.drill_MCi_create = function() {
 	for (var i = 0; i < DrillUp.g_MCi_list.length; i++) {
 		if( this.drill_MCi_checkKeyword(i) ){
 			// > 魔法圈贴图
-			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MCi_list[i] ));	//拷贝object（杜绝引用造成的修改）
+			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MCi_list[i] ));	//深拷贝数据（杜绝引用造成的修改）
 			
 			var temp_sprite_bitmap = new Sprite(ImageManager.load_MenuLayer(temp_sprite_data['src_img']));
 			temp_sprite_bitmap.anchor.x = 0.5;

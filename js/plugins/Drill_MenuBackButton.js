@@ -1111,7 +1111,7 @@ Scene_MenuBase.prototype.drill_MBB_create = function() {
 			this._drill_MBB_sprites_layer.push(temp_layer);
 			
 			// > 按钮贴图
-			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBB_list[i] ));	//拷贝object
+			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBB_list[i] ));	//深拷贝数据
 			var temp_style_id = temp_sprite_data['style_id']-1 || 0;
 			var temp_style = JSON.parse(JSON.stringify( DrillUp.g_MBB_style_list[ temp_style_id ] || {} ));
 			for(var j = 0; j < temp_style['src_img'].length ; j++){
@@ -1176,7 +1176,7 @@ Scene_MenuBase.prototype.drill_MBB_create = function() {
 			this._drill_MBB_sprites_layer.push(temp_layer);
 			
 			// > 按钮贴图
-			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBB_list[i] ));	//拷贝object
+			var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_MBB_list[i] ));	//深拷贝数据
 			var temp_style_id = temp_sprite_data['style_id']-1 || 0;
 			var temp_style = JSON.parse(JSON.stringify( DrillUp.g_MBB_style_list[ temp_style_id ] ));
 			for(var j = 0; j < temp_style['src_img'].length ; j++){

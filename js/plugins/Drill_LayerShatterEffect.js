@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        地图 - 方块粉碎效果
+ * @plugindesc [v1.1]        地图 - 方块粉碎效果
  * @author Drill_up
  * 
  * @Drill_LE_param "粉碎背景-%d"
@@ -25,7 +25,7 @@
  * ----插件扩展
  * 该插件不能单独运行，必须要基于核心才能运行：
  * 基于：
- *   - Drill_CoreOfShatterEffect       系统 - 方块粉碎核心
+ *   - Drill_CoreOfShatterEffect    系统-方块粉碎核心★★v1.3及以上版本★★
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
@@ -97,6 +97,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修改了与核心的部分兼容设置。
  * 
  * 
  * @param 默认地图碎片消失方式
@@ -642,7 +644,6 @@ Scene_Map.prototype.drill_LSE_updateCommand = function() {
 		this._drill_LSE_waiting == true ){
 		this._drill_LSE_waiting = false;
 		var data = {
-			"bitmap":this._Drill_LSE_sprite_bitmap,
 			"frameX":0,	
 			"frameY":0,
 			"frameW":Graphics.boxWidth,
@@ -652,7 +653,7 @@ Scene_Map.prototype.drill_LSE_updateCommand = function() {
 			"shatter_opacityType":$gameSystem._drill_LSE['opacityType'],				//透明度变化方式
 			"shatter_autoHide":false,													//自动隐藏
 		};
-		this._Drill_LSE_sprite.drill_COSE_setShatter( data );										//方块粉碎核心 - 初始化
+		this._Drill_LSE_sprite.drill_COSE_setShatter( data,this._Drill_LSE_sprite_bitmap );		//方块粉碎核心 - 初始化
 	}
 	
 	

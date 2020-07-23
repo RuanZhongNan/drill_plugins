@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        面板 - 全自定义信息面板H
+ * @plugindesc [v1.2]        面板 - 全自定义信息面板H
  * @author Drill_up
  * 
  * @Drill_LE_param "内容-%d"
@@ -164,6 +164,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 改进了内容锁定功能。
+ * [v1.2]
+ * 添加了选项窗口名称居中的功能。
  * 
  *
  * @param ----杂项----
@@ -428,6 +430,18 @@
  * @min 1
  * @desc 选项窗口的列数。
  * @default 10
+ * 
+ * @param 选项窗口对齐方式
+ * @parent ----选项窗口----
+ * @type select
+ * @option 左对齐
+ * @value 左对齐
+ * @option 居中
+ * @value 居中
+ * @option 右对齐
+ * @value 右对齐
+ * @desc 选项文本的对齐方式。
+ * @default 左对齐
  *
  * @param 选项窗口字体大小
  * @parent ----选项窗口----
@@ -1281,6 +1295,7 @@
 	DrillUp.g_SSpH_selWin_height = Number(DrillUp.parameters['选项窗口高度'] || 460);
 	DrillUp.g_SSpH_selWin_fontsize = Number(DrillUp.parameters['选项窗口字体大小'] || 22);
 	DrillUp.g_SSpH_selWin_col = Number(DrillUp.parameters['选项窗口列数'] || 1);
+    DrillUp.g_SSpH_selWin_align = String(DrillUp.parameters['选项窗口对齐方式'] || "左对齐");
 	if( DrillUp.parameters['选项窗口移动动画'] != undefined ){
 		DrillUp.g_SSpH_selWin_slideAnim = JSON.parse( DrillUp.parameters['选项窗口移动动画'] );
 		DrillUp.g_SSpH_selWin_slideAnim['slideMoveType'] = String(DrillUp.g_SSpH_selWin_slideAnim['移动类型'] || "匀速移动");
@@ -1629,7 +1644,7 @@ Scene_Drill_SSpH.prototype.initialize = function() {
 // * 信息面板H - 正常存储赋值
 //==============================
 Game_System.prototype.drill_SSpH_dataInit = function() {
-	this._drill_SSpH_context_list = JSON.parse(JSON.stringify( DrillUp.g_SSpH_context_list ));	//拷贝object（杜绝引用造成的修改）
+	this._drill_SSpH_context_list = JSON.parse(JSON.stringify( DrillUp.g_SSpH_context_list ));	//深拷贝数据（杜绝引用造成的修改）
 	
 	if( DrillUp.g_SSpH_title_data_global ){
 		for(var i=1 ; i< DrillUp.global_SSpH_enable.length ; i++){	//全局变量赋值（存储的数量多一个，i0）
@@ -2077,14 +2092,23 @@ Drill_SSpH_SelectWindow.prototype.refresh = function() {
 			$gameTemp._drill_SSpH_visibleList.push( temp );
 		}
 	}
+	
+	// > 待绘制的字符串
 	this._list = [];
-	for(var j=0; j< $gameTemp._drill_SSpH_visibleList.length ;j++){
+	for( var j=0; j< $gameTemp._drill_SSpH_visibleList.length ;j++ ){
 		if( $gameTemp._drill_SSpH_visibleList[j]['locked'] == false ){
 			this._list.push( $gameTemp._drill_SSpH_visibleList[j]['name'] );
 		}else{
 			this._list.push( DrillUp.g_SSpH_locked_name );
 		}
 	}
+	
+	// > 字符串宽度计算
+	this._list_width = [];
+	for( var i = 0; i < this._list.length; i++ ){
+		this._list_width[i] = this.drawTextEx( this._list[i], 0, 0 );	//计算字符宽度（只有画出来了才有值）
+	}
+	
 	this.createContents();
 	this.drawAllItems();	//绘制选项内容
 };
@@ -2103,8 +2127,16 @@ Drill_SSpH_SelectWindow.prototype.initSelect = function() {
 //==============================
 Drill_SSpH_SelectWindow.prototype.drawItem = function(index) {
     var str = this._list[index];
+    var str_width = this._list_width[index];
 	var rect = this.itemRectForText(index);
-	this.drawTextEx(str, rect.x, rect.y);
+	
+	var xx = rect.x;
+	if( DrillUp.g_SSpH_selWin_align == "居中" ){
+		xx += (rect.width - str_width) * 0.5;
+	}else if( DrillUp.g_SSpH_selWin_align == "右对齐" ){
+		xx += rect.width - str_width;
+	}
+	this.drawTextEx( str, xx, rect.y );
 };
 //==============================
 // * 选项窗口 - 退出事件

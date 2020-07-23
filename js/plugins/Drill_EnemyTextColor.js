@@ -367,7 +367,7 @@ if( Imported.Drill_GaugeForBoss ){
 		
 		if( DrillUp.g_ETC_mogBoss){
 			var color = $gameSystem._drill_ETC_enemy[this._drill_enemy._enemyId];
-			if(color != ""){
+			if( color != "" ){
 				this._drill_name_sprite.bitmap.textColor = color;
 			}
 			_drill_ETC_GFB_drawName.call(this);

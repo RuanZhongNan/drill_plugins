@@ -990,7 +990,7 @@ Scene_Title.prototype.drill_TGi_create = function() {
 	for (var i = 0; i < DrillUp.g_TGi_list.length; i++) {
 		if( DrillUp.g_TGi_list[i] == undefined ){ continue; }
 		// > GIF贴图
-		var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_TGi_list[i] ));	//拷贝object（杜绝引用造成的修改）
+		var temp_sprite_data = JSON.parse(JSON.stringify( DrillUp.g_TGi_list[i] ));	//深拷贝数据（杜绝引用造成的修改）
 		for(var j = 0; j < temp_sprite_data['src_img'].length ; j++){
 			temp_sprite_data['src_bitmaps'].push(ImageManager.loadTitle1(temp_sprite_data['src_img'][j]));
 		}

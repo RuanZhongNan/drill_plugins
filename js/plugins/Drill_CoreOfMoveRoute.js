@@ -3,15 +3,15 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        物体 - 移动路线核心
+ * @plugindesc [v1.4]        物体 - 移动路线核心
  * @author Drill_up
  *
  *
- * @param 事件页变化时是否保持移动路线
+ * @param 是否开启路线记忆
  * @type boolean
- * @on 保持
- * @off 重置
- * @desc 当事件页从1切换到2，再切换回1，如果不保持，移动路线会被重置。
+ * @on 开启
+ * @off 关闭
+ * @desc 当事件页从1切换到2，再切换回1，如果关闭记忆，移动路线会被重置。
  * @default true
  *
  * @param 接近到重叠位置时是否停下
@@ -44,12 +44,17 @@
  * ----设定注意事项
  * 1.插件的作用域：地图界面。
  *   作用于事件、事件指令的移动路线设置。
- * 事件设置：
+ * 脚本拦截：
  *   (1.插件可以防止错误的路线指令频繁输出错误信息，拖慢游戏速度。
- *   (2."保持移动路线"是指事件 自主移动 > 移动路线 的设置中。
- *      事件页切换不会重置移动路线。
- * 移动路线：
- *   (1."遇障碍结束"表示：如果移动遇到障碍，则当前这条指令直接无效，
+ * 路线记忆：
+ *   (1.事件自主移动时，切换事件页后，指令会重置。
+ *      开启路线记忆后，事件页切换不会重置移动路线。
+ *   (2.考虑到部分有路线记忆的事件反而不易控制。
+ *      你可以使用事件注释 关闭/开启 路线记忆。
+ * 指令集：
+ *   (1.后面提供了许多方便的 移动路线脚本。注意，是移动路线的脚本。
+ *      打开移动路线后，点击脚本，输入中文即可。
+ *   (2."遇障碍结束"表示：如果移动遇到障碍，则当前这条指令直接无效，
  *      进入下一条指令。功能与"无法移动时跳过指令"相似，但是这里的
  *      指令不会产生过多的等待时间。
  * 
@@ -151,6 +156,15 @@
  * 2.如果没有上一条指令，或者上一条指令就是该指令，则没有任何效果。
  * 
  * -----------------------------------------------------------------------------
+ * ----可选设定 - 路线记忆开关
+ * 部分有路线记忆的事件反而不易控制，你可以添加注释进行开关。
+ * 
+ * 事件注释：=>移动路线核心 : 路线记忆 : 关闭
+ * 事件注释：=>移动路线核心 : 路线记忆 : 开启
+ * 
+ * 1.在指定事件中添加注释即可。
+ * 
+ * -----------------------------------------------------------------------------
  * ----插件性能
  * 测试仪器：   4G 内存，Intel Core i5-2520M CPU 2.5GHz 处理器
  *              Intel(R) HD Graphics 3000 集显 的垃圾笔记本
@@ -186,6 +200,8 @@
  * 添加了 移动n步遇障碍结束 的功能。
  * [v1.3]
  * 添加了地图活动镜头的缩放兼容。
+ * [v1.4]
+ * 修复了插件导致 事件跳跃 插件不能跳跃的bug。
  *
  */
  
@@ -201,7 +217,7 @@
 //		时间复杂度		o(n)*o(事件移动路线) 每帧
 //		性能测试因素	125个事件
 //		性能测试消耗	15.75ms
-//						跳过指令执行递归：235.41ms（浏览器的帧数降到1，几乎无法游戏）
+//						嵌套跳转执行递归：235.41ms（浏览器的帧数降到1，几乎无法游戏）
 //		最坏情况		无
 //		备注			整个插件几乎没有循环，都是原生设置上扩展。
 //						不知道会不会增加其他插件的负担。
@@ -210,25 +226,34 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			移动路线核心：
-//				->基本
+//				->脚本拦截
 //					->阻止错误的脚本
-//					->路线保持
-//				->指令
-//					->脚本转义
-//					->记录/执行上一条路线指令
-//					->识别障碍
-//					->接近/远离
-//						->接近鼠标
-//						->接近(只横向)
-//					->保持距离
+//				->路线记忆
+//					->记忆指令
+//					->事件页刷新时复原
+//					->清除记忆
+//				->嵌套跳转
+//					->进入下一个移动指令
+//			
+//				->脚本转义
+//				->识别障碍
+//				->接近/远离
+//					->接近鼠标
+//					->接近(只横向)
+//				->保持距离
 //
 //		★必要注意事项：
 //			1.initMembers函数中，this.event()未加载完全，还没有值。
-//
+//			2.嵌套-进入下一个移动指令 是一个比较难缠的函数。
+//			  留意原理以及说明，这一块对性能影响巨大。
+//		
 //		★其它说明细节：
-//			1.事件每移动成功一次，会调一次processMoveCommand。
-//			  如果未设置跳过，被卡住后，每帧都会调processMoveCommand。
-//			2.注意匹配顺序，">接近玩家n步" 要放在 ">接近玩家" 前面。
+//			1.注意匹配顺序，">接近玩家n步" 要放在 ">接近玩家" 前面。
+//
+//		★核心接口说明：
+//			1.该插件准确地说，【不是一个标准的核心】。
+//			  没有对外接口。
+//			  扩展的功能碎片非常多，只是一个功能合集插件。
 //
 //		★存在的问题：
 //			暂无
@@ -242,16 +267,93 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_CoreOfMoveRoute');
 	
-    DrillUp.g_COMR_towardStop = String(DrillUp.parameters['接近到重叠位置时是否停下'] || "true") === "true";
-    DrillUp.g_COMR_towardRandom = String(DrillUp.parameters['接近/远离时是否随机'] || "true") === "true";
-    DrillUp.g_COMR_remainRoute = String(DrillUp.parameters['事件页变化时是否保持移动路线'] || "true") === "true";
+    DrillUp.g_COMR_towardStop = String(DrillUp.parameters["接近到重叠位置时是否停下"] || "true") === "true";
+    DrillUp.g_COMR_towardRandom = String(DrillUp.parameters["接近/远离时是否随机"] || "true") === "true";
+    DrillUp.g_COMR_remainRoute = String(DrillUp.parameters["是否开启路线记忆"] || "true") === "true";
 	
-	DrillUp.g_COMR_errorMsgTank = [];
-	DrillUp.g_COMR_skip_checkDevOpen = false;
+	DrillUp.g_COMR_errorMsgTank = [];				//脚本拦截容器
+	DrillUp.g_COMR_skip_checkDevOpen = false;		//嵌套跳转开关
+
+
+//=============================================================================
+// ** 物体
+//=============================================================================
+//==============================
+// * 物体 - 初始化
+//==============================
+var _drill_COMR_c_initialize = Game_Character.prototype.initialize;
+Game_Character.prototype.initialize = function() {
+	_drill_COMR_c_initialize.call(this);
+	this._drill_COMR = {};				
+	this._drill_COMR['remain_enable'] = DrillUp.g_COMR_remainRoute;		//路线记忆 - 开关
+	this._drill_COMR['remain_mrListNeedInit'] = true;					//路线记忆 - 索引初始化开关
+	this._drill_COMR['remain_mrList'] = [];								//路线记忆 - 索引初始化
+	this._drill_COMR['remain_lastPage'] = 0;							//路线记忆 - 上一个事件页
+	this._drill_COMR['remain_lastIndex'] = 0;							//路线记忆 - 上一个索引
+	this._drill_COMR['skip_count'] = 0;									//嵌套跳转 - 计数器
+}
+//=============================================================================
+// ** 事件注释初始化
+//=============================================================================
+//==============================
+// * 注释初始化
+//==============================
+var _drill_COMR_initMembers = Game_Event.prototype.initMembers;
+Game_Event.prototype.initMembers = function() {
+	_drill_COMR_initMembers.call(this);
+	this._drill_COMR_isFirstBirth = true;
+};
+var _drill_COMR_setupPage = Game_Event.prototype.setupPage;
+Game_Event.prototype.setupPage = function() {
+	_drill_COMR_setupPage.call(this);
+    this.drill_COMR_setupPage();
+};
+Game_Event.prototype.drill_COMR_setupPage = function() {
+	
+	// > 第一次出生，强制读取第一页注释（防止离开地图后，回来，开关失效）
+	if( !this._erased && this.event() && this.event().pages[0] && this._drill_COMR_isFirstBirth ){ 
+		this._drill_COMR_isFirstBirth = false;
+		this.drill_COMR_readPage( this.event().pages[0].list );
+	}
+	
+	// > 读取当前页注释
+	if( !this._erased && this.page() ){ 
+		this.drill_COMR_readPage( this.list() );
+	}
+}
+//==============================
+// * 读取注释
+//==============================
+Game_Event.prototype.drill_COMR_readPage = function( page_list ) {		
+	page_list.forEach( function(l) {
+		if (l.code === 108) {
+			var args = l.parameters[0].split(' ');
+			var command = args.shift();
+			if (command == "=>移动路线核心"){
+				if(args.length == 4){	//=>移动路线核心 : 路线记忆 : 关闭
+					var temp1 = String(args[1]);
+					var temp2 = String(args[3]);
+					if( temp1 == "路线记忆" ){
+						if( temp1 == "关闭" ){
+							this._drill_COMR['remain_enable'] = false;
+						}
+						if( temp1 == "开启" ){
+							this._drill_COMR['remain_enable'] = true;
+						}
+					}
+				}
+			};
+		};
+	}, this);
+};
+
 
 //=============================================================================
 // ** 脚本拦截
 //=============================================================================
+//==============================
+// * 脚本拦截 - 阻止
+//==============================
 var _drill_COMR_processMoveCommand = Game_Character.prototype.processMoveCommand;
 Game_Character.prototype.processMoveCommand = function(command) {
     var params = command.parameters;
@@ -274,19 +376,21 @@ Game_Character.prototype.processMoveCommand = function(command) {
 			return; 
 		}
 	}
-	_drill_COMR_processMoveCommand.call(this,command);
+	_drill_COMR_processMoveCommand.call( this,command );
 }
 
 //=============================================================================
-// ** 路线保持
+// ** 路线记忆
 //=============================================================================
 //==============================
-// * 路线保持 - 初始化
+// * 路线记忆 - 索引初始化
 //==============================
-Game_Event.prototype.drill_COMR_mrsInit = function() {
-	if( this._drill_COMR_mrs !== undefined ){ return }
-	this._drill_COMR_mrs = [];
+Game_Event.prototype.drill_COMR_mrListInit = function() {
+	var data = this._drill_COMR;
+	if( data['remain_mrListNeedInit'] == false ){ return }
 	
+	data['remain_mrList'] = [];
+	data['remain_mrListNeedInit'] = false;
 	var ev_data = this.event();
 	if( ev_data ){
 		var pages = ev_data.pages;
@@ -294,41 +398,122 @@ Game_Event.prototype.drill_COMR_mrsInit = function() {
 			var page = pages[i];
 			var mr = {};
 			mr._index = 0;
-			this._drill_COMR_mrs[i] = mr;
+			data['remain_mrList'][i] = mr;
 		}
 	}
 }
 //==============================
-// * 路线保持 - 刷新事件页
+// * 路线记忆 - 刷新事件页
 //==============================
 var _drill_COMR_ev_refresh = Game_Event.prototype.refresh;
 Game_Event.prototype.refresh = function() {
-	this.drill_COMR_mrsInit();
-	this.drill_COMR_last_page = this._pageIndex;
-	this.drill_COMR_last_mIndex = this._moveRouteIndex;
+	// > 索引初始化
+	this.drill_COMR_mrListInit();
+	// > 索引记录
+	var data = this._drill_COMR;
+	data['remain_lastPage'] = this._pageIndex;
+	data['remain_lastIndex'] = this._moveRouteIndex;
 	
+	// > 刷新事件页
 	_drill_COMR_ev_refresh.call(this);
 	
+	// > 修正索引
 	this.drill_COMR_mrsChangeIndex();
 }
 //==============================
-// * 路线保持 - 变化路线索引
+// * 路线记忆 - 修正索引
 //==============================
 Game_Event.prototype.drill_COMR_mrsChangeIndex = function() {
-	if( DrillUp.g_COMR_remainRoute != true ){ return }
+	var data = this._drill_COMR;
+	if( data['remain_enable'] == false ){ return }
 	
-	var old_page = this.drill_COMR_last_page;
+	var old_page = data['remain_lastPage'];
 	var new_page = this._erased ? -1 : this.findProperPageIndex();
 	if( new_page < 0 ){ return; }
 	if( old_page < 0 ){ return; }
 	if( old_page === new_page ){ return; }
 	
-	this._drill_COMR_mrs[ old_page ]._index = this.drill_COMR_last_mIndex;	//存储旧移动路线的顺序
-	var new_mIndex = this._drill_COMR_mrs[ new_page ]._index || 0;
+	data['remain_mrList'][ old_page ]._index = data['remain_lastIndex'];	//存储旧移动路线的顺序
+	var new_mIndex = data['remain_mrList'][ new_page ]._index || 0;
 	if( new_mIndex < this._moveRoute.list.length ){
 		this._moveRouteIndex = new_mIndex;
 	}
 }
+
+
+//=============================================================================
+// * 嵌套跳转
+//=============================================================================
+//==============================
+// * 嵌套 - 帧刷新
+//==============================
+var _drill_COMR_c_update = Game_CharacterBase.prototype.update;	//注意，不是Game_Character.prototype.update（该写法会造成跳跃指令失效）
+Game_CharacterBase.prototype.update = function() {
+	this._drill_COMR['skip_count'] = 0;
+	_drill_COMR_c_update.call(this);
+}
+//==============================
+// * 嵌套 - 检查F8按下
+//==============================
+var _drill_COMR_c_onKeyDown = Graphics._onKeyDown;
+Graphics._onKeyDown = function( event ){
+	_drill_COMR_c_onKeyDown.call(this,event);
+	
+    if (!event.ctrlKey && !event.altKey && Utils.isOptionValid('test') ) {		//测试状态才激活
+		if( event.keyCode == 119 ){ // F8
+			DrillUp.g_COMR_skip_checkDevOpen = true;
+		}
+		if( event.keyCode == 123 ){ // F12
+			DrillUp.g_COMR_skip_checkDevOpen = true;
+		}
+    }
+};
+//==============================
+// * 嵌套 - 进入下一个移动指令
+//
+//			说明：该函数需要外部调用，调用后，可以立即跳转并执行下一条移动路线指令。
+//==============================
+Game_Character.prototype.drill_COMR_skipToNext = function() {
+	if( DrillUp.g_COMR_skip_checkDevOpen == true ){ return; }
+	//嵌套由来：
+	//		1.rmmv每帧只执行一条移动路线指令。
+	//		2.(遇障碍结束)功能，要求如果遇到了障碍，这一帧不能浪费，而是直接跳转到下一条指令。
+	//嵌套说明：
+	//		1.rmmv可以不执行当前的移动指令，之间跳到下一个移动指令，但是非常容易死循环，系统卡死。
+	//		2.打开开发工具后，必须关闭该函数。（因为会严重拖慢游戏速度）
+	//			require('nw.gui').Window.get().isDevToolsOpen(); 在mv1.52以下才有效，检查是否开启工具包
+	//		3.为了防止无限嵌套：
+	//			- 这里使用 this._drill_COMR['skip_count'] 制约。
+	//			- 重复的(遇障碍结束)的指令，也不判断了，直接跳过。（第一个指令不通过，后面的一定都不通过）
+	
+	// > 重复指令跳过
+	var len = this._moveRoute.list.length;
+	var last_command = this._moveRoute.list[this._moveRouteIndex];	
+	for(var i=0; i < len; i++){
+		// > 当前索引+1
+		this._moveRouteIndex += 1;
+        if (this._moveRoute.repeat && this._moveRouteIndex >= len-1 ) {
+            this._moveRouteIndex = 0;
+			break;
+        }
+		// > 判断重复的移动路线
+		var cur_command = this._moveRoute.list[this._moveRouteIndex];
+		if( cur_command.code == 45 && last_command.code == 45 &&
+			cur_command.parameters[0] == last_command.parameters[0] ){
+			continue;
+		}else{
+			break;	
+		}
+	}
+	
+	// > 进入下一个指令
+	var cur_command = this._moveRoute.list[this._moveRouteIndex];
+	if( cur_command && this._drill_COMR['skip_count'] < 1 ){
+		this._drill_COMR['skip_count'] += 1;
+		this.processMoveCommand(cur_command);				//（command反复eval会极大地消耗性能）
+	}
+}
+
 
 //=============================================================================
 // ** 脚本转义
@@ -353,7 +538,6 @@ Game_Character.prototype.forceMoveRoute = function(moveRoute) {
 // * 路线 - 修改路线内容
 //==============================
 Game_Character.prototype.drill_COMR_scriptTransform = function(route_list) {
-	var r_list = [];
 	
 	// >特殊指令 - 上一个脚本执行N次
 	var last_route = null;
@@ -376,7 +560,9 @@ Game_Character.prototype.drill_COMR_scriptTransform = function(route_list) {
 		}
 		last_route = temp_route;
 	}
+	
 	// >普通指令
+	var r_list = [];
 	for(var k=0; k < route_list_ex.length; k++){
 		var temp_route = route_list_ex[k];
 		if (temp_route.code === 45) {		//脚本
@@ -624,69 +810,6 @@ Game_Character.prototype.drill_COMR_scriptTransform = function(route_list) {
 	}
 	return r_list;
 };
-
-
-//=============================================================================
-// * 特殊
-//=============================================================================
-//==============================
-// * 特殊 - 进入下一个移动指令刷新
-//==============================
-var _drill_COMR_c_update = Game_Character.prototype.update;
-Game_Character.prototype.update = function() {
-	this._drill_COMR_skip_count = 0;
-	this._drill_COMR_last_command = "";
-	_drill_COMR_c_update.call(this);
-}
-//==============================
-// * 特殊 - 检查F8按下
-//==============================
-var _drill_COMR_c_onKeyDown = Graphics._onKeyDown;
-Graphics._onKeyDown = function(event) {
-	_drill_COMR_c_onKeyDown.call(this,event);
-	
-    if (!event.ctrlKey && !event.altKey && Utils.isOptionValid('test') ) {		//测试状态才激活
-		if( event.keyCode == 119 ){ // F8
-			DrillUp.g_COMR_skip_checkDevOpen = true;
-		}
-		if( event.keyCode == 123 ){ // F12
-			DrillUp.g_COMR_skip_checkDevOpen = true;
-		}
-    }
-};
-//==============================
-// * 特殊 - 进入下一个移动指令
-//==============================
-Game_Character.prototype.drill_COMR_skipToNext = function() {
-	// require('nw.gui').Window.get().isDevToolsOpen(); mv1.52以下才有效，检查是否开启工具包
-	if( DrillUp.g_COMR_skip_checkDevOpen == true ){ return; }	//打开开发工具后，不再执行下一步指令（会严重拖慢游戏速度）
-	
-	var len = this._moveRoute.list.length;
-	var last_command = this._moveRoute.list[this._moveRouteIndex];
-	
-	for(var i=0; i < len; i++){
-		// > 当前索引+1
-		this._moveRouteIndex += 1;
-        if (this._moveRoute.repeat && this._moveRouteIndex >= len-1 ) {
-            this._moveRouteIndex = 0;
-			break;
-        }
-		// > 判断重复的移动路线
-		var cur_command = this._moveRoute.list[this._moveRouteIndex];
-		if( cur_command.code == 45 && last_command.code == 45 &&
-			cur_command.parameters[0] == last_command.parameters[0] ){
-			continue;
-		}else{
-			break;
-		}
-	}
-	
-	this._drill_COMR_skip_count += 1;
-	var cur_command = this._moveRoute.list[this._moveRouteIndex];
-	if( cur_command && this._drill_COMR_skip_count <= 1){	//同一个帧 超过n个指令，则留给下一帧来执行
-		this.processMoveCommand(cur_command);				//（command反复eval会极大地消耗性能）
-	}
-}
 
 //=============================================================================
 // * 识别障碍

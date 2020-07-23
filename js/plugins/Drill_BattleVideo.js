@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.5]        战斗 - 多层战斗视频
+ * @plugindesc [v1.6]        战斗 - 多层战斗视频
  * @author Drill_up
  * 
  * @Drill_LE_param "视频-%d"
@@ -98,6 +98,8 @@
  * 将视频变成可以配置多层。
  * [v1.5]
  * 修复了在播放视频时，突然暂停播放的问题。
+ * [v1.6]
+ * 更新了pixi5的兼容情况。
  * 
  *
  * @param ---视频组---
@@ -672,7 +674,7 @@ Drill_BVi_VideoSprite.prototype.constructor = Drill_BVi_VideoSprite;
 Drill_BVi_VideoSprite.prototype.initialize = function( data ) {
 	Sprite.prototype.initialize.call(this);
 	
-	// >初始化
+	// > 默认值
 	if( data == undefined ){ data = {}; };
 	if( data['path'] == undefined ){ data['path'] = "" };						//路径
 	if( data['muted'] == undefined ){ data['muted'] = true };					//是否静音
@@ -697,19 +699,26 @@ Drill_BVi_VideoSprite.prototype.initialize = function( data ) {
 	data['tint'] = data['tint'].replace("#","0x");
 	if( data['src_mask'] == undefined ){ data['src_mask'] = "" };						//遮罩
 	if( data['src_maskFile'] == undefined ){ data['src_maskFile'] = "img/system/" };	//遮罩文件夹
-	//alert(JSON.stringify(data));
 	
+	
+	// > 私有变量初始化
 	this._drill_data = data;										//数据
-	this._drill_texture = PIXI.Texture.fromVideo( data['path'] );	//pixi视频贴图
+	var nstr = PIXI.VERSION.split(/\./);
+	if( Number(nstr[0] >= 5) ){
+		this._drill_texture = PIXI.Texture.from( data['path'] );				//pixi5视频贴图
+		this._drill_src = this._drill_texture.baseTexture.resource.source;		//视频资源信息
+	}else{
+		this._drill_texture = PIXI.Texture.fromVideo( data['path'] );			//pixi4视频贴图
+		this._drill_src = this._drill_texture.baseTexture.source;				//视频资源信息
+	};
 	this._drill_texture_loaded = false;								//视频读取状态
-	this._drill_src = this._drill_texture.baseTexture.source;		//视频资源信息
-	this._drill_video = new PIXI.Sprite();					//视频贴图（rmmv修改了贴图width）
-	this._drill_video.texture = this._drill_texture;		//
-	this._drill_video.anchor.x = 0.5;						//
-	this._drill_video.anchor.y = 0.5;						//
-	this._drill_video.tint = parseInt(data['tint']);		//
-	this._drill_loopStart = 0;								//开始位置
-	this._drill_loopEnd = 0;								//结束位置
+	this._drill_video = new PIXI.Sprite();							//视频贴图（rmmv修改了贴图width）
+	this._drill_video.texture = this._drill_texture;				//
+	this._drill_video.anchor.x = 0.5;								//
+	this._drill_video.anchor.y = 0.5;								//
+	this._drill_video.tint = parseInt(data['tint']);				//
+	this._drill_loopStart = 0;										//开始位置
+	this._drill_loopEnd = 0;										//结束位置
 	this.addChild(this._drill_video);
 	
 	this.drill_BVi_spriteInit();

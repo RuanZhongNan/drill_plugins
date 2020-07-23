@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.5]        鼠标 - 状态和buff说明窗口
+ * @plugindesc [v1.6]        鼠标 - 状态和buff说明窗口
  * @author Drill_up
  *
  * @param ---窗口---
@@ -756,13 +756,13 @@
  * ----插件扩展
  * 该插件 不能 单独使用，基于插件才能运行。该插件也可以对其它插件扩展。
  * 基于：
- *   - Drill_CoreOfInput 系统 - 输入设备核心
+ *   - Drill_CoreOfInput             系统 - 输入设备核心
  * 作用于：
- *   - MOG_BattleHud 战斗UI-角色窗口 
+ *   - MOG_BattleHud                 战斗UI - 角色窗口 
  *     使得角色窗口的状态能显示，状态说明。
- *   - Drill_GaugeForBoss UI-高级BOSS生命固定框 ★★[v1.1]及以上★★
+ *   - Drill_GaugeForBoss            UI - 高级BOSS生命固定框 ★★v1.7及以上★★
  *     使得敌人生命框的状态能显示，状态说明。
- *   - YEP_BuffsStatesCore YEP状态核心
+ *   - YEP_BuffsStatesCore           YEP状态核心
  *     yep插件使得sv模式下玩家头上能显示状态图标，这里能兼容yep的图标。
  * 
  * -----------------------------------------------------------------------------
@@ -843,6 +843,8 @@
  * 分离了核心，优化了插件性能。
  * [v1.5]
  * 添加了锁定位置功能。
+ * [v1.6]
+ * 修改了与boss框的兼容性。
  */
 /*~struct~MiniPlateForState:
  *  
@@ -918,6 +920,7 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_MiniPlateForState');
 	
+	/*----------------窗口---------------*/
 	DrillUp.g_MPFS_type = String(DrillUp.parameters['激活方式'] || "鼠标接近");
 	DrillUp.g_MPFS_x = Number(DrillUp.parameters['偏移-窗口 X'] );
 	DrillUp.g_MPFS_y = Number(DrillUp.parameters['偏移-窗口 Y'] );
@@ -938,6 +941,7 @@
 	DrillUp.g_MPFS_ex_width = Number(DrillUp.parameters['窗口附加宽度'] || 0);
 	DrillUp.g_MPFS_ex_height = Number(DrillUp.parameters['窗口附加高度'] || 0);
 	
+	/*----------------buff---------------*/
 	DrillUp.g_MPFS_buff = [];
 	DrillUp.g_MPFS_buff[0] = [];
 	DrillUp.g_MPFS_buff[1] = [];
@@ -993,6 +997,7 @@
 		}
 	}
 	
+	/*----------------状态---------------*/
 	DrillUp.g_MPFS_list_length = 80;
 	DrillUp.g_MPFS_list = [];
 	for (var i = 0; i < DrillUp.g_MPFS_list_length ; i++ ) {
@@ -1022,11 +1027,13 @@
 	};
 	DrillUp.g_MPFS_plugin_cur_check = 0;	//容错检查
 	DrillUp.g_MPFS_plugin_check = 60;
+	
 
 //=============================================================================
 // * >>>>基于插件检测>>>>
 //=============================================================================
 if( Imported.Drill_CoreOfInput ){
+
 
 //=============================================================================
 // ** 插件指令
@@ -1212,30 +1219,32 @@ Sprite_Actor.prototype.update = function() {
 //==============================
 // * 绑定-drill高级boss框
 //==============================
-if(Imported.Drill_GaugeForBoss){
-	var _drill_MPFS_GFB_update = Drill_GFB_StyleSprite.prototype.updateStates ;
-	Drill_GFB_StyleSprite.prototype.updateStates = function() {
+if( Imported.Drill_GaugeForBoss ){
+	var _drill_MPFS_GFB_update = Drill_GFB_StyleSprite.prototype.drill_updateStates ;
+	Drill_GFB_StyleSprite.prototype.drill_updateStates = function() {
 		_drill_MPFS_GFB_update.call(this);
+		var data_b = this._drill_data_bind;
+		var data_s = this._drill_data_style;
 		
 		//if(this.parent.parent.parent.parent.parent){
 		//	alert(this.parent.parent.parent.parent.parent.constructor.name);	//上一层级 ._drill_battleUpArea >> ._battleField >> ._baseSprite  >> Spriteset_Battle >> Scene_Battle
 		//}
 		if( this.parent != undefined && this.parent.parent != undefined && this.parent.parent.parent != undefined &&
 			this.parent.parent.parent.parent != undefined && this.parent.parent.parent.parent.parent != undefined &&
-			this.parent.parent.parent.parent.parent.constructor.name == "Scene_Battle" && this._drill_style['state_enable'] == true ){
+			this.parent.parent.parent.parent.parent.constructor.name == "Scene_Battle" && data_s['state_enable'] == true ){
 			var _drill_plate = this.parent.parent.parent.parent.parent._drill_MPFS_window;
 		
 			var icons = this._drill_enemy.allIcons();
 			var icon_n = Math.max(icons.length,1);
-			var space = this._drill_style['state_spacing'];
-			var align = this._drill_style['state_align'];
+			var space = data_s['state_spacing'];
+			var align = data_s['state_align'];
 			var iw = Window_Base._iconWidth;
 			var ih = Window_Base._iconHeight;
 			var check = {
 				's': this._drill_enemy._states,
 				'b': this._drill_enemy._buffs
 			}
-			if( this._drill_style['state_mode'] == "直线并排" ){
+			if( data_s['state_mode'] == "直线并排" ){
 			
 				if( align == "右对齐" ){
 					check['x'] = this.x + this._drill_state_sprite.x - iw * (icon_n -1);
@@ -1298,19 +1307,22 @@ Scene_Battle.prototype.createSpriteset = function() {
 //=============================================================================
 // * Drill_MiniPlateForState_Window 说明面板（整个场景只有一个该窗口）
 //=============================================================================
+//==============================
+// * 说明面板 - 定义
+//==============================
 function Drill_MiniPlateForState_Window() {
     this.initialize.apply(this, arguments);
 };
-
 Drill_MiniPlateForState_Window.prototype = Object.create(Window_Base.prototype);
 Drill_MiniPlateForState_Window.prototype.constructor = Drill_MiniPlateForState_Window;
 
 //==============================
-// * 初始化-框架
+// * 说明面板 - 初始化
 //==============================
 Drill_MiniPlateForState_Window.prototype.initialize = function() {
     Window_Base.prototype.initialize.call(this, 0, 0, 0, 0);
 	
+	// > 私有变量初始化
 	this._drill_text_default = DrillUp.g_MPFS_default_text;
 	this._drill_text_default = this._drill_text_default.substring(1,this._drill_text_default.length-1);
 	this._drill_text_default_enable = DrillUp.g_MPFS_default_enable;
@@ -1329,10 +1341,13 @@ Drill_MiniPlateForState_Window.prototype.initialize = function() {
 	this._windowBackSprite.zIndex = 2;
 	this._windowFrameSprite.zIndex = 3;
 	
-	this.drill_createBackground();
-	this.drill_createText();
-	this.drill_sortBottomByZIndex();
+	this.drill_createBackground();		//创建背景
+	this.drill_createText();			//创建文本层
+	this.drill_sortBottomByZIndex();	//底层层级排序
 };
+//==============================
+// * 说明面板 - 私有覆写函数
+//==============================
 Drill_MiniPlateForState_Window.prototype.standardFontSize = function() {
     return DrillUp.g_MPFS_fontsize;
 };
@@ -1342,10 +1357,8 @@ Drill_MiniPlateForState_Window.prototype.standardPadding = function() {
 Drill_MiniPlateForState_Window.prototype.lineHeight = function() {
     return DrillUp.g_MPFS_lineheight;
 };
-
-
 //==============================
-// * 初始化-背景
+// * 创建 - 背景
 //==============================
 Drill_MiniPlateForState_Window.prototype.drill_createBackground = function() {
 	
@@ -1372,14 +1385,7 @@ Drill_MiniPlateForState_Window.prototype.drill_createBackground = function() {
 	//_windowSpriteContainer为窗口的最底层贴图
 }
 //==============================
-// ** 底层层级排序
-//==============================
-Drill_MiniPlateForState_Window.prototype.drill_sortBottomByZIndex = function() {
-   this._windowSpriteContainer.children.sort(function(a, b){return a.zIndex-b.zIndex});	//比较器
-};
-
-//==============================
-// * 初始化-文本层
+// * 创建 - 文本层
 //==============================
 Drill_MiniPlateForState_Window.prototype.drill_createText = function() {
 	this.createContents();
@@ -1388,9 +1394,15 @@ Drill_MiniPlateForState_Window.prototype.drill_createText = function() {
 	//绘制内容
 	this.drawTextEx(this._drill_text_default,0,0);
 }
+//==============================
+// ** 底层层级排序
+//==============================
+Drill_MiniPlateForState_Window.prototype.drill_sortBottomByZIndex = function() {
+   this._windowSpriteContainer.children.sort(function(a, b){return a.zIndex-b.zIndex});	//比较器
+};
 
 //==============================
-// * 帧刷新
+// * 说明面板 - 帧刷新
 //==============================
 Drill_MiniPlateForState_Window.prototype.update = function() {
 	Window_Base.prototype.update.call(this);
@@ -1399,7 +1411,7 @@ Drill_MiniPlateForState_Window.prototype.update = function() {
 	this.updatePosition();
 }
 //==============================
-// * 帧刷新-刷新位置
+// * 帧刷新 - 刷新位置
 //==============================
 Drill_MiniPlateForState_Window.prototype.updatePosition = function() {
 	var cal_x = _drill_mouse_x + DrillUp.g_MPFS_x;
@@ -1419,7 +1431,7 @@ Drill_MiniPlateForState_Window.prototype.updatePosition = function() {
 	this.y = cal_y;
 }
 //==============================
-// * 接口-添加状态图标判断
+// * 接口 - 添加状态图标判断
 //==============================
 Drill_MiniPlateForState_Window.prototype.pushChecks = function(c) {
 	if( this._drill_check_tank.length < 1000){	//防止卡顿造成的过度积压
@@ -1427,7 +1439,7 @@ Drill_MiniPlateForState_Window.prototype.pushChecks = function(c) {
 	}
 }
 //==============================
-// * 帧刷新-判断激活
+// * 帧刷新 - 判断激活
 //==============================
 Drill_MiniPlateForState_Window.prototype.updateChecks = function() {
 	if( !this._drill_check_tank ){ this.visible = false ; return ;}
@@ -1470,7 +1482,7 @@ Drill_MiniPlateForState_Window.prototype.updateChecks = function() {
 	this._drill_check_tank = [];
 }
 //==============================
-// * 激活-显示条件
+// * 激活 - 显示条件
 //==============================
 Drill_MiniPlateForState_Window.prototype.drill_checkCondition = function(check) {
 	var _x = _drill_mouse_x;
@@ -1496,7 +1508,7 @@ Drill_MiniPlateForState_Window.prototype.drill_checkCondition = function(check) 
 }
 
 //==============================
-// * 激活-刷新内容
+// * 激活 - 刷新内容
 //==============================
 Drill_MiniPlateForState_Window.prototype.reflashStateMassage = function(state_ids,buff_ids) {
 	if(!state_ids && !buff_ids ){ return }

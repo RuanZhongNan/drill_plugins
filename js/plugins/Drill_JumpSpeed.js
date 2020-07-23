@@ -197,6 +197,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
     this.drill_JSp_command(command, args);
     this.drill_JSp_oldCommand(command, args);
 };
+//==============================
+// * 插件指令 - 新指令
+//==============================
 Game_Interpreter.prototype.drill_JSp_command = function(command, args) {
 	if (command === ">跳跃设置")  {
 		/*-----------------事件------------------*/

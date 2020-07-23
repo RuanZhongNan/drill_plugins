@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        系统 - 窗口辅助核心
+ * @plugindesc [v1.1]        系统 - 窗口辅助核心
  * @author Drill_up
  * 
  * @help  
@@ -84,6 +84,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 优化了内部结构。
  *
  */
  
@@ -105,31 +107,31 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			窗口辅助核心：
-//				绘制内容组 DTLE
+//				绘制内容 DTLE 
 //					->把指定的文字画在面板中
 //					->固定行间距/自适应行间距
 //					->表达式
 //						->分割线
 //						->重复字符
-//						->条件字符		x
 //						->对齐命令
+//						->条件字符		x
 //						->滤镜字符？
-//				数据修改组 CPD
+//				数据修改 CPD
 //					->位置、高宽
 //					->移动动画
 //						->起点相对坐标/起点绝对坐标
 //						->匀速移动/弹性移动/不移动
 //					->布局设置
 //						->默认皮肤/单张背景贴图/隐藏布局
-//				按钮移动组 SBM
-//					->移动动画
-//
-//		★必要注意事项：
-//			1.插件只提供便捷的函数调用，【功能定制性很高】，具体调用方法见函数。
-//
-//		★其它说明细节：
-//			1.空的阶段时，阶段高度为0，根据滚轴推进可以快速跳过大量空阶段。
-//			  空阶段也会建立sprite，但是是空的sprite。
+//				贴图移动 SBM
+//					->贴图移动动画
+//					->窗口移动动画
+//			
+//		★核心接口说明：
+//			1.整个核心提供多个功能【装饰函数集】。
+//			  功能定制性很高，具体调用方法见函数。
+//			2.主要作用域在【窗口 + 菜单界面的一些贴图】。
+//			  用法在后面有详细说明，这里不赘述。
 //
 //		★存在的问题：
 //			暂无
@@ -146,18 +148,26 @@
 	
 
 //=============================================================================
-// ** 绘制内容组 DTLE（drawTextListEx）
+// ** 绘制内容 DTLE
 // **
+// **		类型：装饰函数集
+// **		功能：1.rmmv本体的函数：drawText(...) 单行绘制，不包括\i[2]图标等特殊字符
+// **			    rmmv本体的函数：drawTextEx(...) 单行绘制，包括\i[2]图标等特殊字符
+// **			  2.这里提供：drill_COWA_drawTextListEx(...) 多行绘制 + 特殊字符 + 表达式
+// **		接口：单个函数：
+// **			    window.drill_COWA_drawTextListEx( context_list, options );
+// **		说明：1.调用接口时，注意画布的重建问题，重建与高宽有关系。
+// **			  2.你需要了解函数的绘制流程，必要时，要断开部分函数，自己写绘制流程。
 //=============================================================================
 //==============================
-// * DTLE - 开始绘制（功能接口）
+// * DTLE - 开始绘制（接口，单次调用）
 //
-//			说明：rmmv本体没有提供复杂的Ex计算高度等复杂操作，这里手动提供Ex，包括高宽自适应功能。
-//				  【注意画布的重建问题，重建与高宽有关系，你可能要断开下面的流程。】
+//			说明：Ex字符绘制。
 //			参数：字符串列表，选项参数
 //			返回：无
 //==============================
 Window_Base.prototype.drill_COWA_drawTextListEx = function( context_list, options ){
+	
 	// > 默认值
 	options = this.drill_COWA_DTLE_checkOptions(options);
 	
@@ -177,7 +187,7 @@ Window_Base.prototype.drill_COWA_drawTextListEx = function( context_list, option
 	this.drill_COWA_DTLE_startDraw( context_list, options );
 }
 //==============================
-// * DTLE - 默认值处理
+// * DTLE - 默认值
 //==============================
 Window_Base.prototype.drill_COWA_DTLE_checkOptions = function( options ){
 	if( options == undefined ){ options = {}; };
@@ -191,8 +201,9 @@ Window_Base.prototype.drill_COWA_DTLE_checkOptions = function( options ){
 // * DTLE - 计算高宽
 //
 //			说明：返回每行内容的宽度和高度。
-//			返回：this.drill_COWA_heightList
-//				  this.drill_COWA_widthList
+//			参数：字符串列表，选项参数
+//			返回：高度列表 this.drill_COWA_heightList
+//				  宽度列表 this.drill_COWA_widthList
 //==============================
 Window_Base.prototype.drill_COWA_DTLE_calculateHeightAndWidth = function( context_list, options ){
 	var height_list = [];
@@ -212,9 +223,9 @@ Window_Base.prototype.drill_COWA_DTLE_calculateHeightAndWidth = function( contex
 //==============================
 // * DTLE - 开始绘制
 //
-//			参数：字符串列表
+//			说明：绘制字符。
+//			参数：字符串列表，选项参数
 //			返回：无
-//			说明：rmmv本体没有提供复杂的Ex计算高度等复杂操作，这里手动提供Ex，包括高宽自适应功能。
 //==============================
 Window_Base.prototype.drill_COWA_DTLE_startDraw = function( context_list, options ){
 	var xx = 0 ;
@@ -238,7 +249,6 @@ Window_Base.prototype.drill_COWA_DTLE_startDraw = function( context_list, option
 			this.drawTextEx(temp_text,xx,yy);
 		}
 		
-		
 		// > 划分行间距
 		if( options['autoLineheight'] == true ){
 			yy += this.drill_COWA_heightList[i];	//自适应行间距
@@ -253,7 +263,7 @@ Window_Base.prototype.drill_COWA_DTLE_startDraw = function( context_list, option
 //
 //			说明：只是将字符串转义，只影响字符。
 //			参数：字符串列表
-//			返回：转义后的字符串列表
+//			返回：字符串列表（转义后的）
 //==============================
 Window_Base.prototype.drill_COWA_convertEscapeCharacterInList = function( text_list ){
 	var converted_list = [];
@@ -269,7 +279,7 @@ Window_Base.prototype.drill_COWA_convertEscapeCharacterInList = function( text_l
 //
 //			说明：只是将字符串转义，只影响字符。
 //			参数：字符串
-//			返回：转义后的字符串
+//			返回：字符串（转义后的）
 //==============================
 Window_Base.prototype.drill_COWA_convertEscapeCharacter = function( text ){
 	var result_text = text;
@@ -325,7 +335,8 @@ Window_Base.prototype.drill_COWA_convertEscapeCharacter = function( text ){
 }
 //==============================
 // * DTLE - 表达式 - 绘制字符
-//			说明：这里的两个函数为【过程函数】，会操作contents对象。
+// 
+//			说明：这里的两个函数为【过程函数】，直接操作contents对象。
 //==============================
 Window_Base.prototype.drill_COWA_isMatchDrawCharacter = function( drawing_text ){
 	if( drawing_text.match(/<分隔:[^<>:]*:[^<>:]*>/) ){ return true; }
@@ -350,14 +361,25 @@ Window_Base.prototype.drill_COWA_convertDrawCharacter = function( drawing_text, 
 
 
 //=============================================================================
-// ** 数据修改组 CPD（changeParamData）
+// ** 窗口属性修改 CPD
 // **
+// **		类型：装饰函数集
+// **		功能：建立窗口后，初始化参数的操作。【包含窗口与布局的标准属性设置】
+// **			  直接初始化一个window容易被参数交联弄的晕头转向，
+// **			  这里聚拢了接口与参数，方便统一控制。
+// **		接口：初始化修改：
+// **			    window.drill_COWA_drawTextListEx( context_list, options );
+// **			  在scene中帧刷新：
+// **			    this._xxx_window.drill_COWA_CPD_update();
+// **			  重新移动：
+// **				this._xxx_window.drill_COWA_CPD_resetMove();
+// **		说明：1.执行修改方法后，contents将会被强制重建，你需要refresh内容。
+// **			  2.必须要求scene亲自控制窗口的update。硬性规定。
 //=============================================================================
 //==============================
-// * CPD - 开始修改（功能接口）
-//
-//			说明：建立窗口后，初始化参数的操作。【包含窗口与布局的标准属性设置】
-//				  执行该方法后，contents将会被强制重建，你需要refresh内容。
+// * CPD - 修改窗口属性（接口，单次调用）
+//			
+//			说明：执行该方法后，contents将会被强制重建，你需要refresh内容。
 //			参数：见默认值
 //			返回：无
 //==============================
@@ -395,9 +417,11 @@ Window_Base.prototype.drill_COWA_changeParamData = function( data ){
 	this.drill_COWA_CPD_initLayout();		//初始化 - 贴图布局 
 }
 //==============================
-// * CPD - 帧刷新（功能接口）
+// * CPD - 帧刷新（接口，实时调用）
 //
-//			说明：必须要求scene亲自控制update。（建立窗口后，手动update窗口）
+//			说明：必须要求scene亲自控制update。（window可以自己update，但是这里是硬性规定）
+//			参数：无
+//			返回：无
 //==============================
 Window_Base.prototype.drill_COWA_CPD_update = function(){
 	if( this._drill_COWA_CPD_data['enable'] == false ){ return; }
@@ -408,9 +432,11 @@ Window_Base.prototype.drill_COWA_CPD_update = function(){
 	this.drill_COWA_CPD_updateMove();							//帧刷新 - 移动属性 
 }
 //==============================
-// * CPD - 移动属性 - 重新移动（接口）
+// * CPD - 移动属性 - 重新移动（接口，单次调用）
 //
 //			说明：使得透明度/移动的功能重新播放一遍。
+//			参数：无
+//			返回：无
 //==============================
 Window_Base.prototype.drill_COWA_CPD_resetMove = function(){
 	var data = this._drill_COWA_CPD_data;
@@ -591,13 +617,24 @@ Object.defineProperty(Window.prototype, '_drill_COWA_frameOpacity', {	//这部�
 
 
 //=============================================================================
-// ** 按钮移动组 SBM（setButtonMove）
+// ** 贴图移动动画 SBM
+// **
+// **		类型：装饰函数集
+// **		功能：对菜单界面贴图的一些简单平移移动属性（菜单界面专用）。
+// **			  注意，菜单界面专用，其它界面的去找 弹道核心-两点式 。
+// **		接口：移动初始化：
+// **			    sprite.drill_COWA_setButtonMove( data );
+// **			  重新移动：
+// **				sprite.drill_COWA_SBM_resetMove();
+// **		说明：1.函数只控制x和y，不控制透明度。
+// **			  2.贴图会自动update。
+// **			  3.函数原本是给按钮贴图专用，但是后来由于都有共性，于是就开放定义了。
+// **			    但是仍然仅限 菜单界面 用。
 //=============================================================================
 //==============================
-// * SBM - 移动初始化（功能接口）
+// * SBM - 移动初始化（接口，单次调用）
 //
-//			说明：对于贴图的一些简单平移移动属性（菜单界面专用）。
-//				  注意，正在移动时，xy的值会被套牢。
+//			说明：正在移动时，xy的值会被套牢。移动结束后解套。
 //			参数：见默认值
 //			返回：无
 //==============================
@@ -623,7 +660,7 @@ Sprite.prototype.drill_COWA_setButtonMove = function( data ){
 	this.drill_COWA_SBM_initMove();		//初始化 - 移动属性 
 }
 //==============================
-// * SBM - 移动属性 - 重新移动（接口）
+// * SBM - 移动属性 - 重新移动（接口，单次调用）
 //
 //			说明：使得透明度/移动的功能重新播放一遍。
 //==============================
@@ -722,11 +759,25 @@ Sprite.prototype.drill_COWA_SBM_updateMove = function(){
 	//	（按钮不控制透明度）
 }
 
+//=============================================================================
+// ** 窗口移动动画 SBM
+// **
+// **		类型：装饰函数集
+// **		功能：对菜单界面窗口的一些简单平移移动属性（菜单界面专用）。
+// **			  注意，菜单界面专用，其它界面的去找 弹道核心-两点式 。
+// **		接口：移动初始化：
+// **			    window.drill_COWA_setButtonMove( data );
+// **			  在scene中帧刷新：
+// **			    this._xxx_window.drill_COWA_SBM_update();
+// **			  重新移动：
+// **				window.drill_COWA_SBM_resetMove();
+// **		说明：1.函数只控制x和y，不控制透明度。
+// **			  2.必须要求scene亲自控制窗口的update。硬性规定。
+//=============================================================================
 //==============================
-// * 窗口SBM - 初始化（功能接口）
+// * 窗口SBM - 初始化
 //
-//			说明：对于窗口的一些简单平移移动属性（菜单界面专用）。
-//				  注意，正在移动时，xy的值会被套牢。
+//			说明：正在移动时，xy的值会被套牢。移动结束后解套。
 //			参数：见默认值
 //			返回：无
 //==============================
@@ -737,9 +788,9 @@ Window_Base.prototype.initialize = function(x, y, width, height){
 	this._drill_COWA_SBM_data['enable'] = false;
 }
 //==============================
-// * 窗口SBM - 帧刷新（功能接口）
+// * 窗口SBM - 帧刷新（接口，实时调用）
 //
-//			说明：必须要求scene亲自控制update。（建立窗口后，手动update窗口）
+//			说明：必须要求scene亲自控制update。（window的update只对激活的窗口有效）
 //==============================
 Window_Base.prototype.drill_COWA_SBM_update = function(){
 	if( this._drill_COWA_SBM_data['enable'] == false ){ return; }
