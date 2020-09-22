@@ -3,9 +3,13 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        行走图 - 事件漂浮文字的背景[扩展]
+ * @plugindesc [v1.1]        行走图 - 事件漂浮文字的背景[扩展]
  * @author Drill_up
- *
+ * 
+ * @Drill_LE_param "背景样式-%d"
+ * @Drill_LE_parentKey "---背景样式组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_XETB_list_length"
+ * 
  * 
  * @help  
  * =============================================================================
@@ -20,7 +24,7 @@
  * ----插件扩展
  * 插件只对指定插件扩展，如果没有使用目标插件，则该插件没有任何效果。
  * 基于：
- *   - Drill_EventText 行走图-事件漂浮文字
+ *   - Drill_EventText             行走图-事件漂浮文字
  *     需要该插件才能绘制背景。
  *
  * -----------------------------------------------------------------------------
@@ -101,9 +105,11 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
- *
- *
- *
+ * [v1.1]
+ * 添加了最大值编辑的支持。
+ * 
+ * 
+ * 
  * @param ---背景样式组 1至20---
  * @default
  *
@@ -1470,7 +1476,7 @@ var _drill_XETB_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_XETB_pluginCommand.call(this, command, args);
 	
-	if (command === '>事件漂浮背景') { 	//	>事件漂浮背景 : 本事件 : 设置背景 : 2
+	if (command === ">事件漂浮背景") { 	//	>事件漂浮背景 : 本事件 : 设置背景 : 2
 		if(args.length == 6){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
@@ -1490,6 +1496,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				var e_id = $gameVariables.value(Number(temp1));
 			}
 			if( e_id && type == "设置背景" ){
+				if( $gameMap.drill_XETB_isEventExist( e_id ) == false ){ return; }
 				$gameMap.event(e_id)._drill_ET._enabled = true;		//强制漂浮文字刷新
 				$gameMap.event(e_id)._drill_XETB._back_index = temp3-1;
 				$gameMap.event(e_id)._drill_ET._forceRefresh = true;
@@ -1514,6 +1521,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				var e_id = $gameVariables.value(Number(temp1));
 			}
 			if( e_id && type == "去掉背景" ){
+				if( $gameMap.drill_XETB_isEventExist( e_id ) == false ){ return; }
 				$gameMap.event(e_id)._drill_XETB._back_index = -1;
 			}
 		}
@@ -1537,16 +1545,33 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				var e_id = $gameVariables.value(Number(temp1));
 			}
 			if( e_id && type == "背景偏移" ){
+				if( $gameMap.drill_XETB_isEventExist( e_id ) == false ){ return; }
 				$gameMap.event(e_id)._drill_XETB._x = temp3;
 				$gameMap.event(e_id)._drill_XETB._y = temp4;
 			}
 			if( e_id && type == "背景偏移(变量)" ){
+				if( $gameMap.drill_XETB_isEventExist( e_id ) == false ){ return; }
 				$gameMap.event(e_id)._drill_XETB._x = $gameVariables.value(temp3);
 				$gameMap.event(e_id)._drill_XETB._y = $gameVariables.value(temp4);
 			}
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_XETB_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_X_EventTextBackground.js 行走图 - 事件漂浮文字的背景[扩展]】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
 //=============================================================================
 // ** 初始化
 //=============================================================================

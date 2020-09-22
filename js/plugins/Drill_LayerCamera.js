@@ -411,7 +411,7 @@ var _drill_LCa_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_LCa_pluginCommand.call(this, command, args);
 	
-	if (command === '>地图镜头') {
+	if (command === ">地图镜头") {
 		
 		/*-----------------镜头锁定------------------*/
 		if(args.length == 2){
@@ -439,6 +439,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_id = this._eventId;
 					$gameSystem._drill_LCa_lookAt_X = -1;
 					$gameSystem._drill_LCa_lookAt_Y = -1;
+					if( $gameMap.drill_LCa_isEventExist( e_id ) == false ){ return; }
 					$gameSystem._drill_LCa_lookAt_event = e_id;
 				}
 				if( unit == "玩家位置" ){
@@ -453,6 +454,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_id = Number(unit);
 					$gameSystem._drill_LCa_lookAt_X = -1;
 					$gameSystem._drill_LCa_lookAt_Y = -1;
+					if( $gameMap.drill_LCa_isEventExist( e_id ) == false ){ return; }
 					$gameSystem._drill_LCa_lookAt_event = e_id;
 				}
 				if( unit.indexOf("事件变量[") != -1 ){
@@ -461,6 +463,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_id = $gameVariables.value(Number(unit));
 					$gameSystem._drill_LCa_lookAt_X = -1;
 					$gameSystem._drill_LCa_lookAt_Y = -1;
+					if( $gameMap.drill_LCa_isEventExist( e_id ) == false ){ return; }
 					$gameSystem._drill_LCa_lookAt_event = e_id;
 				}
 				if( unit.indexOf("位置[") != -1 ){
@@ -505,14 +508,18 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var type = String(args[1]);
 			var temp1 = String(args[3]);
 			if(type == "固定看向事件"){
+				var e_id = Number(temp1);
 				$gameSystem._drill_LCa_lookAt_X = -1;
 				$gameSystem._drill_LCa_lookAt_Y = -1;
-				$gameSystem._drill_LCa_lookAt_event = Number(temp1);
+				if( $gameMap.drill_LCa_isEventExist( e_id ) == false ){ return; }
+				$gameSystem._drill_LCa_lookAt_event = e_id;
 			}
 			if(type == "固定看向事件(变量)"){
+				var e_id = $gameVariables.value(Number(temp1));
 				$gameSystem._drill_LCa_lookAt_X = -1;
 				$gameSystem._drill_LCa_lookAt_Y = -1;
-				$gameSystem._drill_LCa_lookAt_event = $gameVariables.value(Number(temp1));
+				if( $gameMap.drill_LCa_isEventExist( e_id ) == false ){ return; }
+				$gameSystem._drill_LCa_lookAt_event = e_id;
 			}
 		}
 		/*-----------------镜头移动------------------*/
@@ -577,7 +584,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_LCa_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_LayerCamera.js 地图 - 活动地图镜头】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //=============================================================================
 // ** 事件注释初始化

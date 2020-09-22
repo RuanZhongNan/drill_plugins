@@ -222,7 +222,7 @@ if( Imported.Drill_CoreOfFilter ){
 var _drill_EvF_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_EvF_pluginCommand.call(this, command, args);
-	if (command === '>行走图滤镜') { // >行走图滤镜 : 领队 : 纯色滤镜 : 纯蓝 : 155 : 60
+	if (command === ">行走图滤镜") { // >行走图滤镜 : 领队 : 纯色滤镜 : 纯蓝 : 155 : 60
 		if(args.length == 8 || args.length == 10){
 			var unit = String(args[1]);
 			if( unit == "领队" ){
@@ -365,6 +365,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				var temp2 = Number(args[7]);
 				if( args[9]!=undefined ){ var temp3 = Number(args[9]); }
 				
+				if( $gameMap.drill_EvF_isEventExist( this._eventId ) == false ){ return; }
 				var e = $gameMap.event( this._eventId );
 				if( type == "纯色滤镜" ){
 					e._drill_EvF.openFilter = true;
@@ -471,6 +472,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				
 				if( unit == "指定事件(变量)" ){ index = $gameVariables.value(index);}
 				
+				if( $gameMap.drill_EvF_isEventExist( index ) == false ){ return; }
 				var e = $gameMap.event( index );
 				if( type == "纯色滤镜" ){
 					e._drill_EvF.openFilter = true;
@@ -515,6 +517,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EvF_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventFilter.js 行走图 - 滤镜效果】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

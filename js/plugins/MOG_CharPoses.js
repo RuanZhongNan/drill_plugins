@@ -3,8 +3,21 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v2.1)[v1.2]  行走图 - 角色姿势
+ * @plugindesc (v2.1)[v1.3]  行走图 - 角色姿势
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "角色站立-%d"
+ * @Drill_LE_parentKey "---角色站立组%d至%d---"
+ * @Drill_LE_var "Moghunter.charPoses_stand_list_length"
+ * 
+ * @Drill_LE_param "角色奔跑-%d"
+ * @Drill_LE_parentKey "---角色奔跑组%d至%d---"
+ * @Drill_LE_var "Moghunter.charPoses_run_list_length"
+ * 
+ * @Drill_LE_param "角色跳跃-%d"
+ * @Drill_LE_parentKey "---角色跳跃组%d至%d---"
+ * @Drill_LE_var "Moghunter.charPoses_jump_list_length"
+ * 
  *
  * @param 跟随角色是否开启姿势
  * @type boolean
@@ -1548,6 +1561,8 @@
  * 部署时勾选去除无关文件，本插件中相关的文件不会被去除。
  * [v1.2]
  * 修改了插件分类。
+ * [v1.3]
+ * 添加了最大值编辑的支持。
  *
  */
 

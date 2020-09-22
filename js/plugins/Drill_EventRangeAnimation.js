@@ -218,7 +218,7 @@ if( Imported.Drill_CoreOfFixedArea ){
 var _drill_ERA_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ERA_pluginCommand.call(this, command, args);
-	if (command === '>物体范围动画') {
+	if (command === ">物体范围动画") {
 		/*-----------------形状区域------------------*/
 		if(args.length == 8){
 			var unit = String(args[1]);
@@ -242,6 +242,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				unit = unit.replace("事件[","");
 				unit = unit.replace("]","");
 				var e_id = Number(unit);
+				if( $gameMap.drill_ERA_isEventExist( e_id ) == false ){ return; }
 				var e = $gameMap.event( e_id );
 				_x = e._x;
 				_y = e._y;
@@ -250,6 +251,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				unit = unit.replace("事件变量[","");
 				unit = unit.replace("]","");
 				var e_id = $gameVariables.value(Number(unit));
+				if( $gameMap.drill_ERA_isEventExist( e_id ) == false ){ return; }
 				var e = $gameMap.event( e_id );
 				_x = e._x;
 				_y = e._y;
@@ -373,6 +375,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 			
 			if( type == "固定区域" && type2 == "上一次事件的" && Imported.Drill_EventRangeTrigger){	
+				if( $gameMap.drill_ERA_isEventExist( e_id ) == false ){ return; }
 				var e = $gameMap.event( e_id );
 				var area = e._ERT_area || [];
 				$gameMap.drill_ERA_triggerArea( area, a_id );
@@ -384,6 +387,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 		
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ERA_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventRangeAnimation.js 物体触发 - 固定区域 & 播放并行动画】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

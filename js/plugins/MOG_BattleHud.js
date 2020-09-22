@@ -3,8 +3,13 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v4.0)[v1.5]  战斗UI - 角色窗口
+ * @plugindesc (v4.0)[v1.6]  战斗UI - 角色窗口
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "角色头像-%d"
+ * @Drill_LE_parentKey "---角色头像%d至%d---"
+ * @Drill_LE_var "Moghunter.actFace_list_length"
+ * 
  *
  * @param ----杂项----
  * @default  
@@ -1984,6 +1989,8 @@
  * 添加了敌人群体动画位置设置。
  * [v1.5]
  * 修改了插件关联的资源文件夹。
+ * [v1.6]
+ * 添加了最大值编辑的支持。
  */
  
  //

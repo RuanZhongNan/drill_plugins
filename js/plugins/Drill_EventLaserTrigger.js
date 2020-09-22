@@ -285,7 +285,7 @@
 var _drill_ELT_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ELT_pluginCommand.call(this, command, args);
-	if (command === '>主动触发') {
+	if (command === ">主动触发") {
 		/*-----------------可变激光区域------------------*/
 		if(args.length == 10){
 			var unit = String(args[1]);
@@ -381,6 +381,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				if( e_id == undefined ){
 					var e_id = Number(unit);
 				}
+				if( $gameMap.drill_ELT_isEventExist( e_id ) == false ){ return; }
 				var e = $gameMap.event( e_id );
 				var area = e._ELT_area || [];
 				$gameMap.drill_ELT_recordPoint( area, e._x, e._y );
@@ -405,7 +406,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 	/*-----------------被触发------------------*/
-	if (command === '>被触发') {
+	if (command === ">被触发") {
 		var e_ids = null;
 		if(args.length >= 2){
 			var unit = String(args[1]);
@@ -437,7 +438,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var type = String(args[3]);
 			if( type == "去除全部条件" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					var e = $gameMap.event( e_ids[k] );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_ELT_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e._drill_ELT.tags = {};
 				}
 			}
@@ -447,7 +450,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var temp2 = String(args[5]);
 			if( type == "去除条件" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					var e = $gameMap.event( e_ids[k] );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_ELT_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e._drill_ELT.tags[temp2] = false;
 				}
 			}
@@ -460,7 +465,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "设置条件" ){
 				if( temp3 == "触发独立开关"){
 					for( var k=0; k < e_ids.length; k++ ){
-						var e = $gameMap.event( e_ids[k] );
+						var e_id = e_ids[k];
+						if( $gameMap.drill_ELT_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_ELT.tags[temp2] = true;
 						e._drill_ELT.self_switchs[temp2] = temp4;
 					}
@@ -469,6 +476,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 	
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ELT_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventLaserTrigger.js 物体触发 - 可变激光区域 & 条件触发】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

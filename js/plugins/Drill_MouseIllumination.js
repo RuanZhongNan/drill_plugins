@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        鼠标 - 自定义照明效果
+ * @plugindesc [v1.1]        鼠标 - 自定义照明效果
  * @author Drill_up
  * 
  * 
@@ -20,7 +20,7 @@
  * ----插件扩展
  * 插件不能单独使用，必须基于插件：
  * 基于：
- *   - Drill_LayerIllumination     地图 - 自定义照明效果
+ *   - Drill_LayerIllumination     地图 - 自定义照明效果★★v1.3及以上★★
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
@@ -80,6 +80,9 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 重新整理了 黑暗层开关 与 地图注释锁定 的关系。
+ * 
  * 
  * 
  */
@@ -143,7 +146,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	
 	if( command === ">自定义照明" ){
 		
-		if( $gameSystem._drill_LIl_enable == false ){ return; }	//如果未开，则插件指令无效
+		// > 如果黑暗层未开，则插件指令无效
+		if( $gameMap._drill_LIl_lock['enableLocked'] == true && $gameMap._drill_LIl_lock['enable'] == false ){ return; }
+		if( $gameMap._drill_LIl_lock['enableLocked'] == false && $gameSystem._drill_LIl['enable'] == false ){ return; }
 		
 		/*-----------------物体照明------------------*/
 		if(args.length == 6){

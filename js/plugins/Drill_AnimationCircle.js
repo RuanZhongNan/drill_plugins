@@ -3,9 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        动画 - 多层动画魔法圈
+ * @plugindesc [v1.4]        动画 - 多层动画魔法圈
  * @author Drill_up
- *
+ * 
+ * @Drill_LE_param "魔法圈-%d"
+ * @Drill_LE_parentKey "---魔法圈组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_ACi_length"
+ * 
+ * 
  * @help
  * =============================================================================
  * +++ Drill_AnimationCircle +++
@@ -80,6 +85,8 @@
  * 修改了内部结构。
  * [v1.3]
  * 修改了插件关联的资源文件夹。
+ * [v1.4]
+ * 添加了最大值编辑的支持。
  *
  *
  * @param ---魔法圈组 1至20---
@@ -1531,10 +1538,10 @@
 　　var DrillUp = DrillUp || {}; 
 	DrillUp.parameters = PluginManager.parameters('Drill_AnimationCircle');
 	
-	DrillUp.g_ACi_max = 200;
+	DrillUp.g_ACi_length = 200;
 	DrillUp.g_ACi = [];
 	
-	for (var i = 0; i < DrillUp.g_ACi_max; i++) {
+	for (var i = 0; i < DrillUp.g_ACi_length; i++) {
 		if( DrillUp.parameters['魔法圈-' + String(i+1) ] != "" ){
 			DrillUp.g_ACi[i] = JSON.parse(DrillUp.parameters['魔法圈-' + String(i+1) ]);
 			DrillUp.g_ACi[i]['id'] = i+1;
@@ -1777,6 +1784,7 @@ Spriteset_Map.prototype.createCharacters = function() {
 	
 	if( !this._drill_anim_charBack ){		//图像后面层
 		this._drill_anim_charBack = new Sprite();
+		this._drill_anim_charBack.z = 0.75;		//（在中层上面，事件后面）
 		this._tilemap.addChild(this._drill_anim_charBack);
 	}
 	

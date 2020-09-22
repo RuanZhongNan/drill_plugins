@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        UI - 缓冲时间条
+ * @plugindesc [v1.1]        UI - 缓冲时间条
  * @author Drill_up
  * 
  * @Drill_LE_param "时间条样式-%d"
@@ -97,12 +97,13 @@
  * 
  * 插件指令：>缓冲时间条 : 控制时间条[1] : 修改整体位置平移 : 位置[20,-20]
  * 
- * 1.设置"暂停计时器"后，时间条将会一直处于暂停状态，且不会消失。
+ * 1.如果时间条未被创建，这上述指令都没有效果。
+ * 2.设置"暂停计时器"后，时间条将会一直处于暂停状态，且不会消失。
  *   必须恢复才能继续计时，计时结束自动消失。
- * 2.设置"结束时间播放"后，时间流动将会停止，并逐渐消失。
- * 3."修改整体位置平移"用于控制单独的时间条位置，
+ * 3.设置"结束时间播放"后，时间流动将会停止，并逐渐消失。
+ * 4."修改整体位置平移"用于控制单独的时间条位置，
  *   大部分的时间条是重叠在一起的，需要额外分配位置。
- * 4."设置/增加时间值"会影响段的情况，比如段上限180，时间+180，那么时间条
+ * 5."设置/增加时间值"会影响段的情况，比如段上限180，时间+180，那么时间条
  *   会立即增加一段。
  * 
  * -----------------------------------------------------------------------------
@@ -137,6 +138,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修复了插件指令在没有创建时间条时，执行 恢复计时器 出错的bug。
  * 
  * 
  * 
@@ -660,8 +663,11 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					}
 					
 					if( e_id ){
+						if( $gameMap.drill_GOBTB_isEventExist( e_id ) == false ){ return; }
 						var timeBar = $gameMap.drill_GOBTB_getTimeBarById( Number(bar_id) );
-						timeBar.drill_GOBTB_bindEvent( e_id );
+						if( timeBar ){
+							timeBar.drill_GOBTB_bindEvent( e_id );
+						}
 					}
 				}
 				
@@ -672,7 +678,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 						var temp_arr = temp2.split(/[,，]/);
 						if( temp_arr.length >= 2 ){
 							var timeBar = $gameMap.drill_GOBTB_getTimeBarById( Number(bar_id) );
-							timeBar.drill_GOBTB_bindTile( Number(temp_arr[0]),Number(temp_arr[1]) );
+							if( timeBar ){
+								timeBar.drill_GOBTB_bindTile( Number(temp_arr[0]),Number(temp_arr[1]) );
+							}
 						}
 					}
 				}
@@ -689,16 +697,22 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				
 				if( temp1 == "暂停计时器" ){
 					var timeBar = $gameMap.drill_GOBTB_getTimeBarById( Number(bar_id) );
-					timeBar._drill_timeBlocked = true;
+					if( timeBar ){
+						timeBar._drill_timeBlocked = true;
+					}
 				}
 				if( temp1 == "恢复计时器" ){
 					var timeBar = $gameMap.drill_GOBTB_getTimeBarById( Number(bar_id) );
-					timeBar._drill_timeBlocked = false;
+					if( timeBar ){
+						timeBar._drill_timeBlocked = false;
+					}
 				}
 				if( temp1 == "结束时间播放" ){
 					var timeBar = $gameMap.drill_GOBTB_getTimeBarById( Number(bar_id) );
-					timeBar._drill_timeBlocked = false;
-					timeBar._drill_data['life_time'] = timeBar._drill_cur_time;		//结束时间 立即变成当前时间
+					if( timeBar ){
+						timeBar._drill_timeBlocked = false;
+						timeBar._drill_data['life_time'] = timeBar._drill_cur_time;		//结束时间 立即变成当前时间
+					}
 				}
 			}
 		}
@@ -748,6 +762,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_GOBTB_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	if( e_id == -2 ){ return true; }	//玩家
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_GaugeOfBufferTimeBar.js UI - 缓冲时间条】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 

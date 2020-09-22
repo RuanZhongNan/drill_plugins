@@ -3,9 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.9)[v1.5]  地图UI - 玩家信息固定框
+ * @plugindesc (v1.9)[v1.6]  地图UI - 玩家信息固定框
  * @author Moghunter （Drill_up翻译+优化）
- *
+ * 
+ * @Drill_LE_param "角色头像-%d"
+ * @Drill_LE_parentKey "---角色头像%d至%d---"
+ * @Drill_LE_var "Moghunter.ahudFace_list_length"
+ * 
+ * 
  * @param 是否初始显示
  * @type boolean
  * @on 显示
@@ -1384,6 +1389,8 @@
  * 修改了插件分类。
  * [v1.5]
  * 修改了插件关联的资源文件夹。
+ * [v1.6]
+ * 添加了最大值编辑的支持。
  *
  */
 

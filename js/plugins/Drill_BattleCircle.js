@@ -3,1641 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        战斗 - 多层战斗魔法圈
+ * @plugindesc [v1.3]        战斗 - 多层战斗魔法圈
  * @author Drill_up
- *
- *
- * @param --魔法圈组 1至20--
- * @default 
- *
- * @param 魔法圈-1
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-2
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-3
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-4
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-5
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-6
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-7
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-8
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-9
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-10
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-11
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-12
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-13
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-14
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-15
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-16
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-17
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-18
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-19
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-20
- * @parent --魔法圈组 1至20--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组21至40--
- * @default 
- *
- * @param 魔法圈-21
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-22
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-23
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-24
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-25
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-26
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-27
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-28
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-29
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-30
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-31
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-32
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-33
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-34
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-35
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-36
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-37
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-38
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-39
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-40
- * @parent --魔法圈组21至40--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组41至60--
- * @default 
- *
- * @param 魔法圈-41
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-42
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-43
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-44
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-45
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-46
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-47
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-48
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-49
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-50
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-51
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-52
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-53
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-54
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-55
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-56
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-57
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-58
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-59
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-60
- * @parent --魔法圈组41至60--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组61至80--
- * @default 
- *
- * @param 魔法圈-61
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-62
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-63
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-64
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-65
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-66
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-67
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-68
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-69
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-70
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-71
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-72
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-73
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-74
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-75
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-76
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-77
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-78
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-79
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-80
- * @parent --魔法圈组61至80--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组81至100--
- * @default 
- *
- * @param 魔法圈-81
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-82
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-83
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-84
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-85
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-86
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-87
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-88
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-89
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-90
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-91
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-92
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-93
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-94
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-95
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-96
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-97
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-98
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-99
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-100
- * @parent --魔法圈组81至100--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- *
- * @param --魔法圈组101至120--
- * @default 
- *
- * @param 魔法圈-101
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-102
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-103
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-104
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-105
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-106
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-107
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-108
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-109
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-110
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-111
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-112
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-113
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-114
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-115
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-116
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-117
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-118
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-119
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-120
- * @parent --魔法圈组101至120--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组121至140--
- * @default 
- *
- * @param 魔法圈-121
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-122
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-123
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-124
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-125
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-126
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-127
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-128
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-129
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-130
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-131
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-132
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-133
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-134
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-135
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-136
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-137
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-138
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-139
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-140
- * @parent --魔法圈组121至140--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组141至160--
- * @default 
- *
- * @param 魔法圈-141
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-142
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-143
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-144
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-145
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-146
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-147
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-148
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-149
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-150
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-151
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-152
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-153
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-154
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-155
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-156
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-157
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-158
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-159
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-160
- * @parent --魔法圈组141至160--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组161至180--
- * @default 
- *
- * @param 魔法圈-161
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-162
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-163
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-164
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-165
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-166
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-167
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-168
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-169
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-170
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-171
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-172
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-173
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-174
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-175
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-176
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-177
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-178
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-179
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-180
- * @parent --魔法圈组161至180--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --魔法圈组181至200--
- * @default 
- *
- * @param 魔法圈-181
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-182
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-183
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-184
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-185
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-186
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-187
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-188
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-189
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-190
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-191
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-192
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-193
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-194
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-195
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-196
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-197
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-198
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-199
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 魔法圈-200
- * @parent --魔法圈组181至200--
- * @desc 魔法圈的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
+ * 
+ * @Drill_LE_param "魔法圈-%d"
+ * @Drill_LE_parentKey "---魔法圈组%d至%d---"
+ * @Drill_LE_var "null"
+ * 
+ * 
  * @help
  * =============================================================================
  * +++ Drill_BattleCircle +++
@@ -1766,7 +139,1640 @@
  * 添加了图片层、最顶层的设置。
  * [v1.2]
  * 修改了插件关联的资源文件夹。
+ * [v1.3]
+ * 添加了最大值编辑的支持。
+ * 
  *
+ * @param ---魔法圈组 1至20---
+ * @default 
+ * 
+ * @param 魔法圈-1
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-2
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-3
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-4
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-5
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-6
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-7
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-8
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-9
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-10
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-11
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-12
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-13
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-14
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-15
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-16
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-17
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-18
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-19
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-20
+ * @parent ---魔法圈组 1至20---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组21至40---
+ * @default 
+ * 
+ * @param 魔法圈-21
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-22
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-23
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-24
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-25
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-26
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-27
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-28
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-29
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-30
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-31
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-32
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-33
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-34
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-35
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-36
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-37
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-38
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-39
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-40
+ * @parent ---魔法圈组21至40---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组41至60---
+ * @default 
+ * 
+ * @param 魔法圈-41
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-42
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-43
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-44
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-45
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-46
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-47
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-48
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-49
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-50
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-51
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-52
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-53
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-54
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-55
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-56
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-57
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-58
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-59
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-60
+ * @parent ---魔法圈组41至60---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组61至80---
+ * @default 
+ * 
+ * @param 魔法圈-61
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-62
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-63
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-64
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-65
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-66
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-67
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-68
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-69
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-70
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-71
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-72
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-73
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-74
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-75
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-76
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-77
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-78
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-79
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-80
+ * @parent ---魔法圈组61至80---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组81至100---
+ * @default 
+ * 
+ * @param 魔法圈-81
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-82
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-83
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-84
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-85
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-86
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-87
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-88
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-89
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-90
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-91
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-92
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-93
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-94
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-95
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-96
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-97
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-98
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-99
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-100
+ * @parent ---魔法圈组81至100---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组101至120---
+ * @default 
+ * 
+ * @param 魔法圈-101
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-102
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-103
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-104
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-105
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-106
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-107
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-108
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-109
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-110
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-111
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-112
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-113
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-114
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-115
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-116
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-117
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-118
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-119
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-120
+ * @parent ---魔法圈组101至120---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组121至140---
+ * @default 
+ * 
+ * @param 魔法圈-121
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-122
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-123
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-124
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-125
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-126
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-127
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-128
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-129
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-130
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-131
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-132
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-133
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-134
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-135
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-136
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-137
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-138
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-139
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-140
+ * @parent ---魔法圈组121至140---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组141至160---
+ * @default 
+ * 
+ * @param 魔法圈-141
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-142
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-143
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-144
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-145
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-146
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-147
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-148
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-149
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-150
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-151
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-152
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-153
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-154
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-155
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-156
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-157
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-158
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-159
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-160
+ * @parent ---魔法圈组141至160---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组161至180---
+ * @default 
+ * 
+ * @param 魔法圈-161
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-162
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-163
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-164
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-165
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-166
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-167
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-168
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-169
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-170
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-171
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-172
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-173
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-174
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-175
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-176
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-177
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-178
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-179
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-180
+ * @parent ---魔法圈组161至180---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param ---魔法圈组181至200---
+ * @default 
+ * 
+ * @param 魔法圈-181
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-182
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-183
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-184
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-185
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-186
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-187
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-188
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-189
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-190
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-191
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-192
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-193
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-194
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-195
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-196
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-197
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-198
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-199
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
+ * @param 魔法圈-200
+ * @parent ---魔法圈组181至200---
+ * @desc 魔法圈的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ * 
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

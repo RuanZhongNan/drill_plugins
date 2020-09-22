@@ -1073,7 +1073,7 @@ Scene_MenuBase.prototype.drill_MGi_checkKeyword = function(i) {
 	}else if( SceneManager._scene.constructor.name === "Scene_Debug" && temp_sprite_data['menu'] == "测试查值" ){
 		return true;
 	/*---------------旧选项----------------*/
-	}else if( SceneManager._scene.constructor.name === "Scene_Party" && temp_sprite_data['menu'] == "队形"  ){
+	}else if( (SceneManager._scene.constructor.name === "Scene_Party" || SceneManager._scene.constructor.name === "Scene_Drill_SMa_Formation") && temp_sprite_data['menu'] == "队形"  ){
 		return true;
 	}else if( SceneManager._scene.constructor.name === "Scene_EnemyBook" && temp_sprite_data['menu'] == "敌人图鉴" ){
 		return true;

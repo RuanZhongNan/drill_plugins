@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        系统 - 窗口辅助核心
+ * @plugindesc [v1.2]        系统 - 窗口辅助核心
  * @author Drill_up
  * 
  * @help  
@@ -56,6 +56,11 @@
  *   比如"<分隔:0:1>"，整行会变成一条厚度为1，颜色为0（白色）的分隔线。
  * 
  * -----------------------------------------------------------------------------
+ * ----可选设定 - 帮助窗口换行
+ * 在各类菜单窗口中如果使用到了帮助窗口，
+ * 你可以直接在编辑器中写"\n"字符实现换行。
+ * 
+ * -----------------------------------------------------------------------------
  * ----插件性能
  * 测试仪器：   4G 内存，Intel Core i5-2520M CPU 2.5GHz 处理器
  *              Intel(R) HD Graphics 3000 集显 的垃圾笔记本
@@ -86,6 +91,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 优化了内部结构。
+ * [v1.2]
+ * 添加了帮助窗口换行的功能。
  *
  */
  
@@ -107,6 +114,7 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			窗口辅助核心：
+//				帮助窗口换行
 //				绘制内容 DTLE 
 //					->把指定的文字画在面板中
 //					->固定行间距/自适应行间距
@@ -146,6 +154,19 @@
     DrillUp.parameters = PluginManager.parameters('Drill_CoreOfWindowAuxiliary');
 	
 	
+//=============================================================================
+// ** 帮助窗口换行
+//=============================================================================
+var _drill_COWA_setItem = Window_Help.prototype.setItem;
+Window_Help.prototype.setItem = function(item) {
+	var str = item ? item.description : "";
+	if( str.contains("\\n") ){
+		str = str.replace("\\n","\n");
+		this.setText( str );
+	}else{
+		_drill_COWA_setItem.call(this, item);
+	}
+};
 
 //=============================================================================
 // ** 绘制内容 DTLE
@@ -410,6 +431,9 @@ Window_Base.prototype.drill_COWA_changeParamData = function( data ){
 	if( data['layoutX'] == undefined ){ data['layoutX'] = 0 };							//布局 - 位置修正x
 	if( data['layoutY'] == undefined ){ data['layoutY'] = 0 };							//布局 - 位置修正y
 	
+	data['callBackNeeded'] = true;														//特殊 - 回调开关
+	if( data['callBack'] == undefined ){ data['callBack'] = function(){} };				//特殊 - 回调函数
+	
 	// > 参数初始化
 	this._drill_COWA_CPD_data = data;
 	this.drill_COWA_CPD_initMove();			//初始化 - 移动属性 
@@ -494,7 +518,13 @@ Window_Base.prototype.drill_COWA_CPD_updateMove = function(){
 	data['slideDelay'] -= 1;
 	if( data['slideDelay'] >= 0 ){ this.drill_COWA_CPD_resetMove(); return; }
 	data['slideCur'] += 1;
-	if( data['slideCur'] > data['slideTime'] ){ return; }
+	if( data['slideCur'] > data['slideTime'] ){	
+		if( data['callBackNeeded'] == true ){
+			data['callBackNeeded'] = false;
+			data['callBack'].call(this);		//（回调函数）
+		}
+		return; 
+	}
 	if( data['slideMoveType'] == "不移动" ){ return; }
 	
 	// > 移动
@@ -656,6 +686,9 @@ Sprite.prototype.drill_COWA_setButtonMove = function( data ){
 	if( data['slideAbsoluteX'] == undefined ){ data['slideAbsoluteX'] = 0 };			//移动 - 起点-绝对坐标x
 	if( data['slideAbsoluteY'] == undefined ){ data['slideAbsoluteY'] = 0 };			//移动 - 起点-绝对坐标y
 	
+	data['callBackNeeded'] = true;														//特殊 - 回调开关
+	if( data['callBack'] == undefined ){ data['callBack'] = function(){} };				//特殊 - 回调函数
+	
 	this._drill_COWA_SBM_data = data;
 	this.drill_COWA_SBM_initMove();		//初始化 - 移动属性 
 }
@@ -721,7 +754,13 @@ Sprite.prototype.drill_COWA_SBM_updateMove = function(){
 	data['slideDelay'] -= 1;
 	if( data['slideDelay'] >= 0 ){ return; }
 	data['slideCur'] += 1;
-	if( data['slideCur'] > data['slideTime'] ){ return; }
+	if( data['slideCur'] > data['slideTime'] ){
+		if( data['callBackNeeded'] == true ){
+			data['callBackNeeded'] = false;
+			data['callBack'].call(this);		//（回调函数）
+		}
+		return;
+	}
 	if( data['slideMoveType'] == "不移动" ){ return; }
 	
 	// > 移动

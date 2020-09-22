@@ -1082,6 +1082,11 @@
 //					->遮罩遮挡
 //					->显示模式
 //				->加满动画
+//		
+//		
+//		★配置参数结构体如下：
+//			~struct~GaugeMeter:						参数条样式
+//			~struct~DrillCOGMBallistics:			弹出条弹道（弹道核心）
 //				
 //		★私有类如下：
 //			* Drill_COGM_MeterSprite【参数条】
@@ -1120,14 +1125,16 @@
     DrillUp.parameters = PluginManager.parameters('Drill_CoreOfGaugeMeter');
 	
 	//==============================
-	// * 变量获取 - 弹道样式（必须写在前面）
+	// * 变量获取 - 弹出条弹道样式（必须写在前面）
+	//				（~struct~DrillCOGMBallistics）
 	//
-	//				说明：函数未定义下列参数，若不定义则为默认值： 
-	//						movementNum（数量）
+	//				说明：函数未定义白色括号中的参数，为默认值。
 	//==============================
 	DrillUp.drill_COGM_ballisticsInit = function( dataFrom ) {
 		var data = {};
 		//   移动（movement）
+		//		data['movementNum']【数量】
+		//		data['movementDelay']【延迟时间】
 		data['movementTime'] = Number( dataFrom["移动时长"] || 0);
 		data['movementMode'] = String( dataFrom["移动模式"] || "极坐标模式" );
 		//   极坐标（polar）
@@ -1169,18 +1176,24 @@
 	
 	//==============================
 	// * 变量获取 - 参数条样式（必须写在前面）
+	//				（~struct~GaugeMeter）
 	//
-	//				说明：函数未定义下列参数，若不定义则为默认值： 
-	//						x, y（坐标）, visible（可见）, anchor_x, anchor_y（中心锚点）, level_max（段上限）,
-	//						xxx_file （资源文件夹）, filling_xxx（加满动画全部参数）
+	//				说明：函数未定义白色括号中的参数，需要子插件定义。若不定义则为默认值。
 	//==============================
 	DrillUp.drill_COGM_initStyle = function( dataFrom ) {
 		var data = {};
 		// > 主体
+		//		data['x']【平移x（非实时赋值）】
+		//		data['y']【平移y（非实时赋值）】
+		//		data['anchor_x']【中心锚点x（非实时赋值）】
+		//		data['anchor_y']【中心锚点y（非实时赋值）】
+		//		data['visible']【可见】
+		//		data['meter_src_file']【资源文件夹】
 		data['rotation'] = Number( dataFrom["整体旋转角度"] || 0 );
 		data['meter_src'] = String( dataFrom["资源-参数条"] || "" );
 		data['meter_src_mask'] = String( dataFrom["资源-参数条遮罩"] || "" );
 		// > 分段条（段）
+		//		data['level_max']【段上限】
 		data['level_count'] = Number( dataFrom["段数"] || 1);
 		data['level_isLoop'] = String( dataFrom["段是否循环"] || "true") === "true";
 		data['shorten_mode'] = String( dataFrom["缩短方式"] || "匀速缩短");
@@ -1191,6 +1204,7 @@
 		data['flow_srcMode'] = String( dataFrom["流动段划分模式"] || "三等份划分");
 		data['flow_levelLength'] = Number( dataFrom["段长度"] || 0 );
 		// > 凹槽条
+		//		data['leak_src_file']【资源文件夹】
 		data['leak_enable'] = String( dataFrom["是否启用凹槽条"] || "true") === "true";
 		data['leak_src'] = String( dataFrom["资源-凹槽条"] || "" );
 		data['leak_speed'] = Number( dataFrom["扣除速度"] || 15.0 );
@@ -1206,6 +1220,7 @@
 			data['spring_ballistics'] = {};		
 		}
 		// > 粒子
+		//		data['par_src_file']【资源文件夹】
 		data['par_enable'] = String( dataFrom["是否启用粒子效果"] || "true") === "true";
 		data['par_src'] = String( dataFrom["资源-粒子"] || "" );
 		data['par_mode'] = String( dataFrom["粒子出现模式"] || "底部出现");
@@ -1214,6 +1229,7 @@
 		data['par_count'] = Number( dataFrom["粒子数量"] || 20);
 		data['par_life'] = Number( dataFrom["粒子持续时间"] || 20);
 		// > 游标
+		//		data['vernier_src_file']【资源文件夹】
 		data['vernier_enable'] = String( dataFrom["是否启用游标"] || "false") === "true";
 		if( dataFrom["资源-游标"] != undefined && dataFrom["资源-游标"] != "" ){
 			data['vernier_src'] = JSON.parse( dataFrom["资源-游标"] );
@@ -1227,6 +1243,11 @@
 		data['vernier_mode'] = String( dataFrom["游标显示模式"] || "一直显示");
 		data['vernier_reset'] = String( dataFrom["是否启用多段复位"] || "false") === "true";
 		data['vernier_maskCover'] = String( dataFrom["遮罩是否能遮挡游标"] || "false") === "true";
+		// > 加满动画
+		//		data['filling_enable']【启用】
+		//		data['filling_mode']【加满方式】
+		//		data['filling_time']【持续时间】
+		//		data['filling_delay']【动画延迟】
 		
 		return data;
 	};

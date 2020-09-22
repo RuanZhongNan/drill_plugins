@@ -423,26 +423,26 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_BombCore');
 	
-	DrillUp.g_BoC_playerFire = Number(DrillUp.parameters['玩家初始炸弹火力'] || 1);
-	DrillUp.g_BoC_playerBombNum = Number(DrillUp.parameters['玩家初始炸弹数量'] || 1);
-	DrillUp.g_BoC_eventFire = Number(DrillUp.parameters['事件默认炸弹火力'] || 1);
-	DrillUp.g_BoC_eventBombNum = Number(DrillUp.parameters['事件默认炸弹数量'] || 1);
+	DrillUp.g_BoC_playerFire = Number(DrillUp.parameters["玩家初始炸弹火力"] || 1);
+	DrillUp.g_BoC_playerBombNum = Number(DrillUp.parameters["玩家初始炸弹数量"] || 1);
+	DrillUp.g_BoC_eventFire = Number(DrillUp.parameters["事件默认炸弹火力"] || 1);
+	DrillUp.g_BoC_eventBombNum = Number(DrillUp.parameters["事件默认炸弹数量"] || 1);
 
-	DrillUp.g_BoC_bombImg = String(DrillUp.parameters['资源-炸弹图像'] || "" );
-	DrillUp.g_BoC_bombPutSound = String(DrillUp.parameters['资源-放置声音'] || "" );
-	DrillUp.g_BoC_bombBoomSound = String(DrillUp.parameters['资源-爆炸声音'] || "" );
-	DrillUp.g_BoC_bombAnim = Number(DrillUp.parameters['爆炸动画'] || 80);
-	DrillUp.g_BoC_bombTime = Number(DrillUp.parameters['计时炸弹时间'] || 150);
-	DrillUp.g_BoC_bombInterval = Number(DrillUp.parameters['爆炸持续时间'] || 18);
-	if(  DrillUp.parameters['禁止炸弹区'] != undefined && DrillUp.parameters['禁止炸弹区'] != "" ){
-		DrillUp.g_BoC_bombForbiddenArea = (JSON.parse( DrillUp.parameters['禁止炸弹区'])).map(function(n){ return Number(n) });
+	DrillUp.g_BoC_bombImg = String(DrillUp.parameters["资源-炸弹图像"] || "" );
+	DrillUp.g_BoC_bombPutSound = String(DrillUp.parameters["资源-放置声音"] || "" );
+	DrillUp.g_BoC_bombBoomSound = String(DrillUp.parameters["资源-爆炸声音"] || "" );
+	DrillUp.g_BoC_bombAnim = Number(DrillUp.parameters["爆炸动画"] || 80);
+	DrillUp.g_BoC_bombTime = Number(DrillUp.parameters["计时炸弹时间"] || 150);
+	DrillUp.g_BoC_bombInterval = Number(DrillUp.parameters["爆炸持续时间"] || 18);
+	if(  DrillUp.parameters["禁止炸弹区"] != undefined && DrillUp.parameters["禁止炸弹区"] != "" ){
+		DrillUp.g_BoC_bombForbiddenArea = (JSON.parse( DrillUp.parameters["禁止炸弹区"])).map(function(n){ return Number(n) });
 	}else{
 		DrillUp.g_BoC_bombForbiddenArea = [];
 	}
-	DrillUp.g_BoC_bombLight = String(DrillUp.parameters['是否启用炸弹照明'] || "true") == "true";
-	DrillUp.g_BoC_bombLightFrame = Number(DrillUp.parameters['火花光源id'] || 19);
-	DrillUp.g_BoC_bombLightBlast = Number(DrillUp.parameters['爆炸动态光源id'] || 20);
-	DrillUp.g_BoC_bombLightBlastSustain = Number(DrillUp.parameters['爆炸动态光源持续时间'] || 60);
+	DrillUp.g_BoC_bombLight = String(DrillUp.parameters["是否启用炸弹照明"] || "true") == "true";
+	DrillUp.g_BoC_bombLightFrame = Number(DrillUp.parameters["火花光源id"] || 19);
+	DrillUp.g_BoC_bombLightBlast = Number(DrillUp.parameters["爆炸动态光源id"] || 20);
+	DrillUp.g_BoC_bombLightBlastSustain = Number(DrillUp.parameters["爆炸动态光源持续时间"] || 60);
 	
 	
 //=============================================================================
@@ -461,7 +461,7 @@ if( Imported.Drill_EventDuplicator &&
 var _drill_BoC_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_BoC_pluginCommand.call(this, command, args);
-	if (command === '>炸弹人控制台') {
+	if( command === ">炸弹人控制台" ){
 		if(args.length == 10){
 			var type = String(args[1]);
 			var temp1 = Number(args[3]);
@@ -498,12 +498,14 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				temp1 = temp1.replace("事件[","");
 				temp1 = temp1.replace("]","");
 				var e_id = Number(temp1);
+				if( $gameMap.drill_BoC_isEventExist( e_id ) == false ){ return; }
 				character = $gameMap.event(e_id);
 			}
 			if( temp1.indexOf("事件变量[") != -1 ){
 				temp1 = temp1.replace("事件变量[","");
 				temp1 = temp1.replace("]","");
 				var e_id = $gameVariables.value(Number(temp1));
+				if( $gameMap.drill_BoC_isEventExist( e_id ) == false ){ return; }
 				character = $gameMap.event(e_id);
 			}
 			
@@ -530,12 +532,14 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				temp1 = temp1.replace("事件[","");
 				temp1 = temp1.replace("]","");
 				var e_id = Number(temp1);
+				if( $gameMap.drill_BoC_isEventExist( e_id ) == false ){ return; }
 				character = $gameMap.event(e_id);
 			}
 			if( temp1.indexOf("事件变量[") != -1 ){
 				temp1 = temp1.replace("事件变量[","");
 				temp1 = temp1.replace("]","");
 				var e_id = $gameVariables.value(Number(temp1));
+				if( $gameMap.drill_BoC_isEventExist( e_id ) == false ){ return; }
 				character = $gameMap.event(e_id);
 			}
 			
@@ -616,6 +620,23 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_BoC_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_BombCore.js 炸弹人 - 游戏核心】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
+
+
 //=============================================================================
 // ** 存储变量初始化
 //=============================================================================
@@ -624,6 +645,7 @@ Game_System.prototype.initialize = function() {
     _drill_BoC_sys_initialize.call(this);
 	this._drill_BoC_canPutBomb = true;
 }
+
 
 //=============================================================================
 // ** 事件注释初始化

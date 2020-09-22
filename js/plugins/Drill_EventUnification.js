@@ -241,7 +241,7 @@ if( Imported.Drill_EventThrough ){
 var _drill_EU_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_EU_pluginCommand.call(this, command, args);
-	if (command === '>事件一体化') {	//>事件一体化 : 本事件 : 添加移动标签 : 大箱子A
+	if (command === ">事件一体化") {	//>事件一体化 : 本事件 : 添加移动标签 : 大箱子A
 		/*-----------------事件------------------*/
 		var e = null;
 		if(args.length >= 2){
@@ -254,12 +254,14 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				unit = unit.replace("事件[","");
 				unit = unit.replace("]","");
 				var e_id = Number(unit);
+				if( $gameMap.drill_EU_isEventExist( e_id ) == false ){ return; }
 				e = $gameMap.event( e_id );
 			}
 			if( unit.indexOf("事件变量[") != -1 ){
 				unit = unit.replace("事件变量[","");
 				unit = unit.replace("]","");
 				var e_id = $gameVariables.value(Number(unit));
+				if( $gameMap.drill_EU_isEventExist( e_id ) == false ){ return; }
 				e = $gameMap.event( e_id );
 			}
 		}
@@ -347,7 +349,23 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EU_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventUnification.js 物体 - 事件一体化】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
+
 //=============================================================================
 // ** 存储数据初始化
 //=============================================================================

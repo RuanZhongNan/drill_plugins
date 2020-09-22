@@ -3,8 +3,8 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        地图 - 自定义照明效果
- * @author Drill_up
+ * @plugindesc [v1.3]        地图 - 自定义照明效果
+ * @author Drill_up,紫悠
  * 
  * @Drill_LE_param "光源-%d"
  * @Drill_LE_parentKey "---光源组%d至%d---"
@@ -24,7 +24,7 @@
  * ----插件扩展
  * 插件可以单独使用，也可以扩展下列插件：
  * 作用于：
- *   - Drill_MouseIllumination     鼠标 - 自定义照明效果
+ *   - Drill_MouseIllumination     鼠标 - 自定义照明效果★★v1.1及以上★★
  *     使得鼠标也能够具备照明效果。
  *   - Drill_BombCore              炸弹人 - 游戏核心
  *     使得炸弹人的炸弹能够具备照明效果。
@@ -40,9 +40,16 @@
  *      一般为上层，因为再往上的层级可以挡住ui和图片。
  *   (2.黑暗层的底层原理是滤镜，所以不能修改混合模式。
  *      黑暗层默认是固定黑色"#000000"。
- *   (3.注意，"默认是否启用"参数是作用到所有地图的。
- *      如果设置为启用，则所有地图默认使用黑暗层。
- *      开启/关闭需要使用地图注释。
+ * 黑暗层开关：
+ *   (1.黑暗层通过插件指令进行开关。
+ *      开启/关闭后将会执行一段过渡时间，类似于昼夜更替。
+ *   (2.地图备注 会临时锁定该地图的黑暗层设置，
+ *      离开该地图后恢复原黑暗层设置。
+ *   (3.插件指令无法影响 锁定地图 的黑暗层。但是可以影响默认的黑暗层。
+ *      比如，屋内地图添加 锁定注释，屋外地图 无注释。
+ *      那么，在屋内执行插件指令，屋内不会变黑，去了屋外，会发现已经变黑。
+ *   (4.地图备注主要用于 黑暗层 不受外界影响变化的地图，
+ *      比如，屋内、车厢、山洞、鬼屋、过场剧情地图 等。
  * 自画资源：
  *   (1.所有照明的形状、大小都需要你自己画照明素材来提供。
  *      通常为白色和透明为主。
@@ -72,6 +79,9 @@
  *      可以实现不同的地图有不同的黑暗效果。
  *   (2.光源是以GIF的模式展现的，你可以制作gif动画的光源效果。
  *   (3.简单的方形、圆形光源，可以直接修改 缩放比例 来快速设置。
+ * 旧版本：
+ *   (1.注意，v1.3以前版本的黑暗层指令歧义很大，容易误解。
+ *      新版本已经不支持旧指令，你需要重新设置指令。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -91,20 +101,33 @@
  * ----激活条件 - 黑暗层
  * 你可以通过插件指令手动控制黑暗层：
  * 
- * 插件指令：>自定义照明 : 黑暗层 : 过渡时间[60] : 整体透明度[155]
- * 插件指令：>自定义照明 : 黑暗层 : 修改整体颜色 : #00ff00
+ * 插件指令：>自定义照明 : 黑暗层 : 执行开启
+ * 插件指令：>自定义照明 : 黑暗层 : 执行关闭
+ * 插件指令：>自定义照明 : 黑暗层 : 修改黑暗层过渡时间 : 60
+ * 插件指令：>自定义照明 : 黑暗层 : 修改黑暗层透明度 : 155
+ * 插件指令：>自定义照明 : 黑暗层 : 修改黑暗层颜色 : #00ff00
  * 
- * 地图备注：=>自定义照明:关闭整体
- * 地图备注：=>自定义照明:开启整体
- * 地图备注：=>自定义照明:修改整体透明度:155
- * 地图备注：=>自定义照明:修改整体颜色:#00ff00
- * 
- * 1.你可以添加地图备注，快速开启/关闭黑暗层，以及设置颜色、透明度。
- *   可以实现不同的地图有不同的黑暗效果。
- * 2."过渡时间[60]"单位为帧，1秒60帧。设置0表示立刻修改透明度。
- *   "整体透明度[0]"的值变为0时，照明效果将会被关闭。
- * 3.黑暗层与纯色滤镜的功能相似。颜色控制相应的过滤。
+ * 1."黑暗层过渡时间"单位为帧，1秒60帧。
+ *   "黑暗层透明度[0]"的值变为0时，照明效果将会被关闭。
+ * 2.黑暗层与纯色滤镜的功能相似。颜色控制相应的过滤。
  *   不要用纯白色，因为什么光线都过滤不了。
+ * 
+ * -----------------------------------------------------------------------------
+ * ----激活条件 - 临时锁定 黑暗层
+ * 你可以通过插件指令手动控制黑暗层：
+ * 
+ * 地图备注：=>自定义照明:临时锁定:开启
+ * 地图备注：=>自定义照明:临时锁定:关闭
+ * 地图备注：=>自定义照明:临时锁定:黑暗层透明度:155
+ * 地图备注：=>自定义照明:临时锁定:黑暗层颜色:#00ff00
+ * 
+ * 1.注意，这里是地图备注，在地图的备注中添加。
+ * 2.地图备注 会临时锁定该地图的黑暗层设置，离开该地图后恢复原黑暗层设置。
+ *   插件指令无法影响 锁定地图 的黑暗层。但是可以影响默认的黑暗层。
+ *   比如，屋内地图添加 锁定注释，屋外地图 无注释。
+ *   那么，在屋内执行插件指令，屋内不会变黑，去了屋外，会发现已经变黑。
+ * 3.地图备注主要用于 黑暗层 不受外界影响变化的地图，
+ *   比如，屋内、车厢、山洞、鬼屋、过场剧情地图 等。
  * 
  * -----------------------------------------------------------------------------
  * ----激活条件 - 事件照明
@@ -183,32 +206,42 @@
  * 修复了添加动态光源时，gif和旋转角度重置的bug。
  * [v1.2]
  * 修复了菜单中地图截图在没有黑暗的情况下变黑的bug。
- *
- *
- *
+ * [v1.3]
+ * 重新整理了 黑暗层开关 与 地图注释锁定 的关系。
+ * 注意，旧版本的指令不再有效。
+ * 
+ * 
+ * 
  * @param ---黑暗层---
  * @default
  *
- * @param 默认是否启用
+ * @param 初始是否开启黑暗层
  * @parent ---黑暗层---
  * @type boolean
  * @on 启用
  * @off 关闭
- * @desc true - 启用，false - 关闭，注意，如果启用，将会对所有地图有效。
+ * @desc true - 启用，false - 关闭，后续只能通过插件指令开关黑暗层。
  * @default false
  * 
- * @param 整体颜色
+ * @param 黑暗层过渡时间
  * @parent ---黑暗层---
- * @desc 填入颜色代码，比如#000000黑、#0000FF纯蓝。黑暗层与纯色滤镜的功能相似。颜色控制相应的过滤。你也可以通过插件指令修改。
- * @default #000000
+ * @type number
+ * @min 1
+ * @desc 黑暗层开启/关闭时，显示/消失的过渡时间。
+ * @default 60
  * 
- * @param 整体透明度
+ * @param 黑暗层透明度
  * @parent ---黑暗层---
  * @type number
  * @min 0
  * @max 255
  * @desc 0为完全透明，255为完全不透明。
  * @default 255
+ * 
+ * @param 黑暗层颜色
+ * @parent ---黑暗层---
+ * @desc 填入颜色代码，比如#000000黑、#0000FF纯蓝。黑暗层与纯色滤镜的功能相似。颜色控制相应的过滤。你也可以通过插件指令修改。
+ * @default #000000
  *
  * @param 黑暗层层级
  * @parent ---黑暗层---
@@ -1666,12 +1699,14 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_LayerIllumination');
 
-	DrillUp.g_LIl_enable = String(DrillUp.parameters["默认是否启用"] || "false") == "true" ;
-	DrillUp.g_LIl_opacity = Number(DrillUp.parameters["整体透明度"] || 255) ;
-	DrillUp.g_LIl_color = String(DrillUp.parameters["整体颜色"] || "#000000") ;
+	/*-----------------黑暗层------------------*/
+	DrillUp.g_LIl_enable = String(DrillUp.parameters["初始是否开启黑暗层"] || "false") == "true" ;
+	DrillUp.g_LIl_sustainTime = Number(DrillUp.parameters["黑暗层过渡时间"] || 60) ;
+	DrillUp.g_LIl_targetOpacity = Number(DrillUp.parameters["黑暗层透明度"] || 255) ;
+	DrillUp.g_LIl_layerColor = String(DrillUp.parameters["黑暗层颜色"] || "#000000") ;
 	DrillUp.g_LIl_layer = String(DrillUp.parameters["黑暗层层级"] || "上层") ;
 	
-
+	/*-----------------光源------------------*/
 	DrillUp.g_LIl_light_length = 200;
 	DrillUp.g_LIl_light = [];	
 	for (var i = 0; i < DrillUp.g_LIl_light_length; i++) {
@@ -1715,40 +1750,41 @@ ImageManager.load_MapIllumination = function(filename) {
 var _drill_LIl_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_LIl_pluginCommand.call(this, command, args);
-	
 	if( command === ">自定义照明" ){
 		
-		if(args.length == 2){
+		/*-----------------黑暗层------------------*/
+		if(args.length == 4){
 			var type = String(args[1]);
-			if( type == "开启整体"){
-				$gameSystem._drill_LIl_enable = true;
-			}
-			if( type == "关闭整体"){
-				$gameSystem._drill_LIl_enable = false;
+			var temp1 = String(args[3]);
+			if( type == "黑暗层" ){
+				if( temp1 == "执行开启" ){
+					$gameSystem._drill_LIl['enable'] = true;
+				}
+				if( temp1 == "执行关闭" ){
+					$gameSystem._drill_LIl['enable'] = false;
+				}
 			}
 		}
-		
-		/*-----------------黑暗层------------------*/
 		if(args.length == 6){
 			var type = String(args[1]);
 			var temp1 = String(args[3]);
 			var temp2 = String(args[5]);
-			if( type == "黑暗层" && temp1 == "修改整体颜色" ){
-				$gameSystem._drill_LIl_color = temp2;
-			}
-			if( type == "黑暗层" && temp1.indexOf("过渡时间[") != -1 ){
-				temp1 = temp1.replace("过渡时间[","");
-				temp1 = temp1.replace("]","");
-				temp1 = Math.max( 1, Number(temp1) );
-				temp2 = temp2.replace("整体透明度[","");
-				temp2 = temp2.replace("]","");
-				temp2 = Number(temp2);
-				$gameSystem._drill_LIl_time = temp1;
-				$gameSystem._drill_LIl_speed = (temp2 - $gameSystem._drill_LIl_opacity) / temp1;
+			if( type == "黑暗层" ){
+				if( temp1 == "修改黑暗层过渡时间" ){
+					$gameSystem._drill_LIl['sustainTime'] = Math.max( 1, Number(temp2) );
+				}
+				if( temp1 == "修改黑暗层透明度" ){
+					$gameSystem._drill_LIl['targetOpacity'] = Math.min( 255, Math.max( 0, Number(temp2) ));
+				}
+				if( temp1 == "修改黑暗层颜色" ){
+					$gameSystem._drill_LIl['layerColor'] = temp2;
+				}
 			}
 		}
 		
-		if( $gameSystem._drill_LIl_enable == false ){ return; }	//如果未开，则插件指令无效
+		// > 如果黑暗层未开，则插件指令无效
+		if( $gameMap._drill_LIl_lock['enableLocked'] == true && $gameMap._drill_LIl_lock['enable'] == false ){ return; }
+		if( $gameMap._drill_LIl_lock['enableLocked'] == false && $gameSystem._drill_LIl['enable'] == false ){ return; }
 		
 		/*-----------------物体照明------------------*/
 		if(args.length == 6){
@@ -1814,14 +1850,18 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 						temp2 = temp2.replace("]","");
 						temp2 = Number(temp2);
 						for( var j=0; j < e_ids.length; j++ ){
-							var e = $gameMap.event( e_ids[j] );
+							var e_id = e_ids[j];
+							if( $gameMap.drill_LIl_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							e._drill_LIl._light_id = Number(temp2) - 1;
 						}
 						$gameTemp._drill_LIl_needRefresh = true;
 					}
 					if( temp2 == "关闭照明" ){
 						for( var j=0; j < e_ids.length; j++ ){
-							var e = $gameMap.event( e_ids[j] );
+							var e_id = e_ids[j];
+							if( $gameMap.drill_LIl_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							e._drill_LIl._light_id = -1;
 						}
 					}
@@ -1864,13 +1904,17 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				if( pos.indexOf("事件变量[") != -1 ){
 					pos = pos.replace("事件变量[","");
 					pos = pos.replace("]","");
-					var e = $gameMap.event( $gameVariables.value(Number(pos)) );
+					var e_id = $gameVariables.value(Number(pos));
+					if( $gameMap.drill_LIl_isEventExist( e_id ) == false ){ return; }
+					var e = $gameMap.event( e_id );
 					e_pos = [ e._realX, e._realY ];
 				}
 				if( pos.indexOf("事件[") != -1 ){
 					pos = pos.replace("事件[","");
 					pos = pos.replace("]","");
-					var e = $gameMap.event( Number(pos) );
+					var e_id = Number(pos);
+					if( $gameMap.drill_LIl_isEventExist( e_id ) == false ){ return; }
+					var e = $gameMap.event( e_id );
 					e_pos = [ e._realX, e._realY ];
 				}
 				if( pos == "本事件" ){
@@ -1900,6 +1944,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_LIl_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_LayerIllumination.js 地图 - 自定义照明效果】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
 //=============================================================================
 // ** 存储变量初始化
 //=============================================================================
@@ -1907,13 +1966,13 @@ var _drill_LIl_sys_initialize = Game_System.prototype.initialize;
 Game_System.prototype.initialize = function() {
     _drill_LIl_sys_initialize.call(this);
 	
-	this._drill_LIl_enable = DrillUp.g_LIl_enable;			//黑暗层 - 开关
-	this._drill_LIl_opacity = DrillUp.g_LIl_opacity;		//黑暗层 - 透明度
-	this._drill_LIl_color = DrillUp.g_LIl_color;			//黑暗层 - 颜色
-	this._drill_LIl_time = 0;								//黑暗层 - 过渡时间
-	this._drill_LIl_speed = 0;								//黑暗层 - 透明度
+	this._drill_LIl = {};
+	this._drill_LIl['enable'] = DrillUp.g_LIl_enable;					//黑暗层 - 开关
+	this._drill_LIl['sustainTime'] = DrillUp.g_LIl_sustainTime;			//黑暗层 - 过渡时间
+	this._drill_LIl['targetOpacity'] = DrillUp.g_LIl_targetOpacity;		//黑暗层 - 透明度
+	this._drill_LIl['layerColor'] = DrillUp.g_LIl_layerColor;			//黑暗层 - 颜色
+	this._drill_LIl['curTime'] = 0;										//黑暗层过渡
 };
-
 
 //=============================================================================
 // ** 地图备注
@@ -1924,31 +1983,47 @@ Game_Map.prototype.setup = function(mapId) {
 	this.drill_LIl_setupIllumination();
 };
 Game_Map.prototype.drill_LIl_setupIllumination = function() {
-	$gameSystem._drill_LIl_enable = DrillUp.g_LIl_enable;
-	$gameSystem._drill_LIl_opacity = DrillUp.g_LIl_opacity;
-	$gameSystem._drill_LIl_color = DrillUp.g_LIl_color;
+	
+	// > 地图锁定初始化
+	this._drill_LIl_lock = {};
+	this._drill_LIl_lock['enableLocked'] = false;
+	this._drill_LIl_lock['enable'] = false;									//黑暗层锁定 - 开关
+	this._drill_LIl_lock['sustainTime'] = DrillUp.g_LIl_sustainTime;		//黑暗层锁定 - 过渡时间
+	this._drill_LIl_lock['targetOpacity'] = DrillUp.g_LIl_targetOpacity;	//黑暗层锁定 - 透明度
+	this._drill_LIl_lock['layerColor'] = DrillUp.g_LIl_layerColor;			//黑暗层锁定 - 颜色
+	
 	$dataMap.note.split(/[\r\n]+/).forEach(function(note) {
 		var args = note.split(':');
 		var command = args.shift();
 		if( command == "=>自定义照明"){
-			if(args.length == 1){
+			if(args.length == 2){
 				var temp1 = String(args[0]);
-				if( temp1 == "关闭整体"){
-					$gameSystem._drill_LIl_enable = false;
-				}
-				if( temp1 == "开启整体"){
-					$gameSystem._drill_LIl_enable = true;
+				var temp2 = String(args[1]);
+				if( temp1 == "临时锁定"){
+					if( temp2 == "关闭"){
+						this._drill_LIl_lock['enableLocked'] = true;
+						this._drill_LIl_lock['enable'] = false;
+					}
+					if( temp2 == "开启"){
+						this._drill_LIl_lock['enableLocked'] = true;
+						this._drill_LIl_lock['enable'] = true;
+					}
 				}
 			}
-			if(args.length == 2){
-				var type = String(args[0]);
-				var temp1 = String(args[1]);
-				if( type == "修改整体透明度"){
-					$gameSystem._drill_LIl_opacity = Number(temp1);
-					$gameSystem._drill_LIl_time = 0;
-				}
-				if( type == "修改整体颜色"){
-					$gameSystem._drill_LIl_color = temp1;
+			if(args.length == 3){
+				var temp1 = String(args[0]);
+				var type = String(args[1]);
+				var temp2 = String(args[2]);
+				if( temp1 == "临时锁定"){
+					if( type == "黑暗层过渡时间"){		//（这个参数没有意义，地图切换不需要过渡。不过先放着）
+						this._drill_LIl_lock['sustainTime'] = Number(temp2);
+					}
+					if( type == "黑暗层透明度"){
+						this._drill_LIl_lock['targetOpacity'] = Number(temp2);
+					}
+					if( type == "黑暗层颜色"){
+						this._drill_LIl_lock['layerColor'] = temp2;
+					}
 				}
 			}
 		}
@@ -2069,7 +2144,8 @@ Game_Map.prototype.update = function(sceneActive) {
 // ** 帧刷新 - 刷新统计
 //=============================================================================
 Scene_Map.prototype.drill_LIl_updateLightCheck = function() {
-	if( $gameSystem._drill_LIl_enable == false ){ return; }
+	if( $gameMap._drill_LIl_lock['enableLocked'] == true && $gameMap._drill_LIl_lock['enable'] == false ){ return; }
+	if( $gameMap._drill_LIl_lock['enableLocked'] == false && $gameSystem._drill_LIl['enable'] == false ){ return; }
 	if( $gameTemp._drill_LIl_needRefresh != true ){ return }
 	$gameTemp._drill_LIl_needRefresh = false;
 	
@@ -2207,15 +2283,22 @@ Scene_Map.prototype.update = function() {
 // * 帧刷新 - 黑暗层
 //==============================
 Scene_Map.prototype.drill_LIl_updateDarkLayer = function() {
+	if( $gameMap._drill_LIl_lock['enableLocked'] == true ){ return; }		//地图锁定时，黑暗层无法变化
 	
 	// > 透明度控制
-	if( $gameSystem._drill_LIl_time > 0 ){
-		$gameSystem._drill_LIl_opacity += $gameSystem._drill_LIl_speed;
-		$gameSystem._drill_LIl_time -= 1;
+	if( $gameSystem._drill_LIl['enable'] == true ){
+		$gameSystem._drill_LIl['curTime'] += 1;
+	}else{
+		$gameSystem._drill_LIl['curTime'] -= 1;
 	}
-	if( $gameSystem._drill_LIl_opacity <= 0 ){ $gameSystem._drill_LIl_opacity = 0;};
-	if( $gameSystem._drill_LIl_opacity >= 255 ){ $gameSystem._drill_LIl_opacity = 255;};
-	this._drill_LIl_darkSprite.opacity = $gameSystem._drill_LIl_opacity;
+	if( $gameSystem._drill_LIl['curTime'] < 0 ){
+		$gameSystem._drill_LIl['curTime'] = 0;
+	}
+	if( $gameSystem._drill_LIl['curTime'] > $gameSystem._drill_LIl['sustainTime'] ){
+		$gameSystem._drill_LIl['curTime'] = $gameSystem._drill_LIl['sustainTime'];
+	}
+	
+	this._drill_LIl_darkSprite.opacity = $gameSystem._drill_LIl['targetOpacity'] * $gameSystem._drill_LIl['curTime'] / $gameSystem._drill_LIl['sustainTime'];
 };
 
 
@@ -2232,40 +2315,54 @@ Graphics.initialize = function(width, height, type) {
 	var temp_renderer = null;
 	var temp_canvas = document.createElement('canvas');
 	temp_canvas.id = 'drill_LIl_canvas';
-	temp_canvas.style.width = width;
-	temp_canvas.style.height = height;
-	var options = { view: temp_canvas };
+	var options = {
+		view: temp_canvas,
+        width: width,
+        height: height
+	};
 	try {
-		switch (Graphics._rendererType) {
-			case 'canvas':
-				temp_renderer = new PIXI.CanvasRenderer(width, height, options);
-				break;
-			case 'webgl':
-				temp_renderer = new PIXI.WebGLRenderer(width, height, options);
-				break;
-			default:
-				temp_renderer = PIXI.autoDetectRenderer(width, height, options);
-				break;
-		}
-	
-		if( temp_renderer && temp_renderer.textureGC){
-			temp_renderer.textureGC.maxIdle = 1;
-		}
-	} catch (e) {
-		temp_renderer = null;
-	}
+        switch (this._rendererType) {
+            case 'canvas':
+                temp_renderer = new PIXI.CanvasRenderer(options);
+                break;
+            case 'webgl':
+                temp_renderer = new PIXI.Renderer(options);
+                break;
+            default:
+                temp_renderer = PIXI.autoDetectRenderer(options);
+                break;
+        }
+
+        if (temp_renderer && temp_renderer.textureGC)
+		temp_renderer.textureGC.maxIdle = 1;
+
+    } catch (e) {
+        temp_renderer = null;
+    }
 	
 	DrillUp.g_LIl_canvas = temp_canvas;
 	DrillUp.g_LIl_renderer = temp_renderer;
+	this.drill_LIl_updateCanvas();
 }
+
 //==============================
 // * 刷新（非帧）
 //==============================
 var _drill_LIl_updateAllElements = Graphics._updateAllElements;
 Graphics._updateAllElements = function() {
 	_drill_LIl_updateAllElements.call(this);
+	this.drill_LIl_updateCanvas();
 	this.drill_LIl_updateRenderer();
 }
+//==============================
+// * 刷新 - canvas
+//==============================
+Graphics.drill_LIl_updateCanvas = function() {
+	DrillUp.g_LIl_canvas.width = this._width;
+	DrillUp.g_LIl_canvas.height = this._height;
+	DrillUp.g_LIl_canvas.style.zIndex = 0;
+	//this._centerElement(DrillUp.g_LIl_canvas);
+};
 //==============================
 // * 刷新 - render
 //==============================
@@ -2317,7 +2414,8 @@ Drill_LIl_MaskSprite.prototype.update = function() {
 	
 	// > 关闭时，不工作
 	var temp_visible = true;
-	if( $gameSystem._drill_LIl_enable == false ){ temp_visible = false; }
+	if( $gameMap._drill_LIl_lock['enableLocked'] == true && $gameMap._drill_LIl_lock['enable'] == false ){ temp_visible = false; }
+	if( $gameMap._drill_LIl_lock['enableLocked'] == false && $gameSystem._drill_LIl['enable'] == false ){ temp_visible = false; }
 	if( SceneManager._scene.constructor.name != "Scene_Map" ){ temp_visible = false; }
 	
 	// > 可见
@@ -2354,9 +2452,16 @@ Drill_LIl_MaskSprite.prototype.update = function() {
 	}
 	
 	// > 变色控制
-	if( this._drill_curColor != $gameSystem._drill_LIl_color ){
-		this._drill_main_layer.bitmap.fillAll($gameSystem._drill_LIl_color);		
-		this._drill_curColor = $gameSystem._drill_LIl_color;
+	if( $gameMap._drill_LIl_lock['enableLocked'] == true ){
+		if( this._drill_curColor != $gameMap._drill_LIl_lock['layerColor'] ){
+			this._drill_curColor = $gameMap._drill_LIl_lock['layerColor'];
+			this._drill_main_layer.bitmap.fillAll( $gameMap._drill_LIl_lock['layerColor'] );		
+		}
+	}else{
+		if( this._drill_curColor != $gameSystem._drill_LIl['layerColor'] ){	
+			this._drill_curColor = $gameSystem._drill_LIl['layerColor'];
+			this._drill_main_layer.bitmap.fillAll($gameSystem._drill_LIl['layerColor']);	
+		}
 	}
 };
 //==============================
@@ -2372,8 +2477,13 @@ Drill_LIl_MaskSprite.prototype.drill_createStage = function(width, height) {
 	this._drill_main_layer = new Sprite();
 	this._drill_stage.addChild(this._drill_main_layer);	
 	this._drill_main_layer.bitmap = new Bitmap(width, height);
-	this._drill_main_layer.bitmap.fillAll($gameSystem._drill_LIl_color);		
-	this._drill_curColor = $gameSystem._drill_LIl_color;
+	if( $gameMap._drill_LIl_lock['enableLocked'] == true ){
+		this._drill_main_layer.bitmap.fillAll( $gameMap._drill_LIl_lock['layerColor'] );		
+		this._drill_curColor = $gameMap._drill_LIl_lock['layerColor'];
+	}else{
+		this._drill_main_layer.bitmap.fillAll( $gameSystem._drill_LIl['layerColor'] );		
+		this._drill_curColor = $gameSystem._drill_LIl['layerColor'];
+	}
 }
 //==============================
 // * 黑暗层遮罩 - 帧刷新

@@ -3,8 +3,25 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.2)[v1.8]  面板 - 全自定义主菜单
+ * @plugindesc (v1.2)[v1.9]  面板 - 全自定义主菜单
  * @author Moghunter  （Drill_up、拾贝猫翻译+优化）
+ * 
+ * @Drill_LE_param "自定义按钮-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "Moghunter.menu_btn_list_length"
+ * 
+ * @Drill_LE_param "自定义关键字-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "Moghunter.menu_btn_key_list_length"
+ * 
+ * @Drill_LE_param "角色前视图-%d"
+ * @Drill_LE_parentKey "==角色前视图%d至%d=="
+ * @Drill_LE_var "Moghunter.menu_act_list_length"
+ * 
+ * @Drill_LE_param "角色头像-%d"
+ * @Drill_LE_parentKey "==角色头像%d至%d=="
+ * @Drill_LE_var "Moghunter.menu_btn_face_list_length"
+ * 
  * 
  * @param ----杂项----
  * @desc
@@ -2221,7 +2238,7 @@
  * ----插件扩展
  * 插件可以单独使用，对主菜单的所有窗口进行美化控制。
  * 被扩展：
- *   - Drill_WindowMenuButton 控件-按钮窗口管理器
+ *   - Drill_WindowMenuButton      控件 - 主菜单选项按钮管理器
  *     通过该插件，你可以更灵活地添加/修改主菜单的按钮。
  *     （新按钮通过关键字配置按钮图片）
  *
@@ -2335,6 +2352,8 @@
  * 修改了插件分类。
  * [v1.8]
  * 修改了插件关联的资源文件夹。
+ * [v1.9]
+ * 添加了最大值编辑的支持。
  *
  */
 
@@ -2503,10 +2522,13 @@
 	
 	Moghunter.menu_btn_list_length = 20;
 	Moghunter.menu_btn_list = {};
-	Moghunter.menu_btn_key_list = {};
 	for (var i = 1; i <= Moghunter.menu_btn_list_length ; i++ ) {
-		Moghunter.menu_btn_key_list[i] = Moghunter.parameters['自定义关键字-' + String(i) ];
 		Moghunter.menu_btn_list[i] = Moghunter.parameters['自定义按钮-' + String(i) ];
+	};
+	Moghunter.menu_btn_key_list_length = 20;
+	Moghunter.menu_btn_key_list = {};
+	for (var i = 1; i <= Moghunter.menu_btn_key_list_length ; i++ ) {
+		Moghunter.menu_btn_key_list[i] = Moghunter.parameters['自定义关键字-' + String(i) ];
 	};
 	
 	Moghunter.menu_btn_face_list_length = 60;

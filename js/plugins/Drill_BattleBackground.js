@@ -3,1641 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        战斗 - 多层战斗背景
+ * @plugindesc [v1.3]        战斗 - 多层战斗背景
  * @author Drill_up
- *
- *
- * @param --背景组 1至20--
- * @default 
- *
- * @param 背景-1
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-2
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-3
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-4
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-5
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-6
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-7
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-8
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-9
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-10
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-11
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-12
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-13
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-14
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-15
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-16
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-17
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-18
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-19
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-20
- * @parent --背景组 1至20--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组21至40--
- * @default 
- *
- * @param 背景-21
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-22
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-23
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-24
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-25
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-26
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-27
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-28
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-29
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-30
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-31
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-32
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-33
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-34
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-35
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-36
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-37
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-38
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-39
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-40
- * @parent --背景组21至40--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组41至60--
- * @default 
- *
- * @param 背景-41
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-42
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-43
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-44
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-45
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-46
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-47
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-48
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-49
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-50
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-51
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-52
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-53
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-54
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-55
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-56
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-57
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-58
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-59
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-60
- * @parent --背景组41至60--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组61至80--
- * @default 
- *
- * @param 背景-61
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-62
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-63
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-64
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-65
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-66
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-67
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-68
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-69
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-70
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-71
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-72
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-73
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-74
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-75
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-76
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-77
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-78
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-79
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-80
- * @parent --背景组61至80--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组81至100--
- * @default 
- *
- * @param 背景-81
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-82
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-83
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-84
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-85
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-86
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-87
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-88
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-89
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-90
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-91
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-92
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-93
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-94
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-95
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-96
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-97
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-98
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-99
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-100
- * @parent --背景组81至100--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- *
- * @param --背景组101至120--
- * @default 
- *
- * @param 背景-101
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-102
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-103
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-104
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-105
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-106
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-107
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-108
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-109
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-110
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-111
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-112
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-113
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-114
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-115
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-116
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-117
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-118
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-119
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-120
- * @parent --背景组101至120--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组121至140--
- * @default 
- *
- * @param 背景-121
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-122
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-123
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-124
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-125
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-126
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-127
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-128
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-129
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-130
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-131
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-132
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-133
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-134
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-135
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-136
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-137
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-138
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-139
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-140
- * @parent --背景组121至140--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组141至160--
- * @default 
- *
- * @param 背景-141
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-142
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-143
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-144
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-145
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-146
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-147
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-148
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-149
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-150
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-151
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-152
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-153
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-154
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-155
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-156
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-157
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-158
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-159
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-160
- * @parent --背景组141至160--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组161至180--
- * @default 
- *
- * @param 背景-161
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-162
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-163
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-164
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-165
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-166
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-167
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-168
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-169
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-170
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-171
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-172
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-173
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-174
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-175
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-176
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-177
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-178
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-179
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-180
- * @parent --背景组161至180--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param --背景组181至200--
- * @default 
- *
- * @param 背景-181
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-182
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-183
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-184
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-185
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-186
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-187
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-188
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-189
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-190
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-191
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-192
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-193
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-194
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-195
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-196
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-197
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-198
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-199
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
- * @param 背景-200
- * @parent --背景组181至200--
- * @desc 背景的图片资源。
- * @default 
- * @require 1
- * @dir img/Battle__layer/
- * @type file
- *
+ * 
+ * @Drill_LE_param "背景-%d"
+ * @Drill_LE_parentKey "---背景组%d至%d---"
+ * @Drill_LE_var "null"
+ * 
+ * 
  * @help
  * =============================================================================
  * +++ Drill_BattleBackground +++
@@ -1750,6 +123,1640 @@
  * 添加了图片层、最顶层的设置。
  * [v1.2]
  * 修改了插件关联的资源文件夹。
+ * [v1.3]
+ * 添加了最大值编辑的支持。
+ * 
+ *
+ * @param ---背景组 1至20---
+ * @default 
+ *
+ * @param 背景-1
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-2
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-3
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-4
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-5
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-6
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-7
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-8
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-9
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-10
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-11
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-12
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-13
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-14
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-15
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-16
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-17
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-18
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-19
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-20
+ * @parent ---背景组 1至20---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组21至40---
+ * @default 
+ *
+ * @param 背景-21
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-22
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-23
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-24
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-25
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-26
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-27
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-28
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-29
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-30
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-31
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-32
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-33
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-34
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-35
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-36
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-37
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-38
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-39
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-40
+ * @parent ---背景组21至40---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组41至60---
+ * @default 
+ *
+ * @param 背景-41
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-42
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-43
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-44
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-45
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-46
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-47
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-48
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-49
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-50
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-51
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-52
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-53
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-54
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-55
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-56
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-57
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-58
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-59
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-60
+ * @parent ---背景组41至60---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组61至80---
+ * @default 
+ *
+ * @param 背景-61
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-62
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-63
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-64
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-65
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-66
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-67
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-68
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-69
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-70
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-71
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-72
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-73
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-74
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-75
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-76
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-77
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-78
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-79
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-80
+ * @parent ---背景组61至80---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组81至100---
+ * @default 
+ *
+ * @param 背景-81
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-82
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-83
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-84
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-85
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-86
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-87
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-88
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-89
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-90
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-91
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-92
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-93
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-94
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-95
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-96
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-97
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-98
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-99
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-100
+ * @parent ---背景组81至100---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ *
+ * @param ---背景组101至120---
+ * @default 
+ *
+ * @param 背景-101
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-102
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-103
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-104
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-105
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-106
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-107
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-108
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-109
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-110
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-111
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-112
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-113
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-114
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-115
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-116
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-117
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-118
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-119
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-120
+ * @parent ---背景组101至120---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组121至140---
+ * @default 
+ *
+ * @param 背景-121
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-122
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-123
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-124
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-125
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-126
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-127
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-128
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-129
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-130
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-131
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-132
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-133
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-134
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-135
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-136
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-137
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-138
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-139
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-140
+ * @parent ---背景组121至140---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组141至160---
+ * @default 
+ *
+ * @param 背景-141
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-142
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-143
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-144
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-145
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-146
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-147
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-148
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-149
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-150
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-151
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-152
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-153
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-154
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-155
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-156
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-157
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-158
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-159
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-160
+ * @parent ---背景组141至160---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组161至180---
+ * @default 
+ *
+ * @param 背景-161
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-162
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-163
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-164
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-165
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-166
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-167
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-168
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-169
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-170
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-171
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-172
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-173
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-174
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-175
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-176
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-177
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-178
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-179
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-180
+ * @parent ---背景组161至180---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param ---背景组181至200---
+ * @default 
+ *
+ * @param 背景-181
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-182
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-183
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-184
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-185
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-186
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-187
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-188
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-189
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-190
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-191
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-192
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-193
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-194
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-195
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-196
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-197
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-198
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-199
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
+ *
+ * @param 背景-200
+ * @parent ---背景组181至200---
+ * @desc 背景的图片资源。
+ * @default 
+ * @require 1
+ * @dir img/Battle__layer/
+ * @type file
  *
  */
  

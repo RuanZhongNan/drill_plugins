@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        标题 - 启动界面
+ * @plugindesc [v1.3]        标题 - 启动界面
  * @author Drill_up
  * 
  * @Drill_LE_param "阶段-%d"
@@ -45,6 +45,7 @@
  *   (2.你可以通过"当前阶段至少播放时长"规定玩家必须看几秒才可跳过。
  *      比如一些不可跳过的故事介绍或者影片介绍等。
  *      注意，如果阶段B的至少时长为0，那么点击跳过键，会直接从A跳到C。
+ *   (3.你可以设置 显示时长/消失时长 为0，可以瞬间切换图片。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -95,6 +96,8 @@
  * 修改了注释说明。修复了gif播放出错的bug。
  * [v1.2]
  * 修复了连续播放视频时，视频丢失的bug。
+ * [v1.3]
+ * 添加了图片预加载的功能，并且修复显示时间为0时，图片一闪的bug。
  *
  * 
  * @param ---游戏窗口---
@@ -443,12 +446,16 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			启动界面：
-//				->全屏/指定到缩放的窗口大小
-//				->轮播图片/视频
+//				->屏幕
+//					->全屏/指定到缩放的窗口大小
+//					->界面底色
+//					->轮播图片/视频
+//				->贴图
+//					->预加载
+//					->显示时间为0瞬间切换
+//					->第N张图片必须播放M秒才可跳过
 //				->跳过按键
-//				->第N张图片必须播放M秒才可跳过
 //				->播放音乐
-//				->界面底色
 // 
 //		★私有类如下：
 //			* Scene_Drill_TBS【播放场景】
@@ -457,8 +464,27 @@
 //			暂无
 //
 //		★其它说明细节：
-//			1.Graphics._requestFullScreen可以设置全屏，但是会一闪而过，win7不能弄，但是win10可以。
-//			  1.6版本比1.5版本大一圈，实际大小为820x628的大小，这个是游戏内部引擎的问题，强制设置window窗口的大小，依然会大一圈。
+//			1.全屏问题：
+//				2020/6/7： Graphics._requestFullScreen可以设置全屏，但是会一闪而过，win7不能弄，但是win10可以。
+//				2020/8/11：这个问题突然消失了，在原来无法全屏的win7电脑上，竟然能够全屏了，不明原因。
+//				2020/8/13：
+//					有一个群友遇到了不能全屏的问题。他的电脑更新了nwjs程序。
+//					上网找了一圈，发现这里的知识点一片狼藉。s有大小写的区分。
+//						I	ele.requestFullscreen();
+//							ele.requestFullScreen();
+//						II	ele.mozRequestFullScreen();
+//						III	ele.webkitRequestFullscreen(ele.ALLOW_KEYBOARD_INPUT);
+//							ele.webkitRequestFullScreen(ele.ALLOW_KEYBOARD_INPUT);
+//						IV	ele.msRequestFullscreen();
+//						I."s"存在，"S"为undefined，而core里面写的是"S"……
+//						  这里的小"s"，在群友电脑上会返回一个fullscreen error，但是无法解决。
+//						  （https://developer.mozilla.org/zh-CN/docs/Web/API/Element/requestFullScreen）这链接又变大"S"了，官方都那么不小心……
+//						II.有效。火狐浏览器直接全屏。
+//						III."s"和"S"都有效，应该是谷歌浏览器做了兼容，但是在群友电脑上仍然不能全屏。
+//						IV.未涉及捕获到。
+//					最后问题仍未解决，经过分析应该是nwjs的问题，nwjs的窗口阻止了浏览器全屏请求。
+//			2.窗口大小：
+//				1.6版本比1.5版本大一圈，实际大小为820x628的大小，这个是游戏内部引擎的问题，强制设置window窗口的大小，依然会大一圈。
 //				SceneManager._screenWidth	窗口大小
 //				SceneManager._boxWidth		界面大小（界面会根据窗口自适应）
 //				window.resizeBy能改变窗口大小。
@@ -476,6 +502,7 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_TitleBootScene');
 	
+	/*-----------------游戏窗口------------------*/
 	DrillUp.g_TBS_screen_mode = String(DrillUp.parameters["游戏窗口模式"] || "窗口模式");
 	DrillUp.g_TBS_screen_maximize = String(DrillUp.parameters["窗口是否最大化"] || "true") == "true";
 	DrillUp.g_TBS_screen = String(DrillUp.parameters["窗口是否设置初始缩放高宽"] || "false") == "true";
@@ -483,12 +510,12 @@
 	DrillUp.g_TBS_screen_height = Number(DrillUp.parameters["窗口初始缩放高度"] || 624);
 	DrillUp.g_TBS_screen_back_color = String(DrillUp.parameters["启动界面底色"] || "#000000");
 	
+	/*-----------------阶段------------------*/
 	DrillUp.g_TBS_list_length = 20;
 	DrillUp.g_TBS_list = [];
-	
 	for (var i = 0; i < DrillUp.g_TBS_list_length; i++) {
-		if( DrillUp.parameters['阶段-' + String(i+1) ] != "" ){
-			DrillUp.g_TBS_list[i] = JSON.parse(DrillUp.parameters['阶段-' + String(i+1) ]);
+		if( DrillUp.parameters["阶段-" + String(i+1) ] != "" ){
+			DrillUp.g_TBS_list[i] = JSON.parse(DrillUp.parameters["阶段-" + String(i+1) ]);
 			DrillUp.g_TBS_list[i]['mode'] = String(DrillUp.g_TBS_list[i]["显示模式"] || "单图模式");
 			DrillUp.g_TBS_list[i]['img_src'] = String(DrillUp.g_TBS_list[i]["资源-单图"] || "");
 			DrillUp.g_TBS_list[i]['img_show'] = Number(DrillUp.g_TBS_list[i]["单图显现时长"] || 60);
@@ -512,7 +539,7 @@
 			DrillUp.g_TBS_list[i] = [];
 		}
 	}
-	DrillUp.g_TBS_list[DrillUp.g_TBS_list_length] = [];	//跳出界面的收尾设置
+	DrillUp.g_TBS_list[ DrillUp.g_TBS_list_length ] = [];	//跳出界面的收尾设置
 	
 	
 //=============================================================================
@@ -579,39 +606,50 @@ SceneManager.goto = function(sceneClass) {
 	
 
 //=============================================================================
-// ** logo场景-定义
+// ** logo场景
 //=============================================================================
+//==============================
+// * 场景-定义
+//==============================
 function Scene_Drill_TBS() {
     this.initialize.apply(this, arguments);
 }
-
 Scene_Drill_TBS.prototype = Object.create(Scene_Base.prototype);
 Scene_Drill_TBS.prototype.constructor = Scene_Drill_TBS;
 
 //==============================
-// * 场景-初始化
+// * 场景 - 初始化
 //==============================
 Scene_Drill_TBS.prototype.initialize = function() {
     Scene_Base.prototype.initialize.call(this);
+	this._drill_dataList = DrillUp.g_TBS_list;		//阶段数据列表
 	
-	this._drill_level = 0;
-	this._drill_level_time = 0;
-	this._drill_TBS_picEnd = false;
-	this._drill_TBS_gifEnd = false;
-	this._drill_TBS_videoEnd = false;
-	this._drill_need_recreate = true;
+	// > 私有变量初始化
+	this._drill_level = 0;							//当前阶段
+	this._drill_level_time = 0;						//阶段持续时长
+	this._drill_need_recreate = true;				//下一阶段重建
+	this._drill_TBS_picEnd = false;					//阶段结束 - 单图模式
+	this._drill_TBS_gifEnd = false;					//阶段结束 - GIF模式
+	this._drill_TBS_videoEnd = false;				//阶段结束 - 视频模式
 	
+	// > 对象初始化
 	this._drill_main_sprite = null;
-	this._drill_pic_sprite = null;
-	this._drill_gif_sprite = null;
+	this._drill_pic_sprite = new Sprite();
+	this._drill_gif_sprite = new Sprite();
+	this._drill_bitmapTank = [];					//预加载 - bitmap容器
+	
+	// > 初始化函数
+	this.drill_preloadBitmap();						//预加载
 }
-
 //==============================
-// * 场景-创建
+// * 场景 - 创建
 //==============================
 Scene_Drill_TBS.prototype.create = function() {	
     Scene_Base.prototype.create.call(this);
-	
+	this.drill_createLayer();	
+};
+Scene_Drill_TBS.prototype.drill_createLayer = function() {
+	// > 主层
 	var temp_sprite = new Sprite();
     temp_sprite.anchor.x = 0.5;
     temp_sprite.anchor.y = 0.5;
@@ -619,29 +657,82 @@ Scene_Drill_TBS.prototype.create = function() {
 	temp_sprite.y = Graphics.boxHeight / 2;
 	this.addChild(temp_sprite);
 	this._drill_main_sprite = temp_sprite;
-	
+	// > 主层背景色
 	temp_sprite.bitmap = new Bitmap(Graphics.boxWidth,Graphics.boxHeight);
-	temp_sprite.bitmap.fillAll(DrillUp.g_TBS_screen_back_color);
-};
-
+	temp_sprite.bitmap.fillAll( DrillUp.g_TBS_screen_back_color );
+}
 //==============================
-// * 场景-帧刷新
+// * 场景 - 帧刷新
 //==============================
 Scene_Drill_TBS.prototype.update = function() {
 	Scene_Base.prototype.update.call(this);
 	
-	this.drill_updateLevel();
-	this.drill_updatePic();
-	this.drill_updateGIF();
-	this.drill_updateVideo();
+	if( this.drill_isAllBitmapReady() != true ){ return; }	//加载bitmap阻塞
+	this.drill_updateLevel();			//阶段控制
+	this.drill_updatePic();				//播放单图
+	this.drill_updateGIF();				//播放GIF
+	this.drill_updateVideo();			//播放视频
 };
+
+//==============================
+// * 预加载
+//==============================
+Scene_Drill_TBS.prototype.drill_preloadBitmap = function() {
+	var temp_list = this._drill_dataList;
+	
+	this._drill_bitmapTank = [];
+	for( var i=0; i < temp_list.length; i++ ){
+		var temp_data = temp_list[i];
+		if( temp_data['mode'] ){
+			// > bitmap加载
+			var obj = {};
+			if( temp_data['mode'] == "单图模式" ){
+				obj['img_bitmap'] = ImageManager.loadTitle2(temp_data['img_src']);
+			}
+			if( temp_data['mode'] == "GIF模式" ){
+				obj['gif_bitmaps'] = [];
+				for(var j = 0; j < temp_data['gif_src'].length ; j++){
+					obj['gif_bitmaps'].push( ImageManager.loadTitle2(temp_data['gif_src'][j]) );
+				}
+			}
+			if( temp_data['mode'] == "视频模式" ){
+				// （无bitmap）
+			}
+			this._drill_bitmapTank[i] = obj;
+		}else{
+			// > 空数据情况
+			this._drill_bitmapTank[i] = {};
+		}
+	}
+}
+//==============================
+// * 预加载判断
+//==============================
+Scene_Drill_TBS.prototype.drill_isAllBitmapReady = function() {
+	for(var i=0; i < this._drill_bitmapTank.length; i++ ){
+		var obj = this._drill_bitmapTank[i];
+		// > 单图模式的加载
+		if( obj['img_bitmap'] != undefined && obj['img_bitmap'].isReady() == false ){
+			return false;
+		}
+		// > gif模式的加载
+		if( obj['gif_bitmaps'] != undefined ){
+			for(var j = 0; j < obj['gif_bitmaps'].length ; j++){
+				if( obj['gif_bitmaps'][j].isReady() ){
+					return false;
+				}
+			}	//（这里的判断比较松散，如果未添加bitmap，则不返回false，默认返回true）
+		}
+	}
+	return true;
+}
 //==============================
 // * 帧刷新 - 阶段控制
 //==============================
 Scene_Drill_TBS.prototype.drill_updateLevel = function() {
 	this._drill_level_time += 1;
 	
-	//>进入下一阶段
+	// > 进入下一阶段
 	if( this.drill_isLevelFinished() ){
 		this._drill_level += 1;
 		this._drill_level_time = 0;
@@ -651,14 +742,14 @@ Scene_Drill_TBS.prototype.drill_updateLevel = function() {
 		this._drill_need_recreate = true;
 	}
 	
-	//>跳出界面
-	if( this._drill_level >= DrillUp.g_TBS_list_length ){
+	// > 跳出界面
+	if( this._drill_level >= this._drill_dataList.length -1 ){
 		Graphics.playVideo("");			//防止进入标题后，点击造成视频重播的情况
 		SceneManager.goto(Scene_Title);
 		return ;
 	}
 	
-	//>下一阶段重建
+	// > 下一阶段重建
 	if( this._drill_need_recreate == true){
 		this._drill_need_recreate = false;
 		this.drill_createPic();
@@ -671,7 +762,7 @@ Scene_Drill_TBS.prototype.drill_updateLevel = function() {
 // * 帧刷新 - 阶段结束
 //==============================
 Scene_Drill_TBS.prototype.drill_isLevelFinished = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( temp_data['mode'] && temp_data['mode'] == "单图模式" ){
 		return this._drill_TBS_picEnd;
 	}
@@ -687,46 +778,55 @@ Scene_Drill_TBS.prototype.drill_isLevelFinished = function() {
 // * 帧刷新 - 建立单图
 //==============================
 Scene_Drill_TBS.prototype.drill_createPic = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( !temp_data ){ return }
 	if( temp_data['mode'] !== "单图模式" ){ return }
 	
-	var temp_sprite = new Sprite();
-	temp_sprite.bitmap = ImageManager.loadTitle2(temp_data['img_src']);
+	var temp_sprite = this._drill_pic_sprite;
+	temp_sprite.bitmap = this._drill_bitmapTank[ this._drill_level ]['img_bitmap'];
     temp_sprite.anchor.x = 0.5;
     temp_sprite.anchor.y = 0.5;
 	temp_sprite.opacity = 1;
+	if( temp_data['img_show'] == 0 ){ temp_sprite.opacity = 255; }
 	this._drill_main_sprite.addChild(temp_sprite);
 	this._drill_pic_sprite = temp_sprite;
+	this._drill_gif_sprite.opacity = 1;
 }
 //==============================
 // * 帧刷新 - 播放单图
 //==============================
 Scene_Drill_TBS.prototype.drill_updatePic = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( !temp_data ){ return }
 	if( temp_data['mode'] !== "单图模式" ){ return }
 	
-	//>按键跳过
+	// > 按键跳过
 	if( this._drill_level_time >= temp_data.delay ){
 		if( Input.isTriggered("ok") || TouchInput.isTriggered() ){
 			this._drill_TBS_picPrepareEnd = true;	//点击后，淡出时间15帧
 		}
 	}
 	
-	//>淡入淡出
+	// > 淡入淡出
 	var temp_sprite = this._drill_pic_sprite;
 	if( this._drill_TBS_picPrepareEnd ){
-		temp_sprite.opacity -= 255/temp_data['img_skip'];
+		if( temp_data['img_skip'] == 0 ){ 
+			temp_sprite.opacity = 0; 
+		}else{
+			temp_sprite.opacity -= 255/temp_data['img_skip'];
+		}
 	}else{
-		if( this._drill_level_time < temp_data['img_show'] ){
+		if( this._drill_level_time <= temp_data['img_show'] ){
 			temp_sprite.opacity += 255/temp_data['img_show'];
 		}
-		if( this._drill_level_time > (temp_data['img_show'] + temp_data['img_sustain'] ) ){
+		if( this._drill_level_time >= (temp_data['img_show'] + temp_data['img_sustain'] ) 
+			&& temp_data['img_hide'] != 0 ){		//消失时间为0时，直接不控制透明度（下一阶段会控制）
 			temp_sprite.opacity -= 255/temp_data['img_hide'];
 		}
 	}
-	if( this._drill_level_time > 1 && temp_sprite.opacity <= 0 ){
+	if( this._drill_level_time >= temp_data['img_show']+temp_data['img_sustain']+temp_data['img_hide'] ){
+		this._drill_TBS_picEnd = true;
+	}else if( this._drill_TBS_picPrepareEnd && temp_sprite.opacity <= 0 ){
 		this._drill_TBS_picEnd = true;
 	}
 }
@@ -734,58 +834,62 @@ Scene_Drill_TBS.prototype.drill_updatePic = function() {
 // * 帧刷新 - 建立GIF
 //==============================
 Scene_Drill_TBS.prototype.drill_createGIF = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( !temp_data ){ return }
 	if( temp_data['mode'] !== "GIF模式" ){ return }
 	
-	var temp_sprite_data = JSON.parse(JSON.stringify( temp_data ));
-	temp_sprite_data['gif_bitmaps'] = [];
-	for(var j = 0; j < temp_sprite_data['gif_src'].length ; j++){
-		temp_sprite_data['gif_bitmaps'].push(ImageManager.loadTitle2(temp_sprite_data['gif_src'][j]));
-	}
-	
-	var temp_sprite = new Sprite();
-	temp_sprite.bitmap = temp_sprite_data['gif_bitmaps'][0];
+	var temp_sprite_data = JSON.parse(JSON.stringify( temp_data ));	
+	var temp_sprite = this._drill_gif_sprite;
+	temp_sprite.bitmap = this._drill_bitmapTank[ this._drill_level ]['gif_bitmaps'][0];
     temp_sprite.anchor.x = 0.5;
     temp_sprite.anchor.y = 0.5;
 	temp_sprite.opacity = 1;
+	if( temp_data['img_show'] == 0 ){ temp_sprite.opacity = 255; }
 	this._drill_main_sprite.addChild(temp_sprite);
 	this._drill_gif_sprite = temp_sprite;
 	this._drill_gif_sprite_data = temp_sprite_data;
+	this._drill_pic_sprite.opacity = 1;
 }
 //==============================
 // * 帧刷新 - 播放GIF
 //==============================
 Scene_Drill_TBS.prototype.drill_updateGIF = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( !temp_data ){ return }
 	if( temp_data['mode'] !== "GIF模式" ){ return }
 	
-	//>按键跳过
+	// > 按键跳过
 	if( this._drill_level_time >= temp_data.delay ){
 		if( Input.isTriggered("ok") || TouchInput.isTriggered() ){
 			this._drill_TBS_gifPrepareEnd = true;	//点击后，淡出时间15帧
 		}
 	}
 	
-	//>淡入淡出
+	// > 淡入淡出
 	var temp_sprite = this._drill_gif_sprite;
 	var temp_sprite_data = this._drill_gif_sprite_data;
 	if( this._drill_TBS_gifPrepareEnd ){
-		temp_sprite.opacity -= 255/temp_sprite_data['gif_skip'];
+		if( temp_data['gif_skip'] == 0 ){ 
+			temp_sprite.opacity = 0; 
+		}else{
+			temp_sprite.opacity -= 255/temp_data['gif_skip'];
+		}
 	}else{
-		if( this._drill_level_time < temp_sprite_data['gif_show'] ){
+		if( this._drill_level_time <= temp_sprite_data['gif_show'] ){
 			temp_sprite.opacity += 255/temp_sprite_data['gif_show'];
 		}
-		if( this._drill_level_time > (temp_sprite_data['gif_show'] + temp_sprite_data['gif_sustain'] ) ){
+		if( this._drill_level_time >= (temp_sprite_data['gif_show'] + temp_sprite_data['gif_sustain'] ) 
+			&& temp_data['img_hide'] != 0 ){		//消失时间为0时，直接不控制透明度（下一阶段会控制）
 			temp_sprite.opacity -= 255/temp_sprite_data['gif_hide'];
 		}
 	}
-	if( this._drill_level_time > 1 && temp_sprite.opacity <= 0 ){
+	if( this._drill_level_time >= temp_data['img_show']+temp_data['img_sustain']+temp_data['img_hide'] ){
+		this._drill_TBS_gifEnd = true;
+	}else if( this._drill_TBS_gifPrepareEnd && temp_sprite.opacity <= 0 ){
 		this._drill_TBS_gifEnd = true;
 	}
 	
-	//>GIF播放
+	// > GIF播放
 	var inter = this._drill_level_time ;
 	inter = inter / temp_sprite_data['gif_interval'];
 	if( inter >= temp_sprite_data['gif_bitmaps'].length &&
@@ -798,14 +902,14 @@ Scene_Drill_TBS.prototype.drill_updateGIF = function() {
 		inter = temp_sprite_data['gif_bitmaps'].length - 1 - inter;
 	}
 	inter = Math.floor(inter);
-	temp_sprite.bitmap = temp_sprite_data['gif_bitmaps'][inter];
+	temp_sprite.bitmap = this._drill_bitmapTank[ this._drill_level ]['gif_bitmaps'][inter];
 	
 }
 //==============================
 // * 帧刷新 - 建立视频
 //==============================
 Scene_Drill_TBS.prototype.drill_createVideo = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( !temp_data ){ return }
 	if( temp_data['mode'] !== "视频模式" ){ return }
 	
@@ -817,11 +921,11 @@ Scene_Drill_TBS.prototype.drill_createVideo = function() {
 // * 帧刷新 - 播放视频
 //==============================
 Scene_Drill_TBS.prototype.drill_updateVideo = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( !temp_data ){ return }
 	if( temp_data['mode'] !== "视频模式" ){ return }
 	
-	//>按键跳过
+	// > 按键跳过
 	if( this._drill_level_time >= temp_data.delay ){
 		if( Input.isTriggered("ok") || TouchInput.isTriggered() ){
 			Graphics._video['muted'] = true;
@@ -832,7 +936,7 @@ Scene_Drill_TBS.prototype.drill_updateVideo = function() {
 		}
 	}
 	
-	//>播放结束
+	// > 播放结束
 	if( Graphics.isVideoPlaying() ){
 		Graphics._video['muted'] = false;		//静音控制
 	}else{
@@ -858,7 +962,7 @@ Scene_Drill_TBS.prototype.videoFileExt = function() {
 // ** 帧刷新 - 建立背景音乐
 //==============================
 Scene_Drill_TBS.prototype.drill_createMusic = function() {
-	var temp_data = DrillUp.g_TBS_list[this._drill_level];
+	var temp_data = this._drill_dataList[this._drill_level];
 	if( !temp_data ){ return }
 	if( temp_data.bgm_set === "不操作" ){ return }
 	if( temp_data.bgm_set === "暂停之前的BGM" ){ 

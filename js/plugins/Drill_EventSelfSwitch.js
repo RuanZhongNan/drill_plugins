@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.5]        物体 - 独立开关
+ * @plugindesc [v1.6]        物体 - 独立开关
  * @author Drill_up
  * 
  * 
@@ -38,17 +38,18 @@
  * ----激活条件 - 设置
  * 要设置更多的独立开关，直接在指定页添加下面的注释即可：
  * 
- * 事件注释：<<出现条件>> : 独立开关 : A : 为NO
- * 事件注释：<<出现条件>> : 独立开关 : B : 为NO
- * 事件注释：<<出现条件>> : 独立开关 : E : 为NO
- * 事件注释：<<出现条件>> : 独立开关 : F : 为NO
- * 事件注释：<<出现条件>> : 独立开关 : A1 : 为NO
- * 事件注释：<<出现条件>> : 独立开关 : A2 : 为NO
+ * 事件注释：<<出现条件>> : 独立开关 : A : 为ON
+ * 事件注释：<<出现条件>> : 独立开关 : B : 为ON
+ * 事件注释：<<出现条件>> : 独立开关 : E : 为ON
+ * 事件注释：<<出现条件>> : 独立开关 : F : 为ON
+ * 事件注释：<<出现条件>> : 独立开关 : A1 : 为ON
+ * 事件注释：<<出现条件>> : 独立开关 : A2 : 为ON
  * 
  * 1.由于注释修改的是"出现条件"，指令特殊，所以与其他注释有区别。
  * 2.E、F、A1、A2 是可完全自定义的字符串，ABCD是标准的原开关设置。
  * 3.注释与独立开关设置同时存在，注释会覆盖设置。
  *   独立开关的出现条件写多条注释也没有效果，只以第一个注释为准。
+ * 4.由于之前版本单词拼写错误，这里写"ON"或"NO"都有效。
  * 
  * -----------------------------------------------------------------------------
  * ----激活条件 - 使用
@@ -136,6 +137,8 @@
  * 优化了指令设置，添加了获取值功能。
  * [v1.5]
  * 优化了内部结构，并修改了插件指令格式。
+ * [v1.6]
+ * 修复了NO和ON的写法，都有效。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -200,7 +203,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				e_chars = [];
 				var temp_arr = unit.split(/[,，]/);
 				for( var k=0; k < temp_arr.length; k++ ){
-					var e = $gameMap.event( Number(temp_arr[k]) );
+					var e_id = Number(temp_arr[k]);
+					if( $gameMap.drill_ESS_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e_chars.push( e );
 				}
 			}
@@ -210,20 +215,26 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				e_chars = [];
 				var temp_arr = unit.split(/[,，]/);
 				for( var k=0; k < temp_arr.length; k++ ){
-					var e = $gameMap.event( $gameVariables.value(Number(temp_arr[k])) );
+					var e_id = $gameVariables.value(Number(temp_arr[k]));
+					if( $gameMap.drill_ESS_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e_chars.push( e );
 				}
 			}
 			if( e_chars == null && unit.indexOf("事件变量[") != -1 ){
 				unit = unit.replace("事件变量[","");
 				unit = unit.replace("]","");
-				var e = $gameMap.event( $gameVariables.value(Number(unit)) );
+				var e_id = $gameVariables.value(Number(unit));
+				if( $gameMap.drill_ESS_isEventExist( e_id ) == false ){ return; }
+				var e = $gameMap.event( e_id );
 				e_chars = [ e ];
 			}
 			if( e_chars == null && unit.indexOf("事件[") != -1 ){
 				unit = unit.replace("事件[","");
 				unit = unit.replace("]","");
-				var e = $gameMap.event( Number(unit) );
+				var e_id = Number(unit);
+				if( $gameMap.drill_ESS_isEventExist( e_id ) == false ){ return; }
+				var e = $gameMap.event( e_id );
 				e_chars = [ e ];
 			}
 			if( e_chars == null && unit == "全图事件" ){
@@ -365,6 +376,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ESS_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventSelfSwitch.js 物体 - 独立开关】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //==============================
 // * 优化 - 独立开关赋值时不刷新地图
@@ -409,7 +434,7 @@ Scene_Map.prototype.drill_ESS_dataCovert = function( data_e ) {
 			// > 事件注释
 			var args = l.parameters[0].split(' ');
 			var command = args.shift();
-			if (command == "=>独立开关为ON条件"){	//=>独立开关为ON条件 : A
+			if (command == "=>独立开关为ON条件" || command == "=>独立开关为NO条件"){	//=>独立开关为ON条件 : A
 				if(args.length == 2){
 					var temp1 = String(args[1]);
 					page.conditions.selfSwitchValid = true;
@@ -417,12 +442,12 @@ Scene_Map.prototype.drill_ESS_dataCovert = function( data_e ) {
 					break;
 				}
 			};
-			if (command == "<<出现条件>>"){	//<<出现条件>> : 独立开关 : A2 : 为NO
+			if (command == "<<出现条件>>"){	//<<出现条件>> : 独立开关 : A2 : 为ON
 				if(args.length == 6){
 					var type = String(args[1]);
 					var temp2 = String(args[3]);
 					var temp3 = String(args[5]);
-					if( type == "独立开关" && temp3 == "为NO" ){	
+					if( type == "独立开关" && (temp3 == "为NO" || temp3 == "为ON") ){	
 						page.conditions.selfSwitchValid = true;
 						page.conditions.selfSwitchCh = temp2;
 						break;

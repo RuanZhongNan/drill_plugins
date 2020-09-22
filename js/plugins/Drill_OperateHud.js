@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.7]        互动 - 鼠标辅助操作面板
+ * @plugindesc [v1.8]        互动 - 鼠标辅助操作面板
  * @author Drill_up
  * 
  * @Drill_LE_param "自定义按钮-%d"
@@ -25,6 +25,7 @@
  * 插件必须基于核心，并可以辅助扩展下列插件。
  * 基于：
  *   - Drill_CoreOfInput          系统 - 输入设备核心
+ *   - Drill_LayerCommandThread   地图 - 多线程
  * 可作用于：
  *   - Drill_Jump                 互动 - 跳跃能力 ★★v1.2及以上★★
  *   - Drill_RotateDirection      互动 - 原地转向能力
@@ -59,7 +60,10 @@
  *      但是 菜单、自定义按钮 没有这项功能，只能手动设置插件指令。
  * 自定义按钮：
  *   (1.你可以在面板中添加自定义按钮，点击后执行公共事件。
- *      公共事件在地图界面中并行执行。
+ *      公共事件的执行通过 地图-多线程 插件来控制。
+ *      可选择串行与并行，具体可以看看"关于公共事件与并行.docx"。
+ *   (2.注意，对话框事件指令 是特殊的指令体，只要执行对话框，就会强
+ *      制串行，阻塞其他所有事件的线程。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -150,7 +154,8 @@
  * 添加了镜头缩放时，面板触发的支持。
  * [v1.7]
  * 修改了内部结构，添加了按钮封印功能，以及自定义按钮功能。
- * 
+ * [v1.8]
+ * 添加了公共事件的并行与串行的功能。
  *
  *
  *
@@ -625,6 +630,15 @@
  * @type common_event
  * @desc 按钮按下后执行的公共事件。
  * @default 0
+ *
+ * @param 公共事件执行方式
+ * @type select
+ * @option 串行
+ * @value 串行
+ * @option 并行
+ * @value 并行
+ * @desc 公共事件的执行方式。
+ * @default 并行
  * 
  * @param 执行后是否收起面板
  * @type boolean
@@ -674,6 +688,9 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			操作面板：（鼠标+触屏）
+//				->面板
+//					->收回时机
+//					->地图点击拦截
 //				->功能按钮
 //					->菜单
 //					->跳跃
@@ -685,7 +702,6 @@
 //					->高亮激活
 //					->封印
 //					->禁用
-//				->面板收回时机
 //
 //		★必要注意事项：
 //			1.互动之间如果有较复杂的接口，必须遵循下面的格式：
@@ -785,6 +801,7 @@
 			DrillUp.g_OH_self_list[i] = JSON.parse(DrillUp.parameters["自定义按钮-" + String(i+1) ]);
 			DrillUp.g_OH_self_list[i]['status'] = String(DrillUp.g_OH_self_list[i]["按钮初始状态"] || "禁用");
 			DrillUp.g_OH_self_list[i]['commonevents'] = Number(DrillUp.g_OH_self_list[i]["执行的公共事件"] || 0);
+			DrillUp.g_OH_self_list[i]['pipeType'] = String(DrillUp.g_OH_self_list[i]["公共事件执行方式"] || "并行");
 			DrillUp.g_OH_self_list[i]['closeHud'] = String(DrillUp.g_OH_self_list[i]["执行后是否收起面板"] || "true") === "true";
 			DrillUp.g_OH_self_list[i]['btn_src'] = String(DrillUp.g_OH_self_list[i]["资源-自定义按钮"] || "");
 			DrillUp.g_OH_self_list[i]['btn_src_lock'] = String(DrillUp.g_OH_self_list[i]["资源-自定义按钮-封印"] || "");
@@ -799,7 +816,8 @@
 //=============================================================================
 // * >>>>基于插件检测>>>>
 //=============================================================================
-if( Imported.Drill_CoreOfInput ){
+if( Imported.Drill_CoreOfInput &&
+	Imported.Drill_LayerCommandThread ){
 	
 	
 //=============================================================================
@@ -1334,7 +1352,8 @@ Drill_Operate_Hud.prototype.drill_createBtn_Self = function() {
 			temp_sprite.y = data['y'];
 			temp_sprite.anchor.x = 0.5;
 			temp_sprite.anchor.y = 0.5;
-			temp_sprite['commonevents'] = data['commonevents'];		//参数转移
+			temp_sprite['pipeType'] = data['pipeType'];				//参数转移
+			temp_sprite['commonevents'] = data['commonevents'];	
 			temp_sprite['closeHud'] = data['closeHud'];
 			this._drill_OH_btns.push(temp_sprite);
 			this.addChild(temp_sprite);
@@ -1819,6 +1838,7 @@ Drill_Operate_Hud.prototype.drill_triggerPlayerInput = function() {
 	// > 自定义
 	for( var i=0; i < this._drill_OH_selfList.length; i++ ){
 		var sprite = this._drill_OH_selfList[i];
+		var data = DrillUp.g_OH_self_list[i];
 		var status = $gameSystem._drill_OH_self_status[i];
 		if( sprite == null ){ continue; }
 		
@@ -1831,8 +1851,15 @@ Drill_Operate_Hud.prototype.drill_triggerPlayerInput = function() {
 			}
 			
 			// > 执行公共事件
+			//$gameTemp.reserveCommonEvent( data['commonevents'] );
 			SoundManager.playOk();
-			$gameTemp.reserveCommonEvent( sprite['commonevents'] );
+			var temp_data = {
+				'type':"公共事件",
+				'pipeType': data['pipeType'],
+				'commonEventId': data['commonevents'],
+			};
+			$gameMap.drill_LCT_addPipeEvent( temp_data );
+			
 			if( sprite['closeHud'] ){
 				this._drill_OH_board_blocking = false;
 			}
@@ -1893,7 +1920,8 @@ Drill_Operate_Hud.prototype.drill_isOnBtnSprite = function(sprite) {
 		Imported.Drill_OperateHud = false;
 		alert(
 			"【Drill_OperateHud.js 互动 - 鼠标辅助操作面板】\n缺少基础插件，去看看下列插件是不是 未添加 / 被关闭 / 顺序不对："+
-			"\n- Drill_CoreOfInput 系统-输入设备核心"
+			"\n- Drill_CoreOfInput 系统-输入设备核心" + 
+			"\n- Drill_LayerCommandThread 地图-多线程"
 		);
 }
 

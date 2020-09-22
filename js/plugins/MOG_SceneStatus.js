@@ -3,8 +3,12 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.0)[v1.7]  面板 - 全自定义状态界面
+ * @plugindesc (v1.0)[v1.8]  面板 - 全自定义状态界面
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "角色前视图-%d"
+ * @Drill_LE_parentKey "==角色前视图%d至%d=="
+ * @Drill_LE_var "Moghunter.menu_status_bust_list_length"
  *
  *
  * @param 资源-整体布局
@@ -1087,6 +1091,8 @@
  * 修改了插件的分类。
  * [v1.7]
  * 修改了插件关联的资源文件夹。
+ * [v1.8]
+ * 添加了最大值编辑的支持。
  *
  */
 

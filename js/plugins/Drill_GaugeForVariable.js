@@ -1070,6 +1070,14 @@
 //					->刷菜单时 动画不重复移动	x（暂时让玩家手动关闭吧，缺乏时机判定）
 //					->刷菜单时 数值不滚动		x
 //
+//		
+//		★配置参数结构体如下：
+//			~struct~GFVStyle:				固定框样式
+//			~struct~GFVStyleSlot:			槽样式列表
+//			~struct~GFVBind:				变量框设置
+//			~struct~GFVBindSlot:			槽数据列表
+//			~struct~DrillWindowMoving:		整体移动动画（弹道核心-两点式）
+//		
 //		★私有类如下：
 //			* Drill_GFV_StyleSprite【固定框样式】
 //

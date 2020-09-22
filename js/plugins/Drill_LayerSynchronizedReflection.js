@@ -3,13 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.6]        行走图 - 图块同步镜像
+ * @plugindesc [v1.7]        行走图 - 图块同步镜像
  * @author Drill_up
  * 
  * @Drill_LE_param "地图镜面-%d"
  * @Drill_LE_parentKey "---地图镜面组%d至%d---"
  * @Drill_LE_var "null"
- *
+ * 
+ * 
  * @help  
  * =============================================================================
  * +++ Drill_LayerSynchronizedReflection +++
@@ -177,11 +178,12 @@
  * 修复了镜像图像在的事件图像上面的bug。
  * [v1.6]
  * 修改了插件指令格式，修改了透明状态控制。
+ * [v1.7]
+ * 添加了最大值编辑的支持。
  *
  * 
  *
  * @param 所有地图是否默认启用镜像
- * @parent ----操作面板----
  * @type boolean
  * @on 启用
  * @off 禁用
@@ -394,11 +396,11 @@
  * @dir img/Map__reflection/
  * @type file
  *
- * @param --地图镜面组21至40--
+ * @param ---地图镜面组21至40---
  * @default 
  *
  * @param 地图镜面-21
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -406,7 +408,7 @@
  * @type file
  *
  * @param 地图镜面-22
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -414,7 +416,7 @@
  * @type file
  *
  * @param 地图镜面-23
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -422,7 +424,7 @@
  * @type file
  *
  * @param 地图镜面-24
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -430,7 +432,7 @@
  * @type file
  *
  * @param 地图镜面-25
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -438,7 +440,7 @@
  * @type file
  *
  * @param 地图镜面-26
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -446,7 +448,7 @@
  * @type file
  *
  * @param 地图镜面-27
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -454,7 +456,7 @@
  * @type file
  *
  * @param 地图镜面-28
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -462,7 +464,7 @@
  * @type file
  *
  * @param 地图镜面-29
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -470,7 +472,7 @@
  * @type file
  *
  * @param 地图镜面-30
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -478,7 +480,7 @@
  * @type file
  *
  * @param 地图镜面-31
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -486,7 +488,7 @@
  * @type file
  *
  * @param 地图镜面-32
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -494,7 +496,7 @@
  * @type file
  *
  * @param 地图镜面-33
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -502,7 +504,7 @@
  * @type file
  *
  * @param 地图镜面-34
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -510,7 +512,7 @@
  * @type file
  *
  * @param 地图镜面-35
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -518,7 +520,7 @@
  * @type file
  *
  * @param 地图镜面-36
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -526,7 +528,7 @@
  * @type file
  *
  * @param 地图镜面-37
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -534,7 +536,7 @@
  * @type file
  *
  * @param 地图镜面-38
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -542,7 +544,7 @@
  * @type file
  *
  * @param 地图镜面-39
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -550,18 +552,18 @@
  * @type file
  *
  * @param 地图镜面-40
- * @parent --地图镜面组21至40--
+ * @parent ---地图镜面组21至40---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
  * @dir img/Map__reflection/
  * @type file
  *
- * @param --地图镜面组41至60--
+ * @param ---地图镜面组41至60---
  * @default 
  *
  * @param 地图镜面-41
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -569,7 +571,7 @@
  * @type file
  *
  * @param 地图镜面-42
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -577,7 +579,7 @@
  * @type file
  *
  * @param 地图镜面-43
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -585,7 +587,7 @@
  * @type file
  *
  * @param 地图镜面-44
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -593,7 +595,7 @@
  * @type file
  *
  * @param 地图镜面-45
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -601,7 +603,7 @@
  * @type file
  *
  * @param 地图镜面-46
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -609,7 +611,7 @@
  * @type file
  *
  * @param 地图镜面-47
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -617,7 +619,7 @@
  * @type file
  *
  * @param 地图镜面-48
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -625,7 +627,7 @@
  * @type file
  *
  * @param 地图镜面-49
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -633,7 +635,7 @@
  * @type file
  *
  * @param 地图镜面-50
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -641,7 +643,7 @@
  * @type file
  *
  * @param 地图镜面-51
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -649,7 +651,7 @@
  * @type file
  *
  * @param 地图镜面-52
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -657,7 +659,7 @@
  * @type file
  *
  * @param 地图镜面-53
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -665,7 +667,7 @@
  * @type file
  *
  * @param 地图镜面-54
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -673,7 +675,7 @@
  * @type file
  *
  * @param 地图镜面-55
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -681,7 +683,7 @@
  * @type file
  *
  * @param 地图镜面-56
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -689,7 +691,7 @@
  * @type file
  *
  * @param 地图镜面-57
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -697,7 +699,7 @@
  * @type file
  *
  * @param 地图镜面-58
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -705,7 +707,7 @@
  * @type file
  *
  * @param 地图镜面-59
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -713,7 +715,7 @@
  * @type file
  *
  * @param 地图镜面-60
- * @parent --地图镜面组41至60--
+ * @parent ---地图镜面组41至60---
  * @desc 自定义的镜像图片资源，作用于整张地图的镜面。
  * @default 
  * @require 1
@@ -847,14 +849,32 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				temp1 = temp1.replace("事件[","");
 				temp1 = temp1.replace("]","");
 				if( type == "不反射镜像" ){
-					$gameMap.event( Number(temp1) )._drill_LSR_isReflect = false;
+					var e_id = Number(temp1);
+					if( $gameMap.drill_LSR_isEventExist( e_id ) == false ){ return; }
+					$gameMap.event( e_id )._drill_LSR_isReflect = false;
 				}
 				if( type == "开启反射镜像" ){
-					$gameMap.event( Number(temp1) )._drill_LSR_isReflect = true;
+					var e_id = Number(temp1);
+					if( $gameMap.drill_LSR_isEventExist( e_id ) == false ){ return; }
+					$gameMap.event( e_id )._drill_LSR_isReflect = true;
 				}
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_LSR_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_LayerSynchronizedReflection.js 行走图 - 图块同步镜像】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================
@@ -1020,7 +1040,7 @@ Spriteset_Map.prototype.drill_LSR_createReflect = function() {
 	}
 	this._drill_LSR_layer.addChild(this._drill_LSR_layer_mask);		//遮罩原型（如果不addchild，Sprite是不会update的）
 	this._drill_LSR_layer.mask = this._drill_LSR_layer_mask;		//遮罩
-	this._drill_LRR_layer.z = 0.55;									//_tilemap z轴：1.事件下方 3.事件相同 5.事件上方 6.影子 7.气泡 8.动画层 9.鼠标目的地
+	this._drill_LSR_layer.z = 0.55;									//_tilemap z轴：1.事件下方 3.事件相同 5.事件上方 6.影子 7.气泡 8.动画层 9.鼠标目的地
 																	//_tilemap再下面就是父类图块自身了，再下面是Parallax
 	
 	this._tilemap.addChild(this._drill_LSR_layer);

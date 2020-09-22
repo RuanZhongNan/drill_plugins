@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        鼠标 - 事件说明窗口
+ * @plugindesc [v1.4]        鼠标 - 事件说明窗口
  * @author Drill_up
  *
  * @param ---窗口---
@@ -129,16 +129,24 @@
  * 1.插件的作用域：地图界面。
  *   作用于事件的行走图。
  *   单独对鼠标有效。另支持触屏按住。
- * 2.由于该窗口的大小是变化的，所以布局可以设定四种。
- *   如果是触屏情况，可能需要将窗口锁定在一个固定位置，方便查看信息。
- * 3.一个事件只能对应一个鼠标触发窗口方式，设置多个没有效果。
- * 4.如果说明中没有任何字符，将不显示这个状态的说明内容。
- * 5.写了一个"=>事件说明窗口"后，后面可以跟非常多的"=:"内容。
- * 6.你可以附加一定的宽度高度来适应被遮住的文字，但是不要加太多。
- * 7.如果你想改变事件的内容信息，通过第二页的事件注释即可。
- *   另外，你需要确保第一页和第二页的行走图不是同一张。
- *   因为面板接触显示的触发范围与行走图大小相关，大行走图的鼠标接触范围也大。
- *   同一张行走图情况下，考虑到优化，鼠标范围默认不刷新。所以需要换图来触发刷新。
+ * 结构：
+ *   (1.由于该窗口的大小是变化的，所以布局可以设定四种。
+ *      如果是触屏情况，可能需要将窗口锁定在一个固定位置，方便查看信息。
+ *   (2.一个事件只能对应一个鼠标触发窗口方式，设置多个没有效果。
+ * 内容：
+ *   (1.如果说明中没有任何字符，将不显示这个状态的说明内容。
+ *   (2.写了一个"=>事件说明窗口"后，后面可以跟非常多的"=:"内容。
+ *   (3.你可以设置"附加宽度高度"来适应被遮住的文字，但是不要加太多。
+ * 刷新：
+ *   (1.插件不会主动刷新内容。
+ *   (2.如果你想改变事件的内容信息，首先需要改变第二页的事件注释，
+ *      并且，你需要确保第一页和第二页的行走图不同即可。
+ *      只改变行走图朝向不会刷新。
+ *   (3.你也可以使用插件指令强制刷新。
+ *      但是注意，强制刷新时，如果事件所处的事件页没有写注释，则没有任何效果。
+ * 接触面：
+ *   (1.面板接触显示的触发范围与行走图大小相关，行走图资源越大，接触范围越大。
+ *      同一张行走图情况下，考虑到优化，鼠标范围默认不刷新。所以需要换图来触发刷新。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -175,11 +183,14 @@
  *
  * 插件指令：>事件说明窗口 : 本事件 : 隐藏说明
  * 插件指令：>事件说明窗口 : 本事件 : 显示说明
- * 插件指令：>事件说明窗口 : 2 : 隐藏说明
- * 插件指令：>事件说明窗口 : 3 : 显示说明
- *
- * 数字对应的事件的id。
- * 隐藏是暂时性的，切换了地图或者改变了事件的图像，就会失效。
+ * 插件指令：>事件说明窗口 : 本事件 : 强制刷新说明
+ * 插件指令：>事件说明窗口 : 事件[2] : 隐藏说明
+ * 插件指令：>事件说明窗口 : 事件[3] : 显示说明
+ * 插件指令：>事件说明窗口 : 事件[3] : 强制刷新说明
+ * 
+ * 1.数字对应的事件的id。
+ *   隐藏是暂时性的，切换了地图或者改变了事件的图像，就会失效。
+ * 2.使用"强制刷新说明"时，事件所处的事件页没有写注释，则没有任何效果。
  *
  * -----------------------------------------------------------------------------
  * ----插件性能
@@ -213,6 +224,8 @@
  * 优化了窗口层级的位置。
  * [v1.3]
  * 分离了核心，优化了插件性能。添加了锁定功能。
+ * [v1.4]
+ * 修改了内部结构，添加了强制刷新插件指令。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -247,7 +260,17 @@
 //			  实际上结合后，改动非常大，结构已经截然不同了。
 //			2.地图界面最容易造成卡顿问题，稍不注意，计算量就暴涨，一定要加约束。
 //			  （窗口的宽高不要轻易修改，每次修改都会重画）
-//
+//			3.	2020/9/13：
+//				这个插件给我的印象一点都不好，糟透了。刷新文本非常困难。
+//				由于之前加锁加的太死了，结构环环相扣，修改内容后，仍然不变，就很头疼。
+//				从原理上，这里分成了三个管理体系：
+//					窗口与鼠标（难点在鼠标悬停、鼠标离开）
+//					事件页与文本内容（难点在文本变化时机、行走图变化时机）
+//					事件贴图触发范围（难点在获取事件的位置、贴图触发区）
+//				这三个结构纠缠在一起，难以分离。
+//				并且，我还没有找到很好的方法将它们独立开来。
+//				可能还需要花时间建立 特殊的核心 或 对象捕获体系。
+//				
 //		★存在的问题：
 //			暂无
 //
@@ -260,20 +283,20 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_MiniPlateForEvent');
 	
-	DrillUp.g_MPFE_layout_type = String(DrillUp.parameters['布局模式'] || "黑底布局");
-	DrillUp.g_MPFE_opacity = Number(DrillUp.parameters['布局透明度'] || 255);
-	DrillUp.g_MPFE_layout_window = String(DrillUp.parameters['资源-系统窗口布局'] );
-	DrillUp.g_MPFE_layout_pic = String(DrillUp.parameters['资源-图片窗口布局'] );
-	DrillUp.g_MPFE_layout_pic_x = Number(DrillUp.parameters['平移-图片窗口布局 X'] );
-	DrillUp.g_MPFE_layout_pic_y = Number(DrillUp.parameters['平移-图片窗口布局 Y'] );
-	DrillUp.g_MPFE_lock_enable = String(DrillUp.parameters['是否锁定窗口位置'] || "false") === "true";
-	DrillUp.g_MPFE_lock_x = Number(DrillUp.parameters['平移-锁定位置 X'] || 0);
-	DrillUp.g_MPFE_lock_y = Number(DrillUp.parameters['平移-锁定位置 Y'] || 0);
-	DrillUp.g_MPFE_lineheight = Number(DrillUp.parameters['窗口行间距'] || 10);
-	DrillUp.g_MPFE_padding = Number(DrillUp.parameters['窗口内边距'] || 18);
-	DrillUp.g_MPFE_fontsize = Number(DrillUp.parameters['窗口字体大小'] || 22);
-	DrillUp.g_MPFE_ex_width = Number(DrillUp.parameters['窗口附加宽度'] || 0);
-	DrillUp.g_MPFE_ex_height = Number(DrillUp.parameters['窗口附加高度'] || 0);
+	DrillUp.g_MPFE_layout_type = String(DrillUp.parameters["布局模式"] || "黑底布局");
+	DrillUp.g_MPFE_opacity = Number(DrillUp.parameters["布局透明度"] || 255);
+	DrillUp.g_MPFE_layout_window = String(DrillUp.parameters["资源-系统窗口布局"] );
+	DrillUp.g_MPFE_layout_pic = String(DrillUp.parameters["资源-图片窗口布局"] );
+	DrillUp.g_MPFE_layout_pic_x = Number(DrillUp.parameters["平移-图片窗口布局 X"] );
+	DrillUp.g_MPFE_layout_pic_y = Number(DrillUp.parameters["平移-图片窗口布局 Y"] );
+	DrillUp.g_MPFE_lock_enable = String(DrillUp.parameters["是否锁定窗口位置"] || "false") === "true";
+	DrillUp.g_MPFE_lock_x = Number(DrillUp.parameters["平移-锁定位置 X"] || 0);
+	DrillUp.g_MPFE_lock_y = Number(DrillUp.parameters["平移-锁定位置 Y"] || 0);
+	DrillUp.g_MPFE_lineheight = Number(DrillUp.parameters["窗口行间距"] || 10);
+	DrillUp.g_MPFE_padding = Number(DrillUp.parameters["窗口内边距"] || 18);
+	DrillUp.g_MPFE_fontsize = Number(DrillUp.parameters["窗口字体大小"] || 22);
+	DrillUp.g_MPFE_ex_width = Number(DrillUp.parameters["窗口附加宽度"] || 0);
+	DrillUp.g_MPFE_ex_height = Number(DrillUp.parameters["窗口附加高度"] || 0);
 	
 //=============================================================================
 // * >>>>基于插件检测>>>>
@@ -286,99 +309,165 @@ if( Imported.Drill_CoreOfInput ){
 var _drill_MPFE_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_MPFE_pluginCommand.call(this, command, args);
-	if (command === '>事件说明窗口') { // >事件说明窗口 : A : 隐藏说明
+	if( command === ">事件说明窗口" ){		// >事件说明窗口 : A : 隐藏说明
 		if(args.length == 4){
-			var temp1 = String(args[1]) ;
+			var temp1 = String(args[1]);
 			var type = String(args[3]);
-			if( type == '隐藏说明' ){ 
+			if( type == "隐藏说明" ){ 
 				var e_id = 0;
 				if( temp1 == "本事件" ){ 
 					e_id = this._eventId;
+				}else if( temp1.indexOf("事件[") != -1 ){
+					temp1 = temp1.replace("事件[","");
+					temp1 = temp1.replace("]","");
+					e_id = Number(temp1);
 				}else{
 					e_id = Number(temp1);
 				}
+				if( $gameMap.drill_MPFE_isEventExist( e_id ) == false ){ return; }
 				$gameMap.drill_MPFE_setDataVisible( e_id , false );
 			}
-			if( type == '显示说明' ){
+			if( type == "显示说明" ){
 				var e_id = 0;
 				if( temp1 == "本事件" ){ 
 					e_id = this._eventId;
+				}else if( temp1.indexOf("事件[") != -1 ){
+					temp1 = temp1.replace("事件[","");
+					temp1 = temp1.replace("]","");
+					e_id = Number(temp1);
 				}else{
 					e_id = Number(temp1);
 				}
+				if( $gameMap.drill_MPFE_isEventExist( e_id ) == false ){ return; }
 				$gameMap.drill_MPFE_setDataVisible( e_id , true );
 			}
-		}
-	}
-};
-
-//=============================================================================
-// ** 事件初始化
-//=============================================================================
-//==============================
-// * 贴图初始化
-//==============================
-var _drill_MPFE_setCharacter = Sprite_Character.prototype.setCharacter;
-Sprite_Character.prototype.setCharacter = function(character) {		//图像改变，范围就改变
-	_drill_MPFE_setCharacter.call(this,character);
-    this.drill_MPFE_setupTrigger();
-};
-Sprite_Character.prototype.drill_MPFE_setupTrigger = function() {
-
-	if( this._character && this._character.constructor.name === "Game_Event" ){
-		var page = this._character.page();
-		if ( page ) {
-			var list_ = this._character.list();
-			var context_ = [];
-			var start_count = false;	//rmmv每行都存储在不同位置。
-			var type = "";
-			for(var i=0; i<list_.length; i++){
-				var l = list_[i];
-				if (l.code === 108 || l.code === 408) {
-					var row = l.parameters[0];
-					var args = l.parameters[0].split(' ');
-					var command = args.shift();
-					if (command == "=>事件说明窗口"){	//=>事件说明窗口 : 鼠标滚轮按下[持续] : 显示下列说明 =:xxxx =:xxx
-						if(args.length >= 2){
-							if(args[1]){ type = String(args[1]); }
-							if(args[3]){ var temp1 = String(args[3]); }
-							if( temp1 == "显示下列说明" ){
-								start_count = true;
-								continue;
-							}
-						}
-					};
-					if( start_count == true ){
-						if(row.contains("=:")){
-							context_.push(row.replace("=:",""));
-						}else{
-							start_count = false;
-						}
-					}
-				};
-			};
-			if(context_.length != 0){		//添加多条内容
-				var obj = {};
-				obj._event_id = this._character._eventId;	//只能存数据，不能存对象指针
-				obj._type = type;
-				obj._context = context_;
-				obj._enable = true;
-				$gameMap.drill_MPFE_pushData(obj);
+			if( type == "强制刷新说明" ){
+				var e_id = 0;
+				if( temp1 == "本事件" ){ 
+					e_id = this._eventId;
+				}else if( temp1.indexOf("事件[") != -1 ){
+					temp1 = temp1.replace("事件[","");
+					temp1 = temp1.replace("]","");
+					e_id = Number(temp1);
+				}else{
+					e_id = Number(temp1);
+				}
+				if( $gameMap.drill_MPFE_isEventExist( e_id ) == false ){ return; }
+				$gameMap.event( e_id )._drill_MPFE_eventNeedRefresh = true;
 			}
 		}
 	}
 };
 //==============================
-// * Game_Map初始化
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_MPFE_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_MiniPlateForEvent.js 鼠标 - 事件说明窗口】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+}
+
+//=============================================================================
+// ** 事件贴图
+//=============================================================================
+//==============================
+// * 事件贴图 - 初始化
+//==============================
+//var _drill_MPFE_setCharacter = Sprite_Character.prototype.setCharacter;
+//Sprite_Character.prototype.setCharacter = function( character ){		//图像改变，范围就改变
+//	_drill_MPFE_setCharacter.call(this,character);
+//    this.drill_MPFE_refreshTrigger();
+//};
+//==============================
+// * 事件贴图 - 刷新内容
+//==============================
+Sprite_Character.prototype.drill_MPFE_refreshTrigger = function() {
+	if(!this._character ){ return; }
+	if( this._character.constructor.name !== "Game_Event" ){ return; }
+	var page = this._character.page();
+	if(!page ){ return; }
+	var temp_list = this._character.list();
+	
+	var temp_context = [];
+	var start_count = false;	//多行注释索引
+	var type = "";
+	for(var i=0; i < temp_list.length; i++){
+		var l = temp_list[i];
+		if( l.code === 108 || l.code === 408 ){
+			var row = l.parameters[0];
+			var args = l.parameters[0].split(' ');
+			var command = args.shift();
+			if( command == "=>事件说明窗口" ){	//=>事件说明窗口 : 鼠标滚轮按下[持续] : 显示下列说明 =:xxxx =:xxx
+				if(args.length >= 2){
+					if(args[1]){ type = String(args[1]); }
+					if(args[3]){ var temp1 = String(args[3]); }
+					if( temp1 == "显示下列说明" ){
+						start_count = true;
+						continue;
+					}
+				}
+			};
+			if( start_count == true ){
+				if(row.contains("=:")){
+					temp_context.push(row.replace("=:",""));
+				}else{
+					start_count = false;
+				}
+			}
+		};
+	};
+	if( temp_context.length != 0 ){		//添加多条内容
+		var obj = {};
+		obj._event_id = this._character._eventId;	//只能存数据，不能存对象指针
+		obj._event_pageIndex = this._character._pageIndex;
+		obj._type = type;
+		obj._context = temp_context;
+		obj._enable = true;
+		$gameMap.drill_MPFE_pushData(obj);
+	}
+};
+//==============================
+// * 事件贴图 - 刷新内容
+//==============================
+var _drill_MPFE_spriteUpdate = Sprite_Character.prototype.update;
+Sprite_Character.prototype.update = function() {
+	// > 切换图片时变化
+    if( this.isImageChanged() ){
+		this.drill_MPFE_refreshTrigger();
+	}
+	
+	// > 原函数
+	_drill_MPFE_spriteUpdate.call( this );
+	
+	// > 强制刷新
+	if(!this._character ){ return; }
+	if( this._character.constructor.name !== "Game_Event" ){ return; }
+	if( this._character._drill_MPFE_eventNeedRefresh == true ){
+		this._character._drill_MPFE_eventNeedRefresh = false;
+		this.drill_MPFE_refreshTrigger();
+	}
+}
+
+
+//=============================================================================
+// ** 数据刷新
+//=============================================================================
+//==============================
+// * 地图 - 初始化
 //==============================
 var _drill_MPFE_gmap_initialize = Game_Map.prototype.initialize;
 Game_Map.prototype.initialize = function() {	
 	_drill_MPFE_gmap_initialize.call(this);
 	this._drill_MPFE_data = [];
 };
-
 //==============================
-// * Game_Map刷地图
+// * 地图 - 切换地图
 //==============================
 var _drill_MPFE_gmap_setup = Game_Map.prototype.setup;
 Game_Map.prototype.setup = function(mapId) {
@@ -386,25 +475,27 @@ Game_Map.prototype.setup = function(mapId) {
 	this._drill_MPFE_data = [];
 }
 //==============================
-// * Game_Map加入条件
+// * 地图 - 添加条件
 //==============================
-Game_Map.prototype.drill_MPFE_pushData = function(obj) {	
-	var can_push = true;
-	
-	for(var i=0; i<this._drill_MPFE_data.length; i++){	//重复的不插入
+Game_Map.prototype.drill_MPFE_pushData = function( obj ){	
+	for(var i=0; i<this._drill_MPFE_data.length; i++){
 		var temp_obj = this._drill_MPFE_data[i];
 		if( temp_obj._event_id == obj._event_id &&
 			temp_obj._type == obj._type ){
-				
-			can_push  = false;
+			
+			// > 重复的不插入
+			if( temp_obj._event_pageIndex == obj._event_pageIndex ){ return ;}
+			
+			// > 事件页不同的，覆盖
+			this._drill_MPFE_data[i] = obj;
+			
+			return;
 		}
 	}
-	if( can_push ){
-		this._drill_MPFE_data.push(obj);
-	}
+	this._drill_MPFE_data.push(obj);
 };
 //==============================
-// * Game_Map去除条件
+// * 地图 - 去除条件
 //==============================
 Game_Map.prototype.drill_MPFE_setDataVisible = function(event_id,v) {	
 	
@@ -415,8 +506,13 @@ Game_Map.prototype.drill_MPFE_setDataVisible = function(event_id,v) {
 		}
 	}
 }
+
+
+//=============================================================================
+// ** 地图场景中 说明面板实例
+//=============================================================================
 //==============================
-// * 创建面板（ui层）
+// * 实例 - 创建面板（ui层）
 //==============================
 var _drill_MPFE_Scene_createSpriteset = Scene_Map.prototype.createSpriteset;
 Scene_Map.prototype.createSpriteset = function() {
@@ -431,52 +527,44 @@ Scene_Map.prototype.createSpriteset = function() {
 		this._drill_map_ui_board.addChild(this._drill_mini_event_plate);
 	}
 };
-
-//=============================================================================
-// ** 地图触发
-//=============================================================================
 //==============================
-// * Scene_Map初始化
-//==============================
-//var _drill_MPFE_smap_initialize = Scene_Map.prototype.initialize
-//Scene_Map.prototype.initialize = function() {	
-//	_drill_MPFE_smap_initialize.call(this);
-//	this._drill_MPFE_updating = false;
-//}
-//==============================
-// * Scene_Map帧刷新（直接update函数不稳定，可能刷新很多次，用updateScene）
+// * 实例 - 帧刷新
 //==============================
 var _drill_MPFE_smap_update = Scene_Map.prototype.updateScene;
 Scene_Map.prototype.updateScene = function() {	
 	_drill_MPFE_smap_update.call(this);
-	
-	var char_sprites = this._spriteset._characterSprites;	//从地图贴图找起 >> 找到含event的Sprite_Character >> 刷新事件的注释
+	this._drill_MPFE_updateMiniPlate();
+}
+Scene_Map.prototype._drill_MPFE_updateMiniPlate = function() {	
+
+	// > 从地图贴图找起 >> 找到含event的Sprite_Character >> 刷新事件的注释
+	var char_sprites = this._spriteset._characterSprites;
 	for(var i=0; i< char_sprites.length; i++){
 		var temp_sprite = char_sprites[i];
+		if(!temp_sprite ){ continue; }
 		var temp_character = temp_sprite._character;
-		if( temp_character && temp_character.constructor.name === "Game_Event" ){
-			
-			for( var j = 0; j< $gameMap._drill_MPFE_data.length; j++ ){
-				var temp_obj = $gameMap._drill_MPFE_data[j];
-				if( temp_character._eventId == temp_obj._event_id ){
-					
-					//刷新事件注释不需要找父类，因为这个函数就在Scene_Map中
-					var cw = temp_sprite.patternWidth() ;
-					var ch = temp_sprite.patternHeight() ;
-					var check = {
-						'x': temp_sprite.x - cw*temp_sprite.anchor.x,
-						'y': temp_sprite.y - ch*temp_sprite.anchor.y,
-						'w': cw,
-						'h': ch,
-						't': temp_obj._context,	
-						'id': temp_character._eventId,
-						'type': temp_obj._type,
-						'enable': temp_obj._enable
-					}
-					
-					this._drill_mini_event_plate.pushChecks(check);
-							
+		if(!temp_character ){ continue; }
+		if( temp_character.constructor.name !== "Game_Event" ){ continue; }
+		
+		for( var j = 0; j< $gameMap._drill_MPFE_data.length; j++ ){
+			var temp_obj = $gameMap._drill_MPFE_data[j];
+			if( temp_character._eventId == temp_obj._event_id ){
+				
+				//刷新事件注释不需要找父类，因为这个函数就在Scene_Map中
+				var cw = temp_sprite.patternWidth() ;
+				var ch = temp_sprite.patternHeight() ;
+				var check = {
+					'x': temp_sprite.x - cw*temp_sprite.anchor.x,
+					'y': temp_sprite.y - ch*temp_sprite.anchor.y,
+					'w': cw,
+					'h': ch,
+					't': temp_obj._context,	
+					'id': temp_character._eventId,
+					'type': temp_obj._type,
+					'enable': temp_obj._enable
 				}
+				
+				this._drill_mini_event_plate.drill_pushChecks(check);
 			}
 		}
 	}
@@ -486,69 +574,111 @@ Scene_Map.prototype.updateScene = function() {
 // * Drill_MiniPlateForEvent_Window 说明面板（整个场景只有一个该窗口）
 //		（该面板 与 Drill_MiniPlateForState_Window 结构一模一样）
 //=============================================================================
+//==============================
+// * 说明面板 - 定义
+//==============================
 function Drill_MiniPlateForEvent_Window() {
     this.initialize.apply(this, arguments);
 };
-
 Drill_MiniPlateForEvent_Window.prototype = Object.create(Window_Base.prototype);
 Drill_MiniPlateForEvent_Window.prototype.constructor = Drill_MiniPlateForEvent_Window;
-
 //==============================
-// * 初始化-框架
+// * 说明面板 - 初始化
 //==============================
 Drill_MiniPlateForEvent_Window.prototype.initialize = function() {
     Window_Base.prototype.initialize.call(this, 0, 0, 0, 0);
+	this._drill_data = {};
 	
-	this._drill_layout_type = DrillUp.g_MPFE_layout_type;
-	this._drill_opacity = DrillUp.g_MPFE_opacity;
-	this._drill_win_skin = ImageManager.loadSystem(DrillUp.g_MPFE_layout_window);
-	this._drill_pic = ImageManager.loadSystem(DrillUp.g_MPFE_layout_pic);
-	this._drill_pic_x = DrillUp.g_MPFE_layout_pic_x;
-	this._drill_pic_y = DrillUp.g_MPFE_layout_pic_y;
-	
-	this._drill_width = 0;
-	this._drill_height = 0;
-	this._drill_visible = false;
-	this._drill_check_tank = [];
-	
-	this._cur_event_id = 0;
-	
-	this._windowBackSprite.zIndex = 2;
-	this._windowFrameSprite.zIndex = 3;
-	
-	this.drill_createBackground();
-	this.drill_createText();
-	this.drill_sortBottomByZIndex();
+	this.drill_initData();				//初始化数据
+	this.drill_initSprite();			//初始化对象
 };
+//==============================
+// * 说明面板 - 帧刷新
+//==============================
+Drill_MiniPlateForEvent_Window.prototype.update = function() {
+	Window_Base.prototype.update.call(this);
+	
+	this.drill_updateChecks();			//判断条件
+	this.drill_updatePosition();		//刷新位置
+}
+//==============================
+// * 说明面板 - 窗口属性
+//==============================
 Drill_MiniPlateForEvent_Window.prototype.standardFontSize = function() {
     return DrillUp.g_MPFE_fontsize;
 };
 Drill_MiniPlateForEvent_Window.prototype.standardPadding = function() {
     return DrillUp.g_MPFE_padding;
 };
+//==============================
+// * 接口 - 添加内容判断
+//==============================
+Drill_MiniPlateForEvent_Window.prototype.drill_pushChecks = function(c) {
+	if( this._drill_check_tank.length < 1000){	//防止卡顿造成的过度积压
+		this._drill_check_tank.push(c);
+	}
+}
 
 //==============================
-// * 初始化-背景
+// * 初始化 - 数据
+//==============================
+Drill_MiniPlateForEvent_Window.prototype.drill_initData = function() {
+	var data = this._drill_data;
+
+	data['layout_type'] = DrillUp.g_MPFE_layout_type;
+	data['opacity'] = DrillUp.g_MPFE_opacity;
+	data['pic_x'] = DrillUp.g_MPFE_layout_pic_x;
+	data['pic_y'] = DrillUp.g_MPFE_layout_pic_y;
+	
+	// > 私有属性初始化
+	this._drill_winSkin_bitmap = ImageManager.loadSystem(DrillUp.g_MPFE_layout_window);
+	this._drill_pic_bitmap = ImageManager.loadSystem(DrillUp.g_MPFE_layout_pic);
+	this._drill_width = 0;
+	this._drill_height = 0;
+	this._drill_visible = false;
+	
+	this._drill_check_tank = [];		//条件缓冲器（帧刷新会不断加入，窗口内会去重复）
+	this._drill_curEventId = 0;			//当前指向事件
+	this._drill_curContext = null;		//当前指向内容（传的是指针）
+	
+	// > 窗口属性
+	this.createContents();
+    this.contents.clear();
+	this._windowBackSprite.zIndex = 2;
+	this._windowFrameSprite.zIndex = 3;
+}
+
+//==============================
+// * 初始化 - 对象
+//==============================
+Drill_MiniPlateForEvent_Window.prototype.drill_initSprite = function() {
+	
+	this.drill_createBackground();		//创建背景
+	this.drill_sortBottomByZIndex();	//底层层级排序
+}
+//==============================
+// * 创建 - 背景
 //==============================
 Drill_MiniPlateForEvent_Window.prototype.drill_createBackground = function() {
+	var data = this._drill_data;
 	
 	this._drill_background = new Sprite();
 	this._drill_background.zIndex = 1;
-	this._drill_background.opacity = this._drill_opacity;
+	this._drill_background.opacity = data['opacity'];
 	this._windowBackSprite.opacity = 0;
 	this._windowFrameSprite.opacity = 0;
-	if( this._drill_layout_type == "图片窗口布局" ){
-		this._drill_background.bitmap = this._drill_pic;
-		this._drill_background.x = this._drill_pic_x;
-		this._drill_background.y = this._drill_pic_y;
-	}else if( this._drill_layout_type == "系统窗口布局" ){
-		this.windowskin = this._drill_win_skin;
-		this._windowBackSprite.opacity = this._drill_opacity;
-		this._windowFrameSprite.opacity = this._drill_opacity;
-	}else if( this._drill_layout_type == "默认窗口布局" ){
-		this.opacity = this._drill_opacity;
-		this._windowBackSprite.opacity = this._drill_opacity;
-		this._windowFrameSprite.opacity = this._drill_opacity;
+	if( data['layout_type'] == "图片窗口布局" ){
+		this._drill_background.bitmap = this._drill_pic_bitmap;
+		this._drill_background.x = data['pic_x'];
+		this._drill_background.y = data['pic_y'];
+	}else if( data['layout_type'] == "系统窗口布局" ){
+		this.windowskin = this._drill_winSkin_bitmap;
+		this._windowBackSprite.opacity = data['opacity'];
+		this._windowFrameSprite.opacity = data['opacity'];
+	}else if( data['layout_type'] == "默认窗口布局" ){
+		this.opacity = data['opacity'];
+		this._windowBackSprite.opacity = data['opacity'];
+		this._windowFrameSprite.opacity = data['opacity'];
 	}
 	
 	this._windowSpriteContainer.addChild(this._drill_background);
@@ -562,26 +692,11 @@ Drill_MiniPlateForEvent_Window.prototype.drill_sortBottomByZIndex = function() {
 };
 
 //==============================
-// * 初始化-文本层
+// * 帧刷新 - 刷新位置
 //==============================
-Drill_MiniPlateForEvent_Window.prototype.drill_createText = function() {
-	this.createContents();
-    this.contents.clear();
-}
-
-//==============================
-// * 帧刷新
-//==============================
-Drill_MiniPlateForEvent_Window.prototype.update = function() {
-	Window_Base.prototype.update.call(this);
+Drill_MiniPlateForEvent_Window.prototype.drill_updatePosition = function() {
+	var data = this._drill_data;
 	
-	this.updateChecks();
-	this.updatePosition();
-}
-//==============================
-// * 帧刷新-刷新位置
-//==============================
-Drill_MiniPlateForEvent_Window.prototype.updatePosition = function() {
 	var cal_x = _drill_mouse_x;
 	var cal_y = _drill_mouse_y;
 	if( cal_x + this._drill_width > Graphics.boxWidth ){	//横向贴边控制
@@ -599,17 +714,10 @@ Drill_MiniPlateForEvent_Window.prototype.updatePosition = function() {
 	this.y = cal_y;
 }
 //==============================
-// * 接口-添加状态图标判断
+// * 帧刷新 - 判断条件
 //==============================
-Drill_MiniPlateForEvent_Window.prototype.pushChecks = function(c) {
-	if( this._drill_check_tank.length < 1000){	//防止卡顿造成的过度积压
-		this._drill_check_tank.push(c);
-	}
-}
-//==============================
-// * 帧刷新-判断激活
-//==============================
-Drill_MiniPlateForEvent_Window.prototype.updateChecks = function() {
+Drill_MiniPlateForEvent_Window.prototype.drill_updateChecks = function() {
+	var data = this._drill_data;
 	if( !this._drill_check_tank ){ this.visible = false ; return ;}
 	
 	var is_visible = false;
@@ -617,7 +725,7 @@ Drill_MiniPlateForEvent_Window.prototype.updateChecks = function() {
 	for(var i=0; i<this._drill_check_tank.length; i++){
 		var temp_check = this._drill_check_tank[i];
 		
-		if ( this.checkCondition(temp_check) ) { 
+		if ( this.drill_checkCondition(temp_check) ) { 
 			is_visible = true; 
 			check_obj = temp_check; 
 			break; 
@@ -625,14 +733,16 @@ Drill_MiniPlateForEvent_Window.prototype.updateChecks = function() {
 	}
 	
 	//这里有三道锁，看起来会比较乱
-	//（check.enable显示/隐藏 锁 ，this._drill_visible 接近/离开 锁，this._cur_event_id 落在不同事件上的锁）
+	//（check.enable显示/隐藏 锁 ，this._drill_visible 接近/离开 锁，this._drill_curEventId 落在不同事件上的锁）
 	if( check_obj && check_obj.enable == true ){	
 		if ( this._drill_visible == true ) {
 			if( is_visible == true ){
 				//显示中
-				if(this._cur_event_id != check_obj.id){
-					this._cur_event_id = check_obj.id;
-					this.reflashTextMassage(check_obj.t);
+				if( this._drill_curEventId != check_obj.id ||
+					this._drill_curContext != check_obj.t ){
+					this._drill_curEventId = check_obj.id;
+					this._drill_curContext = check_obj.t;
+					this.drill_reflashTextMassage(check_obj.t);
 				}
 				
 			}else{
@@ -644,8 +754,8 @@ Drill_MiniPlateForEvent_Window.prototype.updateChecks = function() {
 		}else{
 			if( is_visible == true ){
 				//激活显示
-				//this.reflashTextMassage(check_obj.t);
-				//this._cur_event_id = check_obj.id ;
+				//this.drill_reflashTextMassage(check_obj.t);
+				//this._drill_curEventId = check_obj.id ;
 				this._drill_visible = true;
 			}else{
 				//隐藏中，不操作
@@ -660,9 +770,9 @@ Drill_MiniPlateForEvent_Window.prototype.updateChecks = function() {
 	this._drill_check_tank = [];
 }
 //==============================
-// * 激活-显示条件
+// * 激活 - 显示条件
 //==============================
-Drill_MiniPlateForEvent_Window.prototype.checkCondition = function(check) {
+Drill_MiniPlateForEvent_Window.prototype.drill_checkCondition = function( check ){
 	var _x = _drill_mouse_x;
 	var _y = _drill_mouse_y;
 	if(check.type == "触屏按下[持续]"){
@@ -687,10 +797,11 @@ Drill_MiniPlateForEvent_Window.prototype.checkCondition = function(check) {
 }
 
 //==============================
-// * 激活-刷新内容
+// * 激活 - 刷新内容
 //==============================
-Drill_MiniPlateForEvent_Window.prototype.reflashTextMassage = function(contexts) {
+Drill_MiniPlateForEvent_Window.prototype.drill_reflashTextMassage = function( contexts ){
 	if(contexts.length == 0){ return }
+	var data = this._drill_data;
 	
 	//1.内容获取
 	var tar_width = 0;
@@ -739,7 +850,7 @@ Drill_MiniPlateForEvent_Window.prototype.reflashTextMassage = function(contexts)
 	//	alert(this._drill_height);
 	//}
 	
-	if( this._drill_layout_type == "黑底布局" ){
+	if( data['layout_type'] == "黑底布局" ){
 		this._drill_background_bitmap = new Bitmap(this._drill_width, this._drill_height);
 		this._drill_background_bitmap.fillRect(0, 0 , this._drill_width, this._drill_height, "#000000");//背景黑框
 		this._drill_background.bitmap = this._drill_background_bitmap;

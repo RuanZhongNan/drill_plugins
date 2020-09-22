@@ -256,7 +256,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				e_chars = [];
 				var temp_arr = unit.split(/[,，]/);
 				for( var k=0; k < temp_arr.length; k++ ){
-					var e = $gameMap.event( Number(temp_arr[k]) );
+					var e_id = Number(temp_arr[k]);
+					if( $gameMap.drill_EFIE_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e_chars.push( e );
 				}
 			}
@@ -266,20 +268,26 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				e_chars = [];
 				var temp_arr = unit.split(/[,，]/);
 				for( var k=0; k < temp_arr.length; k++ ){
-					var e = $gameMap.event( $gameVariables.value(Number(temp_arr[k])) );
+					var e_id = $gameVariables.value(Number(temp_arr[k]));
+					if( $gameMap.drill_EFIE_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e_chars.push( e );
 				}
 			}
 			if( e_chars == null && unit.indexOf("事件变量[") != -1 ){
 				unit = unit.replace("事件变量[","");
 				unit = unit.replace("]","");
-				var e = $gameMap.event( $gameVariables.value(Number(unit)) );
+				var e_id = $gameVariables.value(Number(unit));
+				if( $gameMap.drill_EFIE_isEventExist( e_id ) == false ){ return; }
+				var e = $gameMap.event( e_id );
 				e_chars = [ e ];
 			}
 			if( e_chars == null && unit.indexOf("事件[") != -1 ){
 				unit = unit.replace("事件[","");
 				unit = unit.replace("]","");
-				var e = $gameMap.event( Number(unit) );
+				var e_id = Number(unit);
+				if( $gameMap.drill_EFIE_isEventExist( e_id ) == false ){ return; }
+				var e = $gameMap.event( e_id );
 				e_chars = [ e ];
 			}
 			
@@ -562,6 +570,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var time = Number(args[7]);
 			if(args[9]){ var height = Number(args[9]); }
 			if( temp1 == '指定事件' ){ 
+				if( $gameMap.drill_EFIE_isEventExist( temp2 ) == false ){ return; }
 				var e = $gameMap.event( temp2 );
 				if( e.opacity() == 255 && $gameSystem._drill_EFIE_opacityCheck_event){
 					return;
@@ -577,7 +586,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				}
 			}
 			if( temp1 == '指定事件(变量)' ){ 
-				var e = $gameMap.event( $gameVariables.value(temp2) );
+				var e_id = $gameVariables.value(temp2);
+				if( $gameMap.drill_EFIE_isEventExist( e_id ) == false ){ return; }
+				var e = $gameMap.event( e_id );
 				if( e.opacity() == 255 && $gameSystem._drill_EFIE_opacityCheck_event){
 					return;
 				}
@@ -603,6 +614,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EFIE_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventFadeInEffect.js 行走图 - 显现动作效果】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
 
 //=============================================================================
 // ** 存储变量初始化

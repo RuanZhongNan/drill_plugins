@@ -218,7 +218,7 @@
 var _drill_EPo_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_EPo_pluginCommand.call(this, command, args);
-	if (command === '>位置与位移') {
+	if (command === ">位置与位移") {
 		/*-----------------立即归位------------------*/
 		if(args.length == 4){				//>位置与位移 : 本事件 : 立即归位
 			var unit = String(args[1]);
@@ -267,7 +267,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			
 			if( e_ids && type == "立即归位" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					var e = $gameMap.event( e_ids[k] );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					if(!e ){ continue; }
 					var data = e.event();		//当前事件的初始化数据
 					e.locate(data.x, data.y);
@@ -275,7 +277,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 			if( e_ids && type == "立即归位包括朝向" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					var e = $gameMap.event( e_ids[k] );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					if(!e ){ continue; }
 					var data = e.event();
 					e.locate(data.x, data.y);
@@ -294,6 +298,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = Number(e_list[i]);
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						var data = e.event();
@@ -304,6 +309,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = Number(e_list[i]);
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						var data = e.event();
@@ -317,6 +323,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = $gameVariables.value( Number(e_list[i]) );
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						var data = e.event();
@@ -327,6 +334,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = $gameVariables.value( Number(e_list[i]) );
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						var data = e.event();
 						if( e == undefined ){ return; }
@@ -386,7 +394,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 								  $gameVariables.value(Number(temp_arr[1])) ];
 								  
 						for( var k=0; k < e_ids.length; k++ ){
-							var e = $gameMap.event( e_ids[k] );
+							var e_id = e_ids[k];
+							if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							e.locate( e_pos[0], e_pos[1] );
 						}
 					}
@@ -400,7 +410,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 								  $gameVariables.value(Number(temp_arr[1])) ];
 						
 						for( var k=0; k < e_ids.length; k++ ){
-							var e = $gameMap.event( e_ids[k] );
+							var e_id = e_ids[k];
+							if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							if (e.direction() === 2) {		//下
 								e.locate(e.x + e_pos[0], e.y + e_pos[1]);
 							} else if (e.direction() === 4) {	//左
@@ -422,7 +434,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 								  $gameVariables.value(Number(temp_arr[1])) ];
 						
 						for( var k=0; k < e_ids.length; k++ ){
-							var e = $gameMap.event( e_ids[k] );
+							var e_id = e_ids[k];
+							if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							e.locate(e.x + e_pos[0], e.y + e_pos[1]);
 						}
 					}
@@ -435,7 +449,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 						e_pos = [ Number(temp_arr[0]),Number(temp_arr[1]) ];
 						
 						for( var k=0; k < e_ids.length; k++ ){
-							var e = $gameMap.event( e_ids[k] );
+							var e_id = e_ids[k];
+							if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							e.locate( e_pos[0], e_pos[1] );
 						}
 					}
@@ -448,7 +464,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 						e_pos = [ Number(temp_arr[0]),Number(temp_arr[1]) ];
 						
 						for( var k=0; k < e_ids.length; k++ ){
-							var e = $gameMap.event( e_ids[k] );
+							var e_id = e_ids[k];
+							if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							if (e.direction() === 2) {		//下
 								e.locate(e.x + e_pos[0], e.y + e_pos[1]);
 							} else if (e.direction() === 4) {	//左
@@ -469,7 +487,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 						e_pos = [ Number(temp_arr[0]),Number(temp_arr[1]) ];
 						
 						for( var k=0; k < e_ids.length; k++ ){
-							var e = $gameMap.event( e_ids[k] );
+							var e_id = e_ids[k];
+							if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
+							var e = $gameMap.event( e_id );
 							e.locate(e.x + e_pos[0], e.y + e_pos[1]);
 						}
 					}
@@ -588,6 +608,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = Number(e_list[i]);
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						e.locate( temp4, temp5 );
@@ -597,6 +618,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = Number(e_list[i]);
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						e.locate( e.x + temp4, e.y + temp5);
@@ -606,6 +628,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = Number(e_list[i]);
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						if (e.direction() === 2) {		//下
@@ -625,6 +648,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = $gameVariables.value( Number(e_list[i]) );
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						e.locate( temp4, temp5 );
@@ -634,6 +658,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = $gameVariables.value( Number(e_list[i]) );
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						e.locate( e.x + temp4, e.y + temp5);
@@ -643,6 +668,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					var e_list = temp2.split(/[,，]/);
 					for(var i=0; i < e_list.length; i++){
 						var e_id = $gameVariables.value( Number(e_list[i]) );
+						if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ continue; }
 						var e = $gameMap.event(e_id);
 						if( e == undefined ){ return; }
 						if (e.direction() === 2) {		//下
@@ -678,6 +704,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					temp2 = temp2.replace("事件[","");
 					temp2 = temp2.replace("]","");
 					var e_id = Number(temp2);
+					if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ return; }
 					var x1 = $gameMap.event(e_id)._realX;
 					var y1 = $gameMap.event(e_id)._realY;
 				}
@@ -685,6 +712,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					temp2 = temp2.replace("事件变量[","");
 					temp2 = temp2.replace("]","");
 					var e_id = $gameVariables.value(Number(temp2));
+					if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ return; }
 					var x1 = $gameMap.event(e_id)._realX;
 					var y1 = $gameMap.event(e_id)._realY;
 				}
@@ -720,6 +748,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					temp3 = temp3.replace("事件[","");
 					temp3 = temp3.replace("]","");
 					var e_id = Number(temp3);
+					if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ return; }
 					var x2 = $gameMap.event(e_id)._realX;
 					var y2 = $gameMap.event(e_id)._realY;
 				}
@@ -727,6 +756,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					temp3 = temp3.replace("事件变量[","");
 					temp3 = temp3.replace("]","");
 					var e_id = $gameVariables.value(Number(temp3));
+					if( $gameMap.drill_EPo_isEventExist( e_id ) == false ){ return; }
 					var x2 = $gameMap.event(e_id)._realX;
 					var y2 = $gameMap.event(e_id)._realY;
 				}
@@ -798,7 +828,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EPo_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventPosition.js 物体 - 位置与位移】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //=============================================================================
 // ** 玩家瞬移

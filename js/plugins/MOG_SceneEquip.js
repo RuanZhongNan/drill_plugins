@@ -3,8 +3,13 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.0)[v1.8]  面板 - 全自定义装备界面
+ * @plugindesc (v1.0)[v1.9]  面板 - 全自定义装备界面
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "角色头像-%d"
+ * @Drill_LE_parentKey "---角色头像%d至%d---"
+ * @Drill_LE_var "Moghunter.menu_equip_face_list_length"
+ * 
  *
  * @param 资源-整体布局
  * @desc 整体布局的图片资源。
@@ -1120,6 +1125,8 @@
  * 修复了装备槽的装备文本没有变色的bug。
  * [v1.8]
  * 修改了插件关联的资源文件夹。
+ * [v1.9]
+ * 添加了最大值编辑的支持。
  *
  */
 

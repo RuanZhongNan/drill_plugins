@@ -3,8 +3,13 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.3)[v1.3]  战斗 - 战斗结果
+ * @plugindesc (v1.3)[v1.4]  战斗 - 战斗结果
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "角色前视图-%d"
+ * @Drill_LE_parentKey "--角色组%d至%d--"
+ * @Drill_LE_var "Moghunter.result_list_length"
+ *
  *
  * @param 资源-胜利窗口
  * @desc 胜利窗口的图片资源。
@@ -123,493 +128,493 @@
  * @default 
  * @param --角色组 1至20--
  * @default 
- *
- * @param 角色-1-前视图
+ * 
+ * @param 角色前视图-1
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-2-前视图
+ * 
+ * @param 角色前视图-2
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-3-前视图
+ * 
+ * @param 角色前视图-3
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-4-前视图
+ * 
+ * @param 角色前视图-4
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-5-前视图
+ * 
+ * @param 角色前视图-5
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-6-前视图
+ * 
+ * @param 角色前视图-6
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-7-前视图
+ * 
+ * @param 角色前视图-7
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-8-前视图
+ * 
+ * @param 角色前视图-8
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-9-前视图
+ * 
+ * @param 角色前视图-9
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-10-前视图
+ * 
+ * @param 角色前视图-10
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-11-前视图
+ * 
+ * @param 角色前视图-11
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-12-前视图
+ * 
+ * @param 角色前视图-12
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-13-前视图
+ * 
+ * @param 角色前视图-13
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-14-前视图
+ * 
+ * @param 角色前视图-14
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-15-前视图
+ * 
+ * @param 角色前视图-15
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-16-前视图
+ * 
+ * @param 角色前视图-16
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-17-前视图
+ * 
+ * @param 角色前视图-17
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-18-前视图
+ * 
+ * @param 角色前视图-18
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-19-前视图
+ * 
+ * @param 角色前视图-19
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-20-前视图
+ * 
+ * @param 角色前视图-20
  * @parent --角色组 1至20--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
+ * 
  * @param --角色组21至40--
  * @default 
- *
- * @param 角色-21-前视图
+ * 
+ * @param 角色前视图-21
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-22-前视图
+ * 
+ * @param 角色前视图-22
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-23-前视图
+ * 
+ * @param 角色前视图-23
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-24-前视图
+ * 
+ * @param 角色前视图-24
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-25-前视图
+ * 
+ * @param 角色前视图-25
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-26-前视图
+ * 
+ * @param 角色前视图-26
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-27-前视图
+ * 
+ * @param 角色前视图-27
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-28-前视图
+ * 
+ * @param 角色前视图-28
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-29-前视图
+ * 
+ * @param 角色前视图-29
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-30-前视图
+ * 
+ * @param 角色前视图-30
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-31-前视图
+ * 
+ * @param 角色前视图-31
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-32-前视图
+ * 
+ * @param 角色前视图-32
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-33-前视图
+ * 
+ * @param 角色前视图-33
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-34-前视图
+ * 
+ * @param 角色前视图-34
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-35-前视图
+ * 
+ * @param 角色前视图-35
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-36-前视图
+ * 
+ * @param 角色前视图-36
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-37-前视图
+ * 
+ * @param 角色前视图-37
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-38-前视图
+ * 
+ * @param 角色前视图-38
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-39-前视图
+ * 
+ * @param 角色前视图-39
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-40-前视图
+ * 
+ * @param 角色前视图-40
  * @parent --角色组21至40--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
+ * 
  * @param --角色组41至60--
  * @default 
- *
- * @param 角色-41-前视图
+ * 
+ * @param 角色前视图-41
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-42-前视图
+ * 
+ * @param 角色前视图-42
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-43-前视图
+ * 
+ * @param 角色前视图-43
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-44-前视图
+ * 
+ * @param 角色前视图-44
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-45-前视图
+ * 
+ * @param 角色前视图-45
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-46-前视图
+ * 
+ * @param 角色前视图-46
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-47-前视图
+ * 
+ * @param 角色前视图-47
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-48-前视图
+ * 
+ * @param 角色前视图-48
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-49-前视图
+ * 
+ * @param 角色前视图-49
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-50-前视图
+ * 
+ * @param 角色前视图-50
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-51-前视图
+ * 
+ * @param 角色前视图-51
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-52-前视图
+ * 
+ * @param 角色前视图-52
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-53-前视图
+ * 
+ * @param 角色前视图-53
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-54-前视图
+ * 
+ * @param 角色前视图-54
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-55-前视图
+ * 
+ * @param 角色前视图-55
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-56-前视图
+ * 
+ * @param 角色前视图-56
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-57-前视图
+ * 
+ * @param 角色前视图-57
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-58-前视图
+ * 
+ * @param 角色前视图-58
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-59-前视图
+ * 
+ * @param 角色前视图-59
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
- * @param 角色-60-前视图
+ * 
+ * @param 角色前视图-60
  * @parent --角色组41至60--
  * @desc 角色前视图的图片资源。没有图片可以不设置。
  * @default 
  * @require 1
  * @dir img/Battle__result/
  * @type file
- *
+ * 
  * @help  
  * =============================================================================
  * +++ MOG - Battle Result (v1.2) +++
@@ -650,6 +655,8 @@
  * 修改了插件的分类。
  * [v1.3]
  * 修改了插件关联的资源文件夹。
+ * [v1.4]
+ * 添加了最大值编辑的支持。
  */
 
 //=============================================================================
@@ -688,7 +695,7 @@
 	Moghunter.result_list_length = 60;
 	Moghunter.result_list = {};
 	for (var i = 1; i <= Moghunter.result_list_length ; i++ ) {
-		Moghunter.result_list[i] = Moghunter.parameters['角色-' + String(i)+ '-前视图' ];
+		Moghunter.result_list[i] = Moghunter.parameters['角色前视图-' + String(i) ];
 	};
 
 //=============================================================================

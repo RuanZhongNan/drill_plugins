@@ -196,7 +196,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var type = String(args[3]);
 			if( type == "去除全部标签" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					var e = $gameMap.event( e_ids[k] );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_COET_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e.drill_COET_removeAllTag();
 				}
 			}
@@ -206,13 +208,17 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var temp2 = String(args[5]);
 			if( type == "去除标签" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					var e = $gameMap.event( e_ids[k] );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_COET_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e.drill_COET_removeTag(temp2);
 				}
 			}
 			if( type == "添加标签" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					var e = $gameMap.event( e_ids[k] );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_COET_isEventExist( e_id ) == false ){ continue; }
+					var e = $gameMap.event( e_id );
 					e.drill_COET_addTag(temp2);
 				}
 			}
@@ -262,6 +268,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 }
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_COET_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_CoreOfEventTags.js 物体 - 事件标签核心】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //==============================
 // * 注释初始化

@@ -3,9 +3,78 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.3)[v1.3]  地图UI - 地图浮动框
+ * @plugindesc (v1.3)[v1.4]  地图UI - 地图浮动框
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "备用框-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "Moghunter.mhud_src_list_length"
  *
+ * @help  
+ * =============================================================================
+ * +++ MOG Map Name Hud(v1.3) +++
+ * By Moghunter 
+ * https://atelierrgss.wordpress.com/
+ * =============================================================================
+ * 进入地图时会弹出浮动框表示地图的名字。插件用于美化地图浮动框。
+ * 【现已支持插件关联资源的打包、加密】
+ *
+ * -----------------------------------------------------------------------------
+ * ----设定注意事项
+ * 1.插件的作用域：地图界面。
+ *   添加在地图的ui层。
+ * 2.切换备用框的插件指令执行后瞬间生效，并且永久有效。
+ *
+ * -----------------------------------------------------------------------------
+ * ----关联文件
+ * 资源路径：img/Map__ui （Map后面有两个下划线）
+ * 先确保项目img文件夹下是否有Map__ui文件夹。
+ * 要查看所有关联资源文件的插件，可以去看看"插件清单.xlsx"。
+ * 使用地图浮动框，需要配置资源文件：
+ *
+ * 资源-浮动框
+ * 资源-粒子
+ * 资源-滚轮
+ * 
+ * -----------------------------------------------------------------------------
+ * ----可选设定 - 备用框
+ * 你可以通过插件指令切换地图浮动框的样式。
+ * 
+ * 插件指令：>地图浮动框 : 还原默认框
+ * 插件指令：>地图浮动框 : 设置为备用框 : 1
+ *
+ * 1."设置为备用框"后的数字，表示设置的编号，设置后图片资源会被切换。
+ *   "还原默认框"表示换回最初配置的框。
+ * 
+ * -----------------------------------------------------------------------------
+ * ----可选设定 - 地图名开关
+ * 你可以通过 地图备注 控制特定地图的地图名是否显示。
+ * 
+ * 地图备注：=>mog地图浮动框:隐藏地图名
+ * 地图备注：=>mog地图浮动框:显示地图名
+ * 
+ * 插件指令：>地图浮动框 : 强制播放一次地图名
+ * 
+ * -----------------------------------------------------------------------------
+ * ----关于Drill_up优化：
+ * [v1.1]
+ * 使得该插件支持关联资源的打包、加密。
+ * 部署时勾选去除无关文件，本插件中相关的文件不会被去除。
+ * [v1.2]
+ * 修改了插件分类。
+ * [v1.3]
+ * 修改了插件关联的资源文件夹。并添加了备用框替换的功能。
+ * [v1.4]
+ * 添加了最大值编辑的支持。并添加了地图名开关配置。
+ * 
+ * 
+ * @param 地图名默认开关
+ * @type boolean
+ * @on 开启地图名
+ * @off 隐藏地图名
+ * @desc true - 开启，false - 隐藏，你可以通过地图注释，对特定的地图开启/隐藏名称显示。
+ * @default true
+ * 
  * @param 资源-浮动框
  * @desc 图浮动框的图片资源。
  * @default 地图浮动框-框
@@ -164,52 +233,6 @@
  * @type struct<MogMapNameHud>
  * @desc 通过插件指令可将当前地图框替换成备用的框。
  * @default 
- *
- * @help  
- * =============================================================================
- * +++ MOG Map Name Hud(v1.3) +++
- * By Moghunter 
- * https://atelierrgss.wordpress.com/
- * =============================================================================
- * 进入地图时会弹出浮动框表示地图的名字。插件用于美化地图浮动框。
- * 【现已支持插件关联资源的打包、加密】
- *
- * -----------------------------------------------------------------------------
- * ----设定注意事项
- * 1.插件的作用域：地图界面。
- *   添加在地图的ui层。
- * 2.切换备用框的插件指令执行后瞬间生效，并且永久有效。
- *
- * -----------------------------------------------------------------------------
- * ----关联文件
- * 资源路径：img/Map__ui （Map后面有两个下划线）
- * 先确保项目img文件夹下是否有Map__ui文件夹。
- * 要查看所有关联资源文件的插件，可以去看看"插件清单.xlsx"。
- * 使用地图浮动框，需要配置资源文件：
- *
- * 资源-浮动框
- * 资源-粒子
- * 资源-滚轮
- * 
- * -----------------------------------------------------------------------------
- * ----可选设定
- * 你可以通过插件指令切换地图浮动框的样式。
- * 
- * 插件指令：>地图浮动框 : 还原默认框
- * 插件指令：>地图浮动框 : 设置为备用框 : 1
- *
- * 1."设置为备用框"后的数字，表示设置的编号，设置后图片资源会被切换。
- *   "还原默认框"表示换回最初配置的框。
- * 
- * -----------------------------------------------------------------------------
- * ----关于Drill_up优化：
- * [v1.1]
- * 使得该插件支持关联资源的打包、加密。
- * 部署时勾选去除无关文件，本插件中相关的文件不会被去除。
- * [v1.2]
- * 修改了插件分类。
- * [v1.3]
- * 修改了插件关联的资源文件夹。并添加了备用框替换的功能。
  */
 /*~struct~MogMapNameHud:
  * 
@@ -250,40 +273,42 @@
 //			$gameSystem._mhud_circle
 //			$gameSystem._mhud_par
 //			（资源切换改动比较多，不过结构并不复杂）
+//
+//		添加了地图注释控制功能。
 
 //=============================================================================
 // ** PLUGIN PARAMETERS
 //=============================================================================
-　　var Imported = Imported || {};
-　　Imported.MOG_MapNameHud = true;
-　　var Moghunter = Moghunter || {}; 
-
-  　Moghunter.parameters = PluginManager.parameters('MOG_MapNameHud');   
-    Moghunter.mhud_pos_x = Number(Moghunter.parameters['平移-浮动框 X'] || 250);
+	var Imported = Imported || {};
+	Imported.MOG_MapNameHud = true;
+	var Moghunter = Moghunter || {}; 
+	Moghunter.parameters = PluginManager.parameters('MOG_MapNameHud');   
+	
+	Moghunter.mhud_pos_x = Number(Moghunter.parameters['平移-浮动框 X'] || 250);
 	Moghunter.mhud_pos_y = Number(Moghunter.parameters['平移-浮动框 Y'] || 32);
 	Moghunter.mhud_text_x = Number(Moghunter.parameters['平移-地图名 X'] || 80);
 	Moghunter.mhud_text_y = Number(Moghunter.parameters['平移-地图名 Y'] || 15);
 	Moghunter.mhud_duration = Number(Moghunter.parameters['持续时间'] || 160);
 	Moghunter.mhud_fontsize = Number(Moghunter.parameters['字体大小'] || 20);	
 	Moghunter.mhud_fontItalic = String(Moghunter.parameters['字体是否为斜体'] || 'false');	
-    Moghunter.mhud_slide = String(Moghunter.parameters['是否使用滑动效果'] || 'true');
-    Moghunter.mhud_zoom = String(Moghunter.parameters['是否使用浮动框缩放效果'] || 'false');
+	Moghunter.mhud_slide = String(Moghunter.parameters['是否使用滑动效果'] || 'true');
+	Moghunter.mhud_zoom = String(Moghunter.parameters['是否使用浮动框缩放效果'] || 'false');
 	Moghunter.mhud_textZoom = String(Moghunter.parameters['是否使用文字缩放效果'] || 'true');
-    Moghunter.mhud_paticles = String(Moghunter.parameters['是否使用粒子'] || 'true');
-    Moghunter.mhud_paticlesNumber = Number(Moghunter.parameters['粒子数量'] || 15);
+	Moghunter.mhud_paticles = String(Moghunter.parameters['是否使用粒子'] || 'true');
+	Moghunter.mhud_paticlesNumber = Number(Moghunter.parameters['粒子数量'] || 15);
 	Moghunter.mhud_circle = String(Moghunter.parameters['是否使用滚轮'] || 'true');
 	Moghunter.mhud_circleX = Number(Moghunter.parameters['平移-滚轮 X'] || -120);
 	Moghunter.mhud_circleY = Number(Moghunter.parameters['平移-滚轮 Y'] || 0);
 	Moghunter.mhud_circleZ = Number(Moghunter.parameters['滚轮优先权'] || 0);
 	Moghunter.mhud_circleR = Number(Moghunter.parameters['滚轮旋转速度'] || 0.01);
-    
+	
 	Moghunter.src_MapName = String(Moghunter.parameters['资源-浮动框']);
 	Moghunter.src_MapName_Particles = String(Moghunter.parameters['资源-粒子']);
 	Moghunter.src_MapName_Circle = String(Moghunter.parameters['资源-滚轮']);
+	Moghunter.mhud_enable = String(Moghunter.parameters['地图名默认开关'] || "true") == "true";	
 	
-	Moghunter.mhud_src_list = [];
 	Moghunter.mhud_src_list_length = 5;
-	
+	Moghunter.mhud_src_list = [];
 	for (var i = 0; i < Moghunter.mhud_src_list_length; i++) {
 		if( Moghunter.parameters['备用框-' + String(i+1) ] != "" ){
 			Moghunter.mhud_src_list[i] = JSON.parse(Moghunter.parameters['备用框-' + String(i+1) ]);
@@ -317,6 +342,13 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				$gameSystem._mhud_circle = Moghunter.src_MapName_Circle;
 				$gameSystem._mhud_par = Moghunter.src_MapName_Particles;
 			}
+			if( type == "强制播放一次地图名" ){ 
+				$gameMap._mog_mhud_enable = true;	//（强制显示，但并不是永久的，换地图会变）
+				$gameSystem._mapNameData.refresh = true;
+				$gameSystem._mapNameData.name = $gameMap.displayName();
+				$gameSystem.clearMapNameTemp();
+				$gameSystem._mapNameData.mapID = $gameMap._mapId;
+			}
 		}
 		if(args.length === 4){
 			var type = String(args[1]);
@@ -329,6 +361,36 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	};
 	return true;
+};
+
+//=============================================================================
+// ** 地图备注
+//=============================================================================
+var _mog_mhud_map_setup = Game_Map.prototype.setup;
+Game_Map.prototype.setup = function(mapId) {
+	_mog_mhud_map_setup.call(this, mapId);
+	this.drill_mog_mhud_setupMapName();
+};
+Game_Map.prototype.drill_mog_mhud_setupMapName = function() {
+	
+	// > 地图锁定初始化
+	this._mog_mhud_enable = Moghunter.mhud_enable;
+	
+	$dataMap.note.split(/[\r\n]+/).forEach(function(note) {
+		var args = note.split(':');
+		var command = args.shift();
+		if( command == "=>mog地图浮动框"){
+			if(args.length == 1){
+				var temp1 = String(args[0]);
+				if( temp1 == "隐藏地图名"){
+					this._mog_mhud_enable = false;
+				}
+				if( temp1 == "显示地图名"){
+					this._mog_mhud_enable = true;
+				}
+			}
+		}
+	},this);
 };
 
 //=============================================================================
@@ -393,7 +455,6 @@ Game_System.prototype.clearMapNameTemp = function() {
 //=============================================================================
 // ** Scene Base
 //=============================================================================
-
 //==============================
 // ** create Hud Field
 //==============================
@@ -402,7 +463,6 @@ Scene_Base.prototype.createHudField = function() {
 	this._hudField.z = 10;
 	this.addChild(this._hudField);
 };
-
 //==============================
 // ** sort MZ
 //==============================
@@ -413,7 +473,6 @@ Scene_Base.prototype.sortMz = function() {
 //=============================================================================
 // ** Scene Map
 //=============================================================================
-
 //==============================
 // ** create Spriteset
 //==============================
@@ -438,7 +497,7 @@ Scene_Map.prototype.createMapNameHud = function() {
 		
 	};
 	$gameSystem._mapNameData.mapID = $gameMap._mapId;
-	if ($gameMap.displayName()) {
+	if( $gameMap.displayName() ){
 	    this._mapNameHud = new Map_Name_Hud();
 		this._mapNameHud.mz = 140;
 		this._hudField.addChild(this._mapNameHud);			
@@ -475,7 +534,7 @@ Map_Name_Hud.prototype.initialize = function() {
 	this._hud_par_name = "";
     this.loadBitmap();
 	this.createSprites();
-	if (this.data().refresh) {this.refresh()};
+	if( this.data().refresh ){ this.refresh() };
 	this.updateBase();
 };
 
@@ -822,6 +881,11 @@ Map_Name_Hud.prototype.updateBase = function() {
 //==============================
 Map_Name_Hud.prototype.update = function() {	
     Sprite.prototype.update.call(this);	
+	
+	this.visible = $gameMap._mog_mhud_enable;
+	if( $gameMap._mog_mhud_enable == false ){ return; }
+	if( this.data().refresh ){ this.refresh() };
+	
 	if (this.data().cw === 0) {
 		if (this._layoutImg.isReady()) {this.getData()};
 		return
@@ -849,10 +913,10 @@ Map_Name_Hud.prototype.mog_mhud_updateFrame = function() {
 //=============================================================================
 // * Window MapName
 //=============================================================================
-
 //==============================
 // * Refresh
 //==============================
 Window_MapName.prototype.refresh = function() {
-	 this.contents.clear(); 
+	this.contents.clear(); 
 };
+

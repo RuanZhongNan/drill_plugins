@@ -280,7 +280,7 @@
 var _drill_ELA_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ELA_pluginCommand.call(this, command, args);
-	if (command === '>物体范围动画') {
+	if( command === ">物体范围动画" ){
 		if(args.length == 10){	//>物体范围动画 : 本事件 : 可变激光区域 : 东 : 2 : 动画[81]
 			var unit = String(args[1]);
 			var type = String(args[3]);
@@ -417,6 +417,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 			
 			if( type == "可变激光区域" && type2 == "上一次事件的" && Imported.Drill_EventLaserTrigger){	
+				if( $gameMap.drill_ELA_isEventExist( e_id ) == false ){ return; }
 				var e = $gameMap.event( e_id );
 				var area = e._ELT_area || [];
 				area = $gameMap.drill_ELA_operatePoint( area, e._x, e._y );
@@ -432,6 +433,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ELA_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventLaserAnimation.js 物体触发 - 可变激光区域 & 播放并行动画】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
 
 //=============================================================================
 // ** 存储数据初始化

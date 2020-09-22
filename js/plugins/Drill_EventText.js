@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.4]        行走图 - 事件漂浮文字
+ * @plugindesc [v1.5]        行走图 - 事件漂浮文字
  * @author Drill_up
  * 
  * @param 图片层级
@@ -17,6 +17,17 @@
  * @min 1
  * @desc 漂浮文字默认的字体大小。
  * @default 18
+ * 
+ * @param 默认对齐方式
+ * @type select
+ * @option 左对齐
+ * @value 左对齐
+ * @option 居中
+ * @value 居中
+ * @option 右对齐
+ * @value 右对齐
+ * @desc 默认文本的对齐方式。
+ * @default 居中
  *
  * @param 默认是否显示外框
  * @type boolean
@@ -45,14 +56,15 @@
  * ----插件扩展
  * 插件可以单独使用，还可以被其他插件扩展使用。
  * 被扩展：
- *   - Drill_X_EventTextFilter 行走图-事件漂浮文字的滤镜效果[扩展]
+ *   - Drill_X_EventTextFilter     行走图-事件漂浮文字的滤镜效果[扩展]
  *     该插件能给事件的漂浮文字添加滤镜效果。
+ *   - Drill_X_EventTextBackground 行走图-事件漂浮文字的背景[扩展]
+ *     该插件能给事件的漂浮文字添加背景。
  *
  * -----------------------------------------------------------------------------
  * ----设定注意事项
  * 1.插件的作用域：地图界面。
  *   只对事件有效，放置在 地图上层 。
- * 2.v1.3版本时解决了"需要时创建"的bug，已固定为自动创建。
  * 漂浮文字：
  *   (1.你可以通过换事件页，来切换头顶的漂浮文字。
  *      你可以使用变量等特殊字符，但是变量的变动不会主动刷新漂浮文字。
@@ -64,10 +76,11 @@
  *      如果你想控制图标大小，去看看：对话框 - 特殊字符大小控制器
  *   (4.字符串中可以使用\V[n]变量，但是注释指令不会刷新变量值，
  *      需要用插件指令执行，才会刷新值。
- * 偏移：
+ * 位置：
  *   (1.漂浮位置固定在事件上方24像素的位置，你可以根据需要，对文字进行
- *      位置调整。
+ *      位置偏移调整。
  *   (2.事件变形、位移时，漂浮文字会一直跟着事件。
+ *   (3.你还可以设置文本左对齐/居中/右对齐。
  * 外框：
  *   (1.漂浮位置默认都带有外框，你可以设置显示或者隐藏。
  *      外框的皮肤与窗口皮肤一样。
@@ -78,19 +91,24 @@
  * -----------------------------------------------------------------------------
  * ----激活条件
  * 事件中，添加注释，在注释中填入以下指令：
- *（中英文冒号都可以，旧注释冒号左右不能有空格，新注释冒号左右都有一
- *  个空格。）
+ *（中英文冒号都可以,旧注释冒号左右不能有空格,标准注释左右都有一空格。）
  *
  * 事件注释(旧)：事件漂浮文字:这是一串被显示出来的文字
  * 事件注释(旧)：事件漂浮文字:偏移:5:-5
  * 事件注释(旧)：事件漂浮文字:外框:显示
  * 事件注释(旧)：事件漂浮文字:外框:隐藏
+ * 事件注释(旧)：事件漂浮文字:对齐方式:左对齐
+ * 事件注释(旧)：事件漂浮文字:对齐方式:居中
+ * 事件注释(旧)：事件漂浮文字:对齐方式:右对齐
  *
  * 事件注释：=>事件漂浮文字 : 这是一串被显示出来的文字
  * 事件注释：=>事件漂浮文字 : 这是一串被显示出来的文字 : 201
  * 事件注释：=>事件漂浮文字 : 偏移 : 5 : -5
  * 事件注释：=>事件漂浮文字 : 外框 : 显示
  * 事件注释：=>事件漂浮文字 : 外框 : 隐藏
+ * 事件注释：=>事件漂浮文字 : 对齐方式 : 左对齐
+ * 事件注释：=>事件漂浮文字 : 对齐方式 : 居中
+ * 事件注释：=>事件漂浮文字 : 对齐方式 : 右对齐
  *
  * 1.冒号后面的数字表示颜色，可以填rmmv默认的0-31。
  *   也可以填高级颜色编号，这个数字和特殊字符\c[4]的效果是一样的。
@@ -110,6 +128,9 @@
  * 插件指令：>事件漂浮文字 : 本事件 : 设置偏移(变量) : 5 : -5
  * 插件指令：>事件漂浮文字 : 本事件 : 外框 : 显示
  * 插件指令：>事件漂浮文字 : 本事件 : 外框 : 隐藏
+ * 插件指令：>事件漂浮文字 : 本事件 : 对齐方式 : 左对齐
+ * 插件指令：>事件漂浮文字 : 本事件 : 对齐方式 : 居中
+ * 插件指令：>事件漂浮文字 : 本事件 : 对齐方式 : 右对齐
  * 
  * 1.你可以指定某个事件"事件[n]"，或者变量对应的事件id号"事件变量[n]"。
  * 2.字符串中可以使用\V[n]变量，但是注释指令不会刷新变量值，需要用插件
@@ -137,7 +158,7 @@
  * 1.插件只在自己作用域下工作消耗性能，在其它作用域下是不工作的。
  *   测试结果并不是精确值，范围在给定值的10ms范围内波动。
  *   更多了解插件性能，可以去看看"关于插件性能.docx"。
- * 2.v1.3版本优化了结构，全创建改为需要时自动创建，减少了消耗。
+ * 2.v1.3版本之后优化了结构，事件需要时才自动创建，减少了消耗。
  *
  * -----------------------------------------------------------------------------
  * ----更新日志
@@ -152,6 +173,8 @@
  * 该版本解决了需要时创建的bug，已固定为需要时自动创建。
  * [v1.4]
  * 添加了漂浮文字外框显示隐藏的功能。
+ * [v1.5]
+ * 添加了对齐方式。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -203,9 +226,13 @@
 //			  object在进入菜单后是不刷的，但是贴图会刷。
 //			3.事件初始化要放在initialize前面。
 //			  另外，只有事件才有 this._drill_ET 数据字段。
-//
+//			4. 2020/8/15
+//				重新整理了一下漂浮文字贴图的结构。
+//				整体结构为 事件容器 + 窗口绘制文字 ，虽然结构清晰简单，但是以前是在探索阶段，留下了不少代码旧坑。
+//				过去该插件bug修复的次数较多，其中有很多细微的关联，只要一去掉，就会丢失功能。不过这里都标注清楚了。
+//				
 //		★存在的问题：
-//			暂无
+//			1.循环地图中，如果在地图边界徘徊，文字变化和滤镜会被累加。
 //
  
 //=============================================================================
@@ -216,10 +243,11 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_EventText');
 	
-	DrillUp.g_ET_layer = Number(DrillUp.parameters['图片层级'] || 100); 
-	DrillUp.g_ET_fontSize = Number(DrillUp.parameters['默认字体大小'] || 18); 
-	DrillUp.g_ET_padding = Number(DrillUp.parameters['内边距'] || 4); 
-	DrillUp.g_ET_frame_visible = String(DrillUp.parameters['默认是否显示外框'] || "false") === "true";	
+	DrillUp.g_ET_layer = Number(DrillUp.parameters["图片层级"] || 100); 
+	DrillUp.g_ET_fontSize = Number(DrillUp.parameters["默认字体大小"] || 18); 
+	DrillUp.g_ET_frame_visible = String(DrillUp.parameters["默认是否显示外框"] || "false") === "true";	
+	DrillUp.g_ET_align = String(DrillUp.parameters["默认对齐方式"] || "居中");	
+	DrillUp.g_ET_padding = Number(DrillUp.parameters["内边距"] || 4); 
 	
 	
 //=============================================================================
@@ -228,9 +256,9 @@
 var _drill_ET_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ET_pluginCommand.call(this, command, args);
-	if (command === '>事件漂浮文字') {
+	if( command === ">事件漂浮文字" ){
 		/*-----------------修改文本------------------*/
-		if(args.length == 6){ 	//	>事件漂浮文字 : 本事件 : 修改文本 : 这是一串字符
+		if( args.length == 6 ){ 	//	>事件漂浮文字 : 本事件 : 修改文本 : 这是一串字符
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
 			var temp3 = String(args[5]);
@@ -251,25 +279,36 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 			
 			if( e_id && type == "修改文本" ){
-				$gameMap.event(e_id)._drill_ET._enabled = true;
-				$gameMap.event(e_id)._drill_ET._text = temp3;
-				$gameMap.event(e_id)._drill_ET._forceRefresh = true;
+				if( $gameMap.drill_ET_isEventExist( e_id ) == false ){ return; }
+				$gameMap.event(e_id)._drill_ET['_enabled'] = true;
+				$gameMap.event(e_id)._drill_ET['_text'] = temp3;
+				$gameMap.event(e_id)._drill_ET['_forceRefresh'] = true;
 				$gameTemp._drill_ET_needRefresh = true;
 			}
 			if( e_id && type == "外框" ){
 				if( temp3 == "显示" ){
-					$gameMap.event(e_id)._drill_ET._frameVisible = true;
+					if( $gameMap.drill_ET_isEventExist( e_id ) == false ){ return; }
+					$gameMap.event(e_id)._drill_ET['_frameVisible'] = true;
 					$gameTemp._drill_ET_needRefresh = true;
 				}
 				if( temp3 == "隐藏" ){
-					$gameMap.event(e_id)._drill_ET._frameVisible = false;
+					if( $gameMap.drill_ET_isEventExist( e_id ) == false ){ return; }
+					$gameMap.event(e_id)._drill_ET['_frameVisible'] = false;
+					$gameTemp._drill_ET_needRefresh = true;
+				}
+			}
+			if( e_id && type == "对齐方式" ){
+				if( temp3 == "左对齐" || temp3 == "居中" || temp3 == "右对齐" ){
+					if( $gameMap.drill_ET_isEventExist( e_id ) == false ){ return; }
+					$gameMap.event(e_id)._drill_ET['_align'] = temp3;
+					$gameMap.event(e_id)._drill_ET['_forceRefresh'] = true;
 					$gameTemp._drill_ET_needRefresh = true;
 				}
 			}
 			
 		}
 		/*-----------------偏移------------------*/
-		if(args.length == 8){
+		if( args.length == 8 ){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
 			var temp3 = Number(args[5]);
@@ -290,22 +329,40 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				e_id = $gameVariables.value(Number(temp1));
 			}
 			if( e_id && type == "设置偏移" ){
-				$gameMap.event(e_id)._drill_ET._enabled = true;
-				$gameMap.event(e_id)._drill_ET._x = temp3;
-				$gameMap.event(e_id)._drill_ET._y = temp4;
-				$gameMap.event(e_id)._drill_ET._forceRefresh = true;
+				if( $gameMap.drill_ET_isEventExist( e_id ) == false ){ return; }
+				$gameMap.event(e_id)._drill_ET['_enabled'] = true;
+				$gameMap.event(e_id)._drill_ET['_x'] = temp3;
+				$gameMap.event(e_id)._drill_ET['_y'] = temp4;
+				$gameMap.event(e_id)._drill_ET['_forceRefresh'] = true;		//（地图管理层，偏移时，刷一下）
 				$gameTemp._drill_ET_needRefresh = true;
 			}
 			if( e_id && type == "设置偏移(变量)" ){
-				$gameMap.event(e_id)._drill_ET._enabled = true;
-				$gameMap.event(e_id)._drill_ET._x = $gameVariables.value(temp3);
-				$gameMap.event(e_id)._drill_ET._y = $gameVariables.value(temp4);
-				$gameMap.event(e_id)._drill_ET._forceRefresh = true;
+				if( $gameMap.drill_ET_isEventExist( e_id ) == false ){ return; }
+				$gameMap.event(e_id)._drill_ET['_enabled'] = true;
+				$gameMap.event(e_id)._drill_ET['_x'] = $gameVariables.value(temp3);
+				$gameMap.event(e_id)._drill_ET['_y'] = $gameVariables.value(temp4);
+				$gameMap.event(e_id)._drill_ET['_forceRefresh'] = true;
 				$gameTemp._drill_ET_needRefresh = true;
 			}
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ET_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventText.js 行走图 - 事件漂浮文字】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
+
 //=============================================================================
 // ** 初始化
 //=============================================================================
@@ -315,12 +372,13 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 var _drill_ET_c_initialize = Game_Event.prototype.initialize;
 Game_Event.prototype.initialize = function(mapId, eventId) {
 	this._drill_ET = {};
-	this._drill_ET._enabled = false;							//默认关闭
-	this._drill_ET._text = "";									//文本
-	this._drill_ET._x = 0;										//偏移x
-	this._drill_ET._y = 0;										//偏移y
-	this._drill_ET._frameVisible = DrillUp.g_ET_frame_visible;	//外框显示
-	this._drill_ET._forceRefresh = false;						//刷新文本
+	this._drill_ET['_enabled'] = false;								//默认关闭
+	this._drill_ET['_text'] = "";									//文本
+	this._drill_ET['_align'] = DrillUp.g_ET_align;					//对齐方式
+	this._drill_ET['_x'] = 0;										//偏移x
+	this._drill_ET['_y'] = 0;										//偏移y
+	this._drill_ET['_frameVisible'] = DrillUp.g_ET_frame_visible;	//外框显示
+	this._drill_ET['_forceRefresh'] = false;						//刷新文本
 	_drill_ET_c_initialize.call(this,mapId, eventId);
 }
 //==============================
@@ -333,45 +391,53 @@ Game_Event.prototype.setupPageSettings = function() {
 }
 Game_Event.prototype.drill_ET_refreshText = function() {
 	
-	this._drill_ET._text = "";
-	this._drill_ET._x = 0;
-	this._drill_ET._y = 0;
+	this._drill_ET['_text'] = "";
+	this._drill_ET['_x'] = 0;
+	this._drill_ET['_y'] = 0;
 	
 	var page = this.page();
-    if ( page ) {
-		this.list().forEach(function(l) {
-			if (l.code === 108) {
-				var comment = l.parameters[0].split(/[:：]/);	//旧注释
+    if( page ){
+		this.list().forEach( function(l){
+			if( l.code === 108 ){
+				/*-----------------旧注释------------------*/
+				var comment = l.parameters[0].split(/[:：]/);
 				if (comment[0].toLowerCase() === "事件漂浮文字"){
 					if( comment.length == 2 ){
-						this._drill_ET._enabled = true;
-						this._drill_ET._text = String(comment[1]);
+						this._drill_ET['_enabled'] = true;
+						this._drill_ET['_text'] = String(comment[1]);
 						$gameTemp._drill_ET_needRefresh = true;
 					}
 					if( comment.length == 4 && comment[1] == "偏移" ){
-						this._drill_ET._enabled = true;
-						this._drill_ET._x = Number(comment[2]);
-						this._drill_ET._y = Number(comment[3]);
+						this._drill_ET['_enabled'] = true;
+						this._drill_ET['_x'] = Number(comment[2]);
+						this._drill_ET['_y'] = Number(comment[3]);
 						$gameTemp._drill_ET_needRefresh = true;
 					}
 					if( comment.length == 3 && comment[1] == "外框" ){
 						if( comment[2] == "显示" ){
-							this._drill_ET._frameVisible = true;
+							this._drill_ET['_frameVisible'] = true;
 							$gameTemp._drill_ET_needRefresh = true;
 						}
 						if( comment[2] == "隐藏" ){
-							this._drill_ET._frameVisible = false;
+							this._drill_ET['_frameVisible'] = false;
+							$gameTemp._drill_ET_needRefresh = true;
+						}
+					}
+					if( comment.length == 3 && comment[1] == "对齐方式" ){
+						if( comment[2] == "左对齐" || comment[2] == "居中" || comment[2] == "右对齐" ){
+							this._drill_ET['_align'] = comment[2];
 							$gameTemp._drill_ET_needRefresh = true;
 						}
 					}
 				};
 				
-				var args = l.parameters[0].split(/[ ]+/);		//注释
+				/*-----------------标准注释------------------*/
+				var args = l.parameters[0].split(/[ ]+/);	
 				var command = args.shift();
 				if (command == "=>事件漂浮文字" ){
 					if( args.length == 2 ){
-						this._drill_ET._enabled = true;
-						this._drill_ET._text = String(args[1]);
+						this._drill_ET['_enabled'] = true;
+						this._drill_ET['_text'] = String(args[1]);
 						$gameTemp._drill_ET_needRefresh = true;
 					}
 					if( args.length == 4 ){
@@ -379,16 +445,21 @@ Game_Event.prototype.drill_ET_refreshText = function() {
 						var temp2 = String(args[3]);
 						if( temp1 == "外框" ){
 							if( temp2 == "显示" ){
-								this._drill_ET._frameVisible = true;
+								this._drill_ET['_frameVisible'] = true;
 								$gameTemp._drill_ET_needRefresh = true;
 							}
 							if( temp2 == "隐藏" ){
-								this._drill_ET._frameVisible = false;
+								this._drill_ET['_frameVisible'] = false;
+								$gameTemp._drill_ET_needRefresh = true;
+							}
+						}else if( temp1 == "对齐方式" ){
+							if( temp2 == "左对齐" || temp2 == "居中" || temp2 == "右对齐" ){
+								this._drill_ET['_align'] = temp2;
 								$gameTemp._drill_ET_needRefresh = true;
 							}
 						}else{
-							this._drill_ET._enabled = true;
-							this._drill_ET._text = "\\c["+ temp2 + "]" + temp1;
+							this._drill_ET['_enabled'] = true;
+							this._drill_ET['_text'] = "\\c["+ temp2 + "]" + temp1;
 							$gameTemp._drill_ET_needRefresh = true;
 						}
 					}
@@ -397,9 +468,9 @@ Game_Event.prototype.drill_ET_refreshText = function() {
 						var temp2 = Number(args[3]);
 						var temp3 = Number(args[5]);
 						if( temp1 == "偏移" ){
-							this._drill_ET._enabled = true;
-							this._drill_ET._x = temp2;
-							this._drill_ET._y = temp3;
+							this._drill_ET['_enabled'] = true;
+							this._drill_ET['_x'] = temp2;
+							this._drill_ET['_y'] = temp3;
 							$gameTemp._drill_ET_needRefresh = true;
 						}
 					}
@@ -460,7 +531,7 @@ Game_Map.prototype.drill_ET_refreshEventChecks = function() {
 	$gameTemp._drill_ET_textEvents = [];			//容器中的事件，只增不减，除非清零
 	for (var i = 0; i < events.length; i++) {  
 		var temp_event = events[i];
-		if( temp_event._drill_ET._enabled == true ){
+		if( temp_event._drill_ET['_enabled'] == true ){
 			$gameTemp._drill_ET_textEvents.push(temp_event);
 		}
 	}
@@ -539,13 +610,12 @@ Spriteset_Map.prototype.drill_ET_updateNewEventText = function() {
 		}
 	}
 }
-
 //==============================
 // * 创建 - 文字贴图（单独分离该函数，便于扩展）
 //==============================
 Spriteset_Map.prototype.drill_ET_createWindowSprite = function( _event ) {
 	if( _event == null ){ return }
-	var new_sprite = new Drill_ET_WindowSprite(_event);
+	var new_sprite = new Drill_ET_WindowSprite( _event );
 	this._drill_ET_spriteTank.push(new_sprite);
 	this._drill_ET_textLayer.addChild(new_sprite);
 }
@@ -554,83 +624,38 @@ Spriteset_Map.prototype.drill_ET_createWindowSprite = function( _event ) {
 //=============================================================================
 // ** Drill_ET_WindowSprite 漂浮文字贴图
 //=============================================================================
+//==============================
+// * 文字贴图 - 定义
+//==============================
 function Drill_ET_WindowSprite() {
     this.initialize.apply(this, arguments);
 };
-
 Drill_ET_WindowSprite.prototype = Object.create(Window_Base.prototype);
 Drill_ET_WindowSprite.prototype.constructor = Drill_ET_WindowSprite;
 
 //==============================
-// * 初始化-设置
+// * 文字贴图 - 初始化
 //==============================
-Drill_ET_WindowSprite.prototype.initialize = function(_event) {
+Drill_ET_WindowSprite.prototype.initialize = function( obj_event ){
+	this._drill_event = obj_event;		//私有对象
+	this._character = obj_event;		//Drill_X_EventTextFilter滤镜使用的对象
     Window_Base.prototype.initialize.call(this);
-	this._character = _event;	//都指向事件
-	this._event = _event;
 	
-	this._cur_text = "";
-	this._drill_width = 0;
-	this._drill_height = 0;
-};
-
+	this.drill_initSprite();			//初始化对象
+}
 //==============================
-// * 帧刷新
+// * 文字贴图 - 帧刷新
 //==============================
 Drill_ET_WindowSprite.prototype.update = function() {
 	Window_Base.prototype.update.call(this);
-	if( this._event ){
-		this.drill_ET_updateText();		//修改文本
-		this.drill_ET_updatePos();		//确定位置
-	}
+	
+	if( this._drill_event == undefined ){ return; } 
+	this.drill_ET_updateText();			//文本变化
+	this.drill_ET_updatePos();			//位置变化
+	this.drill_ET_updateOpacity();		//透明度变化
 }
 //==============================
-// * 帧刷新 - 修改文本
-//==============================
-Drill_ET_WindowSprite.prototype.drill_ET_updateText = function() {
-	var _drill_c_ET = this._event._drill_ET;
-	if(this._event._erased){
-		//事件去除后
-		if( this._cur_text != "" ){
-			this._cur_text = "";
-			this.contents.clear();
-		}
-	}else{
-		//事件保持存在时
-		if( _drill_c_ET._text != this._cur_text || _drill_c_ET._forceRefresh == true ){		//改变文字
-			_drill_c_ET._forceRefresh = false;
-			this._cur_text = String(_drill_c_ET._text);
-			this.drill_createText();
-		}
-	}
-}
-//==============================
-// * 文本 - 绘制文本
-//==============================
-Drill_ET_WindowSprite.prototype.drill_createText = function() {
-	
-	// > 确定宽高
-	var x = this.standardPadding();
-	var y = this.standardPadding();
-	var textState = { 'index': 0, 'x': x, 'y': y, 'left': x };
-	textState.text = this.convertEscapeCharacters( String(this._cur_text) );
-	textState.height = this.calcTextHeight(textState, false);
-	
-	this._drill_height = textState.height + this.standardPadding() * 2;
-	this._drill_width = this.drawTextEx(this._cur_text,0,0) + this.standardPadding() * 2 ;
-	
-	this.width = this._drill_width + 4;		//稍微多几像素的空间
-	this.height = this._drill_height + 2;
-	
-	// > 重建bitmap
-	this.createContents();
-    //this.contents.clear();
-	
-	// > 绘制内容
-	this.drawTextEx(this._cur_text,0,0);
-}
-//==============================
-// * 文本 - 配置
+// * 文字贴图 - 属性
 //==============================
 Drill_ET_WindowSprite.prototype.standardFontSize = function() {
     return DrillUp.g_ET_fontSize;
@@ -640,32 +665,107 @@ Drill_ET_WindowSprite.prototype.standardPadding = function() {
 };
 
 //==============================
-// * 帧刷新 - 找到位置
+// * 初始化 - 对象
+//==============================
+Drill_ET_WindowSprite.prototype.drill_initSprite = function() {
+	
+	// > 私有对象初始化
+	this._drill_width = 0;					//窗口宽度
+	this._drill_height = 0;					//窗口高度
+	this._drill_curText = "";				//当前文本
+	this._drill_fix_x = 0;					//对齐方式偏移x
+	this._drill_fix_y = 0;					//对齐方式偏移y
+	
+	// > 主体属性
+	this.opacity = 0;
+	this.contents.opacity = 255;
+};
+//==============================
+// * 帧刷新 - 文本变化
+//==============================
+Drill_ET_WindowSprite.prototype.drill_ET_updateText = function() {
+	var data_ET = this._drill_event._drill_ET;
+	
+	// > 事件去除后
+	if( this._drill_event._erased ){
+		if( this._drill_curText != "" ){
+			this._drill_curText = "";
+			this.contents.clear();
+		}
+		return ;
+	}
+	
+	// > 事件属性刷新 锁
+	if( data_ET['_forceRefresh'] == true || this._drill_curText != String(data_ET['_text']) ){
+		data_ET['_forceRefresh'] = false;
+
+		this._drill_curText = String(data_ET['_text']);	
+			
+		// > 确定宽高
+		var x = this.standardPadding();
+		var y = this.standardPadding();
+		var textState = { 'index': 0, 'x': x, 'y': y, 'left': x };
+		textState.text = this.convertEscapeCharacters( String(this._drill_curText) );
+		textState.height = this.calcTextHeight(textState, false);
+		
+		this._drill_height = textState.height + this.standardPadding() * 2;
+		this._drill_width = this.drawTextEx(this._drill_curText,0,0) + this.standardPadding() * 2 ;
+		
+		this.width = this._drill_width + 4;		//稍微多几像素的空间
+		this.height = this._drill_height + 2;
+		
+		// > 重建bitmap
+		this.createContents();
+		
+		// > 绘制内容
+		this.drawTextEx(this._drill_curText,0,0);
+		
+		// > 对齐方式
+		if( data_ET['_align'] == "左对齐" ){
+			this._drill_fix_x = 0 ;
+			this._drill_fix_y = -0.5 * this.height ;
+		}else if( data_ET['_align'] == "居中" ){
+			this._drill_fix_x = -0.5 * this.width ;
+			this._drill_fix_y = -0.5 * this.height ;
+		}else if( data_ET['_align'] == "右对齐" ){
+			this._drill_fix_x = -1.0 * this.width ;
+			this._drill_fix_y = -0.5 * this.height ;
+		}
+	}
+}
+
+//==============================
+// * 帧刷新 - 位置变化
 //==============================
 Drill_ET_WindowSprite.prototype.drill_ET_updatePos = function() {
-	// > 位置
-	var org_x = this._event.screenX() ;
-	var org_y = this._event.screenY() - ( 48 + 6 );
-	org_x -= this.width/2;
-	org_y -= this.height/2;
-	this._drill_org_x = org_x;
-	this._drill_org_y = org_y;
+	var data_ET = this._drill_event._drill_ET;
 	
-	this.x = org_x + this._event._drill_ET._x;
-	this.y = org_y + this._event._drill_ET._y;
-
+	// > 位置
+	var org_x = this._drill_event.screenX() ;
+	var org_y = this._drill_event.screenY() - ( 48 + 6 );
+	this.x = org_x + data_ET['_x'] + this._drill_fix_x;
+	this.y = org_y + data_ET['_y'] + this._drill_fix_y;
+	
+}
+//==============================
+// * 帧刷新 - 透明度变化
+//==============================
+Drill_ET_WindowSprite.prototype.drill_ET_updateOpacity = function() {
+	var data_ET = this._drill_event._drill_ET;
+	
+	// > 可见
+	this.visible = !this._drill_event._transparent;
+	
 	// > 透明度
-	this.visible = !this._event._transparent;
-	if( this._event._drill_ET._frameVisible ){
-		this.opacity = Number(this._event.opacity());
+	if( data_ET['_frameVisible'] ){
+		this.opacity = Number(this._drill_event.opacity());
 	}else{
 		this.opacity = 0;
 	}
-	if( this._cur_text == "" ){		//空文本时的外框透明度
+	if( this._drill_curText == "" ){		//空文本时的外框透明度
 		this.opacity = 0;
 	}
-	this.contents.opacity = Number(this._event.opacity());
-	
+	this.contents.opacity = Number(this._drill_event.opacity());
 }
 
 

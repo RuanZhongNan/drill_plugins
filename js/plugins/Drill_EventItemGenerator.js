@@ -417,6 +417,7 @@ Game_Interpreter.prototype.drill_EIG_command = function(command, args) {
 						pos = pos.replace("事件[","");
 						pos = pos.replace("]","");
 						var e_id = Number(pos);
+						if( $gameMap.drill_EIG_isEventExist( e_id ) == false ){ return; }
 						var x1 = $gameMap.event(e_id)._realX;
 						var y1 = $gameMap.event(e_id)._realY;
 					}
@@ -424,6 +425,7 @@ Game_Interpreter.prototype.drill_EIG_command = function(command, args) {
 						pos = pos.replace("事件变量[","");
 						pos = pos.replace("]","");
 						var e_id = $gameVariables.value(Number(pos));
+						if( $gameMap.drill_EIG_isEventExist( e_id ) == false ){ return; }
 						var x1 = $gameMap.event(e_id)._realX;
 						var y1 = $gameMap.event(e_id)._realY;
 					}
@@ -745,7 +747,23 @@ Game_Interpreter.prototype.drill_EIG_oldCommand = function(command, args) {
 			}, this);	
 		}
 	};
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EIG_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventItemGenerator.js 物体 - 可拾取物生成器】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
+
 //=============================================================================
 // * 存储变量初始化
 //=============================================================================
@@ -760,7 +778,7 @@ Game_System.prototype.initialize = function() {
 	this._drill_EIG_jump_levelSound = 0;
 	this._drill_EIG_default_img_random = [0];
 	this._drill_EIG_default_se_random = [0];
-}
+};
 
 //=============================================================================
 // * 地图

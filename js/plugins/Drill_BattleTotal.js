@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        战斗UI - 单次战斗统计信息
+ * @plugindesc [v1.3]        战斗UI - 单次战斗统计信息
  * @author Drill_up
  * 
  * @param 角色对敌人总伤害
@@ -86,23 +86,48 @@
  * 能统计单次战斗相关信息。
  * ★★必须放在插件 MOG_ComboCounter伤害统计浮动框 的后面★★
  * ★★必须放在插件 Drill_WindowLog窗口提示消息 的后面★★
- *
- * -----------------------------------------------------------------------------
- * ----设定注意事项
- * 1.插件的作用域：战斗界面。
- *   根据战斗的情况，实时给变量赋值。
- * 2.统计需要设置到具体的变量，0表示没有变量。
- * 3.统计情况是实时变化的，战斗前的统计信息会被全部清零。
- * 4.统计是整个角色团体的，单人统计太复杂，这里不涉及。
- * 5.逃跑次数、连续杀敌等与多次战斗相关的统计这里不涉及。
  * 
  * -----------------------------------------------------------------------------
  * ----插件扩展
  * 插件能单独使用，但是部分功能需要其它插件支持。
  * 被扩展：
- *   - MOG_ComboCounter 战斗UI-伤害统计浮动框
+ *   - MOG_ComboCounter             战斗UI-伤害统计浮动框
  *     通过该插件，玩家最大连击数 和 玩家最大连击伤害 能被统计到。
  *
+ * -----------------------------------------------------------------------------
+ * ----设定注意事项
+ * 1.插件的作用域：战斗界面。
+ *   根据战斗的情况，实时给变量赋值。
+ * 细节：
+ *   (1.统计是整个角色团体的，单人统计太复杂，这里不涉及。
+ *   (2.逃跑次数、连续杀敌等与多次战斗相关的统计这里不涉及。
+ * 获取：
+ *   (1.统计需要设置到具体的变量，0表示没有变量。
+ *      统计情况是实时变化的，战斗前的统计信息会被全部清零。
+ *   (2.你也可以不设置变量，使用插件指令将 指定统计值 赋给 变量。
+ * 
+ * -----------------------------------------------------------------------------
+ * ----可选设定
+ * 你可以通过插件指令获取到指定统计的值：
+ * （冒号两边都有一个空格）
+ * 
+ * 插件指令：>单次战斗统计 : 角色对敌人总伤害 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 角色对自己总伤害 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 角色受到敌人总伤害 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 恢复生命量 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 伤害总次数 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 最大连击数 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 最大连击伤害 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 单次最大伤害 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 魔法消耗总量 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 怒气消耗总量 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 躲避攻击次数 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 暴击次数 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 物理反击次数 : 给予值 : 变量[2]
+ * 插件指令：>单次战斗统计 : 魔法反射次数 : 给予值 : 变量[2]
+ * 
+ * 1.战斗时 或 战斗结束后，都可以通过插件指令得到值。
+ * 
  * -----------------------------------------------------------------------------
  * ----更新日志
  * [v1.0]
@@ -111,6 +136,8 @@
  * 与mog伤害统计浮动框 相适配。
  * [v1.2]
  * 修改了插件内部结构。
+ * [v1.3]
+ * 修复了多次战斗数据累加的bug。添加了插件指令。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -124,9 +151,10 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			单次战斗统计信息：
-//				->伤害
-//				->消耗
+//				->hp情况
+//				->技能消耗
 //				->反击、反射、暴击、闪避
+//				->插件指令
 //
 //		★必要注意事项：
 //			暂无
@@ -145,150 +173,242 @@
 　　var Imported = Imported || {};
 　　Imported.Drill_BattleTotal = true;
 　　var DrillUp = DrillUp || {}; 
-
     DrillUp.parameters = PluginManager.parameters('Drill_BattleTotal');
-    DrillUp.g_BT_variable_0 = Number(DrillUp.parameters['角色对敌人总伤害'] || 0);
-    DrillUp.g_BT_variable_1 = Number(DrillUp.parameters['角色对自己总伤害'] || 0);
-    DrillUp.g_BT_variable_2 = Number(DrillUp.parameters['角色受到敌人总伤害'] || 0);
-    DrillUp.g_BT_variable_3 = Number(DrillUp.parameters['恢复生命量'] || 0);
-    DrillUp.g_BT_variable_4 = Number(DrillUp.parameters['伤害总次数'] || 0);
-    DrillUp.g_BT_variable_5 = Number(DrillUp.parameters['最大连击数'] || 0);
-    DrillUp.g_BT_variable_6 = Number(DrillUp.parameters['最大连击伤害'] || 0);
-    DrillUp.g_BT_variable_7 = Number(DrillUp.parameters['单次最大伤害'] || 0);
-    DrillUp.g_BT_variable_8 = Number(DrillUp.parameters['魔法消耗总量'] || 0);
-    DrillUp.g_BT_variable_9 = Number(DrillUp.parameters['怒气消耗总量'] || 0);
-    DrillUp.g_BT_variable_10 = Number(DrillUp.parameters['躲避攻击次数'] || 0);
-    DrillUp.g_BT_variable_11 = Number(DrillUp.parameters['暴击次数'] || 0);
-    DrillUp.g_BT_variable_12 = Number(DrillUp.parameters['物理反击次数'] || 0);
-    DrillUp.g_BT_variable_13 = Number(DrillUp.parameters['魔法反射次数'] || 0);
-	DrillUp.g_BT_data = [];
+	
+    DrillUp.g_BT_variable_0 = Number(DrillUp.parameters["角色对敌人总伤害"] || 0);
+    DrillUp.g_BT_variable_1 = Number(DrillUp.parameters["角色对自己总伤害"] || 0);
+    DrillUp.g_BT_variable_2 = Number(DrillUp.parameters["角色受到敌人总伤害"] || 0);
+    DrillUp.g_BT_variable_3 = Number(DrillUp.parameters["恢复生命量"] || 0);
+    DrillUp.g_BT_variable_4 = Number(DrillUp.parameters["伤害总次数"] || 0);
+    DrillUp.g_BT_variable_5 = Number(DrillUp.parameters["最大连击数"] || 0);
+    DrillUp.g_BT_variable_6 = Number(DrillUp.parameters["最大连击伤害"] || 0);
+    DrillUp.g_BT_variable_7 = Number(DrillUp.parameters["单次最大伤害"] || 0);
+    DrillUp.g_BT_variable_8 = Number(DrillUp.parameters["魔法消耗总量"] || 0);
+    DrillUp.g_BT_variable_9 = Number(DrillUp.parameters["怒气消耗总量"] || 0);
+    DrillUp.g_BT_variable_10 = Number(DrillUp.parameters["躲避攻击次数"] || 0);
+    DrillUp.g_BT_variable_11 = Number(DrillUp.parameters["暴击次数"] || 0);
+    DrillUp.g_BT_variable_12 = Number(DrillUp.parameters["物理反击次数"] || 0);
+    DrillUp.g_BT_variable_13 = Number(DrillUp.parameters["魔法反射次数"] || 0);
 
+	
 //=============================================================================
-// ** 战斗变量初始化
+// ** 插件指令
 //=============================================================================
-
-var _drill_BT_initialize = Scene_Battle.prototype.initialize;
-Scene_Battle.prototype.initialize = function() {
-	_drill_BT_initialize.call(this);
-    DrillUp.g_BT_data = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0]; 
+var _drill_BT_pluginCommand = Game_Interpreter.prototype.pluginCommand
+Game_Interpreter.prototype.pluginCommand = function(command, args) {
+	_drill_BT_pluginCommand.call(this, command, args);
+	if(command === ">单次战斗统计"){
+		if( args.length == 6 ){
+			var temp1 = String(args[1]);
+			var type = String(args[3]);
+			var temp2 = String(args[5]);
+			if( type == "给予值" ){
+				temp2 = temp2.replace("变量[","");
+				temp2 = temp2.replace("]","");
+				if( temp1 == "角色对敌人总伤害" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[0] );
+				}
+				if( temp1 == "角色对自己总伤害" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[1] );
+				}
+				if( temp1 == "角色受到敌人总伤害" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[2] );
+				}
+				if( temp1 == "恢复生命量" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[3] );
+				}
+				if( temp1 == "伤害总次数" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[4] );
+				}
+				if( temp1 == "最大连击数" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[5] );
+				}
+				if( temp1 == "最大连击伤害" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[6] );
+				}
+				if( temp1 == "单次最大伤害" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[7] );
+				}
+				if( temp1 == "魔法消耗总量" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[8] );
+				}
+				if( temp1 == "怒气消耗总量" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[9] );
+				}
+				if( temp1 == "躲避攻击次数" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[10] );
+				}
+				if( temp1 == "暴击次数" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[11] );
+				}
+				if( temp1 == "物理反击次数" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[12] );
+				}
+				if( temp1 == "魔法反射次数" ){
+					$gameVariables.setValue( Number(temp2), $gameSystem._drill_BT_data[13] );
+				}
+			}
+		}
+	};
 };
 
 //=============================================================================
-// ** hp伤害情况
+// ** 存储变量初始化
 //=============================================================================
-var _drill_BT_executeHpDamage = Game_Action.prototype.executeHpDamage;
-Game_Action.prototype.executeHpDamage = function(target, value) {
-	_drill_BT_executeHpDamage.call(this,target, value);
-	if (value > 0) {
-		if (this.subject().isActor() && target.isEnemy()) {
-			DrillUp.g_BT_data[0] += value;
-			$gameVariables.setValue(DrillUp.g_BT_variable_0,DrillUp.g_BT_data[0]);	//总伤害
-			DrillUp.g_BT_data[4] += 1;
-			$gameVariables.setValue(DrillUp.g_BT_variable_4,DrillUp.g_BT_data[4]);	//伤害次数
-			if ( DrillUp.g_BT_data[7] < value ) {
-				DrillUp.g_BT_data[7] = value;
-				$gameVariables.setValue(DrillUp.g_BT_variable_7,DrillUp.g_BT_data[7]);//单次最大伤害
-			}
-		}
-		else if (this.subject().isActor() && target.isActor()) {
-			DrillUp.g_BT_data[1] += value;
-			$gameVariables.setValue(DrillUp.g_BT_variable_1,DrillUp.g_BT_data[1]);
-		}
-		else if (this.subject().isEnemy() && target.isActor()) {
-			DrillUp.g_BT_data[2] += value;
-			$gameVariables.setValue(DrillUp.g_BT_variable_2,DrillUp.g_BT_data[2]);
-		};
-	}
-	if (value < 0) {
-		if (this.subject().isActor() && target.isActor()) {
-			DrillUp.g_BT_data[3] -= value;
-			$gameVariables.setValue(DrillUp.g_BT_variable_3,DrillUp.g_BT_data[3]);
-		}
-	}
-	if( $gameTemp.combo_data ){
-		if( Moghunter.combo_allies ){
-			if ( DrillUp.g_BT_data[5] < $gameTemp.combo_data[0][1] ) {
-				DrillUp.g_BT_data[5] = $gameTemp.combo_data[0][1];
-				$gameVariables.setValue(DrillUp.g_BT_variable_5,DrillUp.g_BT_data[5]);
-			}
-			if ( DrillUp.g_BT_data[6] < $gameTemp.combo_data[0][2] ) {
-				DrillUp.g_BT_data[6] = $gameTemp.combo_data[0][2];
-				$gameVariables.setValue(DrillUp.g_BT_variable_6,DrillUp.g_BT_data[6]);
-			}
-		}else{
-			if ( DrillUp.g_BT_data[5] < $gameTemp.combo_data[1] ) {
-				DrillUp.g_BT_data[5] = $gameTemp.combo_data[1];
-				$gameVariables.setValue(DrillUp.g_BT_variable_5,DrillUp.g_BT_data[5]);
-			}
-			if ( DrillUp.g_BT_data[6] < $gameTemp.combo_data[2] ) {
-				DrillUp.g_BT_data[6] = $gameTemp.combo_data[2];
-				$gameVariables.setValue(DrillUp.g_BT_variable_6,DrillUp.g_BT_data[6]);
-			}
-		}
-		
-	}
-};	
+var _drill_BT_sys_initialize = Game_System.prototype.initialize;
+Game_System.prototype.initialize = function() {	
+	_drill_BT_sys_initialize.call(this);
+	this._drill_BT_data = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0];
+}
 
 //=============================================================================
-// ** 消耗mp，tp情况(Game_Actor)
+// ** 战斗界面
 //=============================================================================
-var _drill_BT_paySkillCost = Game_Actor.prototype.paySkillCost;
-Game_Actor.prototype.paySkillCost = function(skill) {
-	_drill_BT_paySkillCost.call(this,skill);
-	DrillUp.g_BT_data[8] += this.skillMpCost(skill);
-	$gameVariables.setValue(DrillUp.g_BT_variable_8,DrillUp.g_BT_data[8]);
-	DrillUp.g_BT_data[9] += this.skillTpCost(skill);
-	$gameVariables.setValue(DrillUp.g_BT_variable_9,DrillUp.g_BT_data[9]);
-};
-
-//=============================================================================
-// ** 闪避情况
-//=============================================================================
+//==============================
+// * 战斗 - 新战斗清零
+//==============================
+var _drill_BT_onBattleStart = Game_System.prototype.onBattleStart;
+Game_System.prototype.onBattleStart = function() {
+	_drill_BT_onBattleStart.call(this);
+    $gameSystem._drill_BT_data = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0]; 
+	$gameVariables.setValue(DrillUp.g_BT_variable_0,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_1,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_2,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_3,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_4,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_5,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_6,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_7,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_8,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_9,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_10,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_11,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_12,0 );
+	$gameVariables.setValue(DrillUp.g_BT_variable_13,0 );
+}
+//==============================
+// * 战斗 - 闪避情况
+//==============================
 var _drill_BT_displayEvasion = Window_BattleLog.prototype.displayEvasion;
 Window_BattleLog.prototype.displayEvasion = function(target) {
 	_drill_BT_displayEvasion.call(this,target);
 	if (target.result().physical) {
 		if (target.isActor()) {
-			DrillUp.g_BT_data[10] += 1;
-			$gameVariables.setValue(DrillUp.g_BT_variable_10,DrillUp.g_BT_data[10]);
+			$gameSystem._drill_BT_data[10] += 1;
+			$gameVariables.setValue(DrillUp.g_BT_variable_10,$gameSystem._drill_BT_data[10]);
 		}
 	}
 }
-
-//=============================================================================
-// ** 暴击情况
-//=============================================================================
+//==============================
+// * 战斗 - 暴击情况
+//==============================
 var _drill_BT_displayCritical = Window_BattleLog.prototype.displayCritical;
 Window_BattleLog.prototype.displayCritical = function(target) {
 	_drill_BT_displayCritical.call(this,target);
 	if (target.result().critical) {
 		if (target.isActor()) {
-			//敌人对角色暴击
+			// 敌人对角色暴击
 		}else{
-			DrillUp.g_BT_data[11] += 1;
-			$gameVariables.setValue(DrillUp.g_BT_variable_11,DrillUp.g_BT_data[11]);
+			$gameSystem._drill_BT_data[11] += 1;
+			$gameVariables.setValue(DrillUp.g_BT_variable_11,$gameSystem._drill_BT_data[11]);
 		}
 	}
 }
-
-//=============================================================================
-// ** 物理反击、魔法反射
-//=============================================================================
+//==============================
+// * 战斗 - 物理反击
+//==============================
 var _drill_BT_displayCounter = Window_BattleLog.prototype.displayCounter;
 Window_BattleLog.prototype.displayCounter = function(target) {
 	_drill_BT_displayCounter.call(this,target);
 	if (target.isActor()) {
-		DrillUp.g_BT_data[12] += 1;
-		$gameVariables.setValue(DrillUp.g_BT_variable_12,DrillUp.g_BT_data[12]);
+		$gameSystem._drill_BT_data[12] += 1;
+		$gameVariables.setValue(DrillUp.g_BT_variable_12,$gameSystem._drill_BT_data[12]);
 	}
 }
+//==============================
+// * 战斗 - 魔法反射
+//==============================
 var _drill_BT_displayReflection = Window_BattleLog.prototype.displayReflection;
 Window_BattleLog.prototype.displayReflection = function(target) {
 	_drill_BT_displayReflection.call(this,target);
 	if (target.isActor()) {
-		DrillUp.g_BT_data[13] += 1;
-		$gameVariables.setValue(DrillUp.g_BT_variable_13,DrillUp.g_BT_data[13]);
+		$gameSystem._drill_BT_data[13] += 1;
+		$gameVariables.setValue(DrillUp.g_BT_variable_13,$gameSystem._drill_BT_data[13]);
 	}
 }
+
+//=============================================================================
+// ** hp情况
+//=============================================================================
+var _drill_BT_executeHpDamage = Game_Action.prototype.executeHpDamage;
+Game_Action.prototype.executeHpDamage = function(target, value) {
+	_drill_BT_executeHpDamage.call(this,target, value);
+	
+	// > 伤害
+	if (value > 0) {
+		if (this.subject().isActor() && target.isEnemy()) {
+			$gameSystem._drill_BT_data[0] += value;
+			$gameVariables.setValue(DrillUp.g_BT_variable_0,$gameSystem._drill_BT_data[0]);	//总伤害
+			$gameSystem._drill_BT_data[4] += 1;
+			$gameVariables.setValue(DrillUp.g_BT_variable_4,$gameSystem._drill_BT_data[4]);	//伤害次数
+			if ( $gameSystem._drill_BT_data[7] < value ) {
+				$gameSystem._drill_BT_data[7] = value;
+				$gameVariables.setValue(DrillUp.g_BT_variable_7,$gameSystem._drill_BT_data[7]);//单次最大伤害
+			}
+		}
+		else if (this.subject().isActor() && target.isActor()) {
+			$gameSystem._drill_BT_data[1] += value;
+			$gameVariables.setValue(DrillUp.g_BT_variable_1,$gameSystem._drill_BT_data[1]);
+		}
+		else if (this.subject().isEnemy() && target.isActor()) {
+			$gameSystem._drill_BT_data[2] += value;
+			$gameVariables.setValue(DrillUp.g_BT_variable_2,$gameSystem._drill_BT_data[2]);
+		};
+	}
+	// > 治愈
+	if (value < 0) {
+		if (this.subject().isActor() && target.isActor()) {
+			$gameSystem._drill_BT_data[3] -= value;
+			$gameVariables.setValue(DrillUp.g_BT_variable_3,$gameSystem._drill_BT_data[3]);
+		}
+	}
+	
+	// > mog伤害统计兼容
+	if( $gameTemp.combo_data ){
+		if( Moghunter.combo_allies ){
+			if ( $gameSystem._drill_BT_data[5] < $gameTemp.combo_data[0][1] ) {
+				$gameSystem._drill_BT_data[5] = $gameTemp.combo_data[0][1];
+				$gameVariables.setValue(DrillUp.g_BT_variable_5,$gameSystem._drill_BT_data[5]);
+			}
+			if ( $gameSystem._drill_BT_data[6] < $gameTemp.combo_data[0][2] ) {
+				$gameSystem._drill_BT_data[6] = $gameTemp.combo_data[0][2];
+				$gameVariables.setValue(DrillUp.g_BT_variable_6,$gameSystem._drill_BT_data[6]);
+			}
+		}else{
+			if ( $gameSystem._drill_BT_data[5] < $gameTemp.combo_data[1] ) {
+				$gameSystem._drill_BT_data[5] = $gameTemp.combo_data[1];
+				$gameVariables.setValue(DrillUp.g_BT_variable_5,$gameSystem._drill_BT_data[5]);
+			}
+			if ( $gameSystem._drill_BT_data[6] < $gameTemp.combo_data[2] ) {
+				$gameSystem._drill_BT_data[6] = $gameTemp.combo_data[2];
+				$gameVariables.setValue(DrillUp.g_BT_variable_6,$gameSystem._drill_BT_data[6]);
+			}
+		}
+	}
+};	
+//=============================================================================
+// ** 技能消耗（Game_Actor）
+//=============================================================================
+var _drill_BT_paySkillCost = Game_Actor.prototype.paySkillCost;
+Game_Actor.prototype.paySkillCost = function(skill) {
+	_drill_BT_paySkillCost.call(this,skill);
+	// > mp消耗
+	$gameSystem._drill_BT_data[8] += this.skillMpCost(skill);
+	$gameVariables.setValue(DrillUp.g_BT_variable_8,$gameSystem._drill_BT_data[8]);
+	// > tp消耗
+	$gameSystem._drill_BT_data[9] += this.skillTpCost(skill);
+	$gameVariables.setValue(DrillUp.g_BT_variable_9,$gameSystem._drill_BT_data[9]);
+};
+
 
 	

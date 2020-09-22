@@ -262,7 +262,7 @@ Game_Event.prototype.drill_ERP_setupPage = function() {
 var _drill_ERP_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ERP_pluginCommand.call(this, command, args);
-	if (command === '>获取随机坐标') {
+	if (command === ">获取随机坐标") {
 		/*-----------------形状区域------------------*/
 		if(args.length == 8){
 			var unit = String(args[1]);
@@ -286,6 +286,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				unit = unit.replace("事件[","");
 				unit = unit.replace("]","");
 				var e_id = Number(unit);
+				if( $gameMap.drill_ERP_isEventExist( e_id ) == false ){ return; }
 				var e = $gameMap.event( e_id );
 				_x = e._x;
 				_y = e._y;
@@ -294,6 +295,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				unit = unit.replace("事件变量[","");
 				unit = unit.replace("]","");
 				var e_id = $gameVariables.value(Number(unit));
+				if( $gameMap.drill_ERP_isEventExist( e_id ) == false ){ return; }
 				var e = $gameMap.event( e_id );
 				_x = e._x;
 				_y = e._y;
@@ -391,7 +393,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	
 	}
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ERP_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventRandomPoint.js 物体触发 - 固定区域 & 随机点】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //=============================================================================
 // * 缓存容器
@@ -400,7 +416,7 @@ var _drill_ERP_System_initialize = Game_System.prototype.initialize;
 Game_System.prototype.initialize = function() {
 	_drill_ERP_System_initialize.call(this);
 	this._drill_ERP_cur_condition = {};		//当前筛选器
-}
+};
 
 
 

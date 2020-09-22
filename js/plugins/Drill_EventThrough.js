@@ -168,7 +168,7 @@
 var _drill_ETh_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ETh_pluginCommand.call(this, command, args);
-	if (command === '>事件穿透关系') {
+	if (command === ">事件穿透关系") {
 		if(args.length == 6){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
@@ -198,15 +198,33 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				var e_id = Number(temp1);
 			}
 			if( e_id && type == "添加标签" ){
+				if( $gameMap.drill_ETh_isEventExist( e_id ) == false ){ return; }
 				$gameMap.event(e_id)._drill_ETh_char[temp3] = true;
 			}
 			if( e_id && type == "去除标签" ){
+				if( $gameMap.drill_ETh_isEventExist( e_id ) == false ){ return; }
 				delete $gameMap.event(e_id)._drill_ETh_char[temp3];
 			}
 			
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ETh_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventThrough.js 物体 - 事件穿透关系】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
+
 //=============================================================================
 // ** 事件
 //=============================================================================

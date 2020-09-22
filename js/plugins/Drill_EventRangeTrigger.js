@@ -290,17 +290,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				unit = unit.replace("事件[","");
 				unit = unit.replace("]","");
 				var e_id = Number(unit);
-				var e = $gameMap.event( e_id );
-				_x = e._x;
-				_y = e._y;
+				if( $gameMap.drill_ERT_isEventExist( e_id ) == true ){
+					var e = $gameMap.event( e_id );
+					_x = e._x;
+					_y = e._y;
+				}
 			}
 			if( unit.indexOf("事件变量[") != -1 ){
 				unit = unit.replace("事件变量[","");
 				unit = unit.replace("]","");
 				var e_id = $gameVariables.value(Number(unit));
-				var e = $gameMap.event( e_id );
-				_x = e._x;
-				_y = e._y;
+				if( $gameMap.drill_ERT_isEventExist( e_id ) == true ){
+					var e = $gameMap.event( e_id );
+					_x = e._x;
+					_y = e._y;
+				}
 			}
 			if( unit.indexOf("位置[") != -1 ){
 				unit = unit.replace("位置[","");
@@ -387,6 +391,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					unit = unit.replace("]","");
 					var e_id = $gameVariables.value(Number(unit));
 				}
+				$gameMap.drill_ERT_isEventExist( e_id );
 				if( e_id == undefined ){
 					var e_id = Number(unit);
 				}
@@ -463,6 +468,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var type = String(args[3]);
 			if( type == "去除全部条件" ){
 				for( var k=0; k < e_ids.length; k++ ){
+					if( $gameMap.drill_ERT_isEventExist( e_ids[k] ) == false ){ continue; }
 					var e = $gameMap.event( e_ids[k] );
 					e._drill_ERT.tags = {};
 				}
@@ -473,6 +479,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var temp2 = String(args[5]);
 			if( type == "去除条件" ){
 				for( var k=0; k < e_ids.length; k++ ){
+					if( $gameMap.drill_ERT_isEventExist( e_ids[k] ) == false ){ continue; }
 					var e = $gameMap.event( e_ids[k] );
 					e._drill_ERT.tags[temp2] = false;
 				}
@@ -486,6 +493,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "设置条件" ){
 				if( temp3 == "触发独立开关"){
 					for( var k=0; k < e_ids.length; k++ ){
+						if( $gameMap.drill_ERT_isEventExist( e_ids[k] ) == false ){ continue; }
 						var e = $gameMap.event( e_ids[k] );
 						e._drill_ERT.tags[temp2] = true;
 						e._drill_ERT.self_switchs[temp2] = temp4;
@@ -495,6 +503,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ERT_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventRangeTrigger.js 物体触发 - 固定区域 & 条件触发】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
 
 //=============================================================================
 // ** 事件

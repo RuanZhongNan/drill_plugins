@@ -3,8 +3,13 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.1)[v1.4]  面板 - 角色选择界面
+ * @plugindesc (v1.1)[v1.5]  面板 - 角色选择界面
  * @author Moghunter （Drill_up、拾贝猫翻译+优化）
+ * 
+ * @Drill_LE_param "待选角色-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "Moghunter.charSel_char_list_length"
+ * 
  *
  * @param 资源-整体布局
  * @desc 整体布局图片资源。
@@ -414,6 +419,8 @@
  * 修改了插件分类。
  * [v1.4]
  * 修改了插件关联的资源文件夹。
+ * [v1.5]
+ * 添加了最大值编辑的支持。
  * 
  */
 /*~struct~SelectableChar:

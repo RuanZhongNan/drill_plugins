@@ -223,19 +223,25 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				temp1 = temp1.replace("方块粉碎[","");
 				temp1 = temp1.replace("]","");
 				for( var k=0; k < e_ids.length; k++ ){
-					$gameMap.event(e_ids[k]).drill_ESE_playEffect( Number(temp1)-1 );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_ESE_isEventExist( e_id ) == false ){ continue; }
+					$gameMap.event( e_id ).drill_ESE_playEffect( Number(temp1)-1 );
 				}
 			}
 			if( e_ids && temp1.indexOf("方块反转粉碎[") != -1 ){
 				temp1 = temp1.replace("方块反转粉碎[","");
 				temp1 = temp1.replace("]","");
 				for( var k=0; k < e_ids.length; k++ ){
-					$gameMap.event(e_ids[k]).drill_ESE_playConvertedEffect( Number(temp1)-1 );
+					var e_id = e_ids[k];
+					if( $gameMap.drill_ESE_isEventExist( e_id ) == false ){ continue; }
+					$gameMap.event( e_id ).drill_ESE_playConvertedEffect( Number(temp1)-1 );
 				}
 			}
 			if( e_ids && temp1 == "立刻复原" ){
 				for( var k=0; k < e_ids.length; k++ ){
-					$gameMap.event(e_ids[k]).drill_ESE_redraw();
+					var e_id = e_ids[k];
+					if( $gameMap.drill_ESE_isEventExist( e_id ) == false ){ continue; }
+					$gameMap.event( e_id ).drill_ESE_redraw();
 				}
 			}
 			
@@ -253,6 +259,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ESE_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventShatterEffect.js 行走图 - 方块粉碎效果】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

@@ -2,8 +2,20 @@
 // MOG_FastTravel.js
 //=============================================================================
 /*:
- * @plugindesc (v1.1)[v1.4]  面板 - 世界地图
+ * @plugindesc (v1.1)[v1.5]  面板 - 世界地图
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "城镇坐标-%d"
+ * @Drill_LE_parentKey "---城镇坐标组%d至%d---"
+ * @Drill_LE_var "Moghunter.fastTravel_Towns_length"
+ * 
+ * @Drill_LE_param "迷宫坐标-%d"
+ * @Drill_LE_parentKey "---迷宫坐标组%d至%d---"
+ * @Drill_LE_var "Moghunter.fastTravelDungeons_length"
+ * 
+ * @Drill_LE_param "其他坐标-%d"
+ * @Drill_LE_parentKey "---其他坐标组%d至%d---"
+ * @Drill_LE_var "Moghunter.fastTravelOther_length"
  *
  *
  * @help  
@@ -89,1126 +101,1130 @@
  * 修改了插件的分类。
  * [v1.4]
  * 修改了插件关联的资源文件夹。
+ * [v1.5]
+ * 添加了最大值编辑的支持。
  * 
  *
  * @param ---坐标组---
  * @default
- *  
+ * 
  * @param ---城镇坐标组 1至20---
  * @parent ---坐标组---
  * @default
- *
+ * 
  * @param 城镇坐标-1
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-2
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-3
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-4
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-5
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-6
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-7
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-8
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-9
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-10
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-11
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-12
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-13
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-14
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-15
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-16
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-17
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-18
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-19
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-20
  * @parent ---城镇坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *  
+ * 
  * @param ---城镇坐标组21至40---
  * @parent ---坐标组---
  * @default
- *
+ * 
  * @param 城镇坐标-21
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-22
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-23
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-24
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-25
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-26
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-27
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-28
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-29
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-30
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-31
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-32
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-33
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-34
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-35
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-36
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-37
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-38
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-39
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-40
  * @parent ---城镇坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *  
+ * 
  * @param ---城镇坐标组41至60---
  * @parent ---坐标组---
  * @default
- *
+ * 
  * @param 城镇坐标-41
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-42
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-43
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-44
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-45
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-46
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-47
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-48
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-49
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-50
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-51
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-52
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-53
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-54
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-55
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-56
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-57
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-58
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-59
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 城镇坐标-60
  * @parent ---城镇坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
- * @default 
- *  
+ * @default
+ * 
  * @param ---迷宫坐标组 1至20---
  * @parent ---坐标组---
  * @default
- *
+ * 
  * @param 迷宫坐标-1
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-2
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-3
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-4
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-5
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-6
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-7
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-8
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-9
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-10
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-11
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-12
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-13
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-14
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-15
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-16
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-17
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-18
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-19
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-20
  * @parent ---迷宫坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *  
+ * 
  * @param ---迷宫坐标组21至40---
  * @parent ---坐标组---
  * @default
- *
+ * 
  * @param 迷宫坐标-21
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-22
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-23
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-24
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-25
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-26
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-27
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-28
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-29
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-30
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-31
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-32
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-33
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-34
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-35
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-36
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-37
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-38
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-39
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-40
  * @parent ---迷宫坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *  
+ * 
  * @param ---迷宫坐标组41至60---
  * @parent ---坐标组---
  * @default
- *
+ * 
  * @param 迷宫坐标-41
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-42
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-43
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-44
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-45
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-46
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-47
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-48
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-49
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-50
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-51
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-52
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-53
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-54
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-55
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-56
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-57
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-58
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-59
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 迷宫坐标-60
  * @parent ---迷宫坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
- * @default 
- *  
+ * @default
+ * 
  * @param ---其他坐标组 1至20---
  * @parent ---坐标组---
  * @default
- *
+ * 
  * @param 其他坐标-1
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-2
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-3
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-4
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-5
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-6
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-7
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-8
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-9
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-10
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-11
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-12
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-13
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-14
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-15
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-16
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-17
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-18
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-19
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
+ * 
  * @param 其他坐标-20
  * @parent ---其他坐标组 1至20---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *  
- * @param ---其它坐标组21至40---
+ * 
+ * @param ---其他坐标组21至40---
  * @parent ---坐标组---
  * @default
- *
- * @param 其它坐标-21
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-21
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-22
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-22
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-23
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-23
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-24
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-24
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-25
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-25
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-26
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-26
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-27
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-27
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-28
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-28
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-29
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-29
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-30
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-30
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-31
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-31
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-32
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-32
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-33
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-33
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-34
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-34
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-35
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-35
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-36
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-36
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-37
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-37
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-38
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-38
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-39
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-39
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-40
- * @parent ---其它坐标组21至40---
+ * 
+ * @param 其他坐标-40
+ * @parent ---其他坐标组21至40---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *  
- * @param ---其它坐标组41至60---
+ * 
+ * @param ---其他坐标组41至60---
  * @parent ---坐标组---
  * @default
- *
- * @param 其它坐标-41
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-41
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-42
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-42
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-43
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-43
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-44
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-44
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-45
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-45
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-46
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-46
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-47
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-47
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-48
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-48
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-49
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-49
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-50
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-50
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-51
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-51
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-52
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-52
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-53
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-53
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-54
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-54
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-55
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-55
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-56
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-56
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-57
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-57
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-58
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-58
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-59
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-59
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
- *
- * @param 其它坐标-60
- * @parent ---其它坐标组41至60---
+ * 
+ * @param 其他坐标-60
+ * @parent ---其他坐标组41至60---
  * @type struct<TravelMap>
  * @desc 在地图上设置一个新坐标。
  * @default 
+ * 
+ *
  *
  * @param ----杂项----
  * @default 
@@ -1827,12 +1843,14 @@
 	Moghunter.src_world_ListName_C = String(Moghunter.parameters['资源-其他按钮']);
 	Moghunter.src_world_ListLayout = String(Moghunter.parameters['资源-菜单布局']);
 	
-	Moghunter.fastTravel_map_point_max = 60;
+	Moghunter.fastTravel_Towns_length = 60;
 	Moghunter.fastTravel_Towns[0] = [];
+	Moghunter.fastTravelDungeons_length = 60;
 	Moghunter.fastTravelDungeons[0] = [];
+	Moghunter.fastTravelOther_length = 60;
 	Moghunter.fastTravelOther[0] = [];
 	
-	for (var i = 1; i <= Moghunter.fastTravel_map_point_max; i++) {
+	for (var i = 1; i <= Moghunter.fastTravel_Towns_length; i++) {
 		if( Moghunter.parameters['城镇坐标-' + String(i) ] != "" ){
 			Moghunter.fastTravel_Towns[i] = JSON.parse(Moghunter.parameters['城镇坐标-' + String(i) ]);
 			Moghunter.fastTravel_Towns[i]['name'] = Moghunter.fastTravel_Towns[i]["坐标名"];
@@ -1848,7 +1866,7 @@
 			break;
 		}
 	}
-	for (var i = 1; i <= Moghunter.fastTravel_map_point_max; i++) {
+	for (var i = 1; i <= Moghunter.fastTravelDungeons_length; i++) {
 		if( Moghunter.parameters['迷宫坐标-' + String(i) ] != "" ){
 			Moghunter.fastTravelDungeons[i] = JSON.parse(Moghunter.parameters['迷宫坐标-' + String(i) ]);
 			Moghunter.fastTravelDungeons[i]['name'] = Moghunter.fastTravelDungeons[i]["坐标名"];
@@ -1864,7 +1882,7 @@
 			break;
 		}
 	}
-	for (var i = 1; i <= Moghunter.fastTravel_map_point_max; i++) {
+	for (var i = 1; i <= Moghunter.fastTravelOther_length; i++) {
 		if( Moghunter.parameters['其他坐标-' + String(i) ] != "" ){
 			Moghunter.fastTravelOther[i] = JSON.parse(Moghunter.parameters['其他坐标-' + String(i) ]);
 			Moghunter.fastTravelOther[i]['name'] = Moghunter.fastTravelOther[i]["坐标名"];

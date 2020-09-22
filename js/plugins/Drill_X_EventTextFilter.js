@@ -21,9 +21,9 @@
  * ----插件扩展
  * 插件只对指定插件扩展，如果没有使用目标插件，则该插件没有任何效果。
  * 基于：
- *   - Drill_CoreOfFilter 系统-滤镜核心
+ *   - Drill_CoreOfFilter          系统-滤镜核心
  *     需要该核心才能启用滤镜效果。
- *   - Drill_EventText 行走图-事件漂浮文字
+ *   - Drill_EventText             行走图-事件漂浮文字
  *     给目标插件提供滤镜效果支持。
  *
  * -----------------------------------------------------------------------------
@@ -209,7 +209,7 @@ if( Imported.Drill_CoreOfFilter && Imported.Drill_EventText ){
 var _drill_XETF_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_XETF_pluginCommand.call(this, command, args);
-	if (command === '>事件漂浮文字滤镜') { // >事件漂浮文字滤镜 : 本事件 : 纯色滤镜 : 纯蓝 : 155 : 60
+	if (command === ">事件漂浮文字滤镜") { // >事件漂浮文字滤镜 : 本事件 : 纯色滤镜 : 纯蓝 : 155 : 60
 		if(args.length == 8 || args.length == 10){
 			var unit = String(args[1]);
 			if( unit == "本事件" ){
@@ -272,6 +272,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				
 				if( unit == "指定事件(变量)" ){ index = $gameVariables.value(index);}
 				
+				if( $gameMap.drill_XETF_isEventExist( index ) == false ){ return; }
 				var e = $gameMap.event( index );
 				if( type == "纯色滤镜" ){
 					e._drill_XETF.openFilter = true;
@@ -316,6 +317,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_XETF_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_X_EventTextFilter.js 行走图 - 事件漂浮文字的滤镜效果[扩展]】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

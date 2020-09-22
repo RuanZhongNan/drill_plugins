@@ -157,7 +157,7 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_MoveSpeed');
 	
-    DrillUp.g_MS_dashSpeed = Number(DrillUp.parameters['奔跑增加的精确速度'] || 8);
+    DrillUp.g_MS_dashSpeed = Number(DrillUp.parameters["奔跑增加的精确速度"] || 8);
 
 	
 //=============================================================================
@@ -166,41 +166,43 @@
 var _drill_MS_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_MS_pluginCommand.call(this, command, args);
-	if (command === '>移动速度') {
+	if (command === ">移动速度") {
 		if(args.length == 6){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
 			var temp2 = String(args[5]);
-			if (type === '设置速度') {
-				if( temp1 == '玩家' ){
+			if (type === "设置速度") {
+				if( temp1 == "玩家" ){
 					$gamePlayer.drill_MS_setASpeed(Number(temp2));
 				}else{
-					if( temp1 == '本事件' ){
+					if( temp1 == "本事件" ){
 						var e_id = this._eventId;
 					}else{
 						var e_id = Number(temp1);
 					}
+					if( $gameMap.drill_MS_isEventExist( e_id ) == false ){ return; }
 					$gameMap.event(e_id).drill_MS_setASpeed(Number(temp2));
 				}
 			}
 		}
 	}
-	if (command === '>增加速度') {
+	if (command === ">增加速度") {
 		if(args.length == 6){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
 			var temp2 = String(args[5]);
-			if (type === '设置速度') {
-				if( temp1 == '玩家' ){
+			if (type === "设置速度") {
+				if( temp1 == "玩家" ){
 					var temp_speed = $gamePlayer.drill_MS_getASpeed() + Number(temp2);
 					temp_speed = Math.max( temp_speed, 1 );
 					$gamePlayer.drill_MS_setASpeed(temp_speed);
 				}else{
-					if( temp1 == '本事件' ){
+					if( temp1 == "本事件" ){
 						var e_id = this._eventId;
 					}else{
 						var e_id = Number(temp1);
 					}
+					if( $gameMap.drill_MS_isEventExist( e_id ) == false ){ return; }
 					var temp_speed = $gameMap.event(e_id).drill_MS_getASpeed() + Number(temp2);
 					temp_speed = Math.max( temp_speed, 1 );
 					$gameMap.event(e_id).drill_MS_setASpeed( temp_speed );
@@ -208,22 +210,23 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
-	if (command === '>减少速度') {
+	if (command === ">减少速度") {
 		if(args.length == 6){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
 			var temp2 = String(args[5]);
-			if (type === '设置速度') {
-				if( temp1 == '玩家' ){
+			if (type === "设置速度") {
+				if( temp1 == "玩家" ){
 					var temp_speed = $gamePlayer.drill_MS_getASpeed() - Number(temp2);
 					temp_speed = Math.max( temp_speed, 1 );
 					$gamePlayer.drill_MS_setASpeed(temp_speed);
 				}else{
-					if( temp1 == '本事件' ){
+					if( temp1 == "本事件" ){
 						var e_id = this._eventId;
 					}else{
 						var e_id = Number(temp1);
 					}
+					if( $gameMap.drill_MS_isEventExist( e_id ) == false ){ return; }
 					var temp_speed = $gameMap.event(e_id).drill_MS_getASpeed() - Number(temp2);
 					temp_speed = Math.max( temp_speed, 1 );
 					$gameMap.event(e_id).drill_MS_setASpeed( temp_speed );
@@ -231,25 +234,40 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
-	if (command === '>设置速度变量id') {
+	if (command === ">设置速度变量id") {
 		if(args.length == 6){
 			var temp1 = String(args[1]);
 			var type = String(args[3]);
 			var temp2 = String(args[5]);
-			if (type === '设置速度') {
-				if( temp1 == '玩家' ){
+			if (type === "设置速度") {
+				if( temp1 == "玩家" ){
 					$gamePlayer.drill_MS_setASpeed($gameVariables.value( Number(temp2) ));
 				}else{
-					if( temp1 == '本事件' ){
+					if( temp1 == "本事件" ){
 						var e_id = this._eventId;
 					}else{
 						var e_id = Number(temp1);
 					}
+					if( $gameMap.drill_MS_isEventExist( e_id ) == false ){ return; }
 					$gameMap.event(e_id).drill_MS_setASpeed($gameVariables.value( Number(temp2) ));
 				}
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_MS_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_MoveSpeed.js 物体 - 移动速度】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

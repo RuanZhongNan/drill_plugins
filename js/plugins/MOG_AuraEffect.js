@@ -3,8 +3,17 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v2.1)[v1.3]  单位 - 光环效果 + 粒子效果
+ * @plugindesc (v2.1)[v1.4]  单位 - 光环效果 + 粒子效果
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "光环-%d"
+ * @Drill_LE_parentKey "--光环组%d至%d--"
+ * @Drill_LE_var "null"
+ * 
+ * @Drill_LE_param "粒子-%d"
+ * @Drill_LE_parentKey "--粒子组%d至%d--"
+ * @Drill_LE_var "null"
+ *
  *
  * @param --光环组 1至20--
  * @default 
@@ -740,6 +749,8 @@
  * 修改了插件的分类。
  * [v1.3]
  * 修改了插件关联的资源文件夹。
+ * [v1.4]
+ * 添加了最大值编辑的支持。
  *
  */
 

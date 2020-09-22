@@ -3,8 +3,17 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.4)[v1.2]  单位 - 敌人姿势
+ * @plugindesc (v1.4)[v1.3]  单位 - 敌人姿势
  * @author Moghunter （Drill_up翻译）
+ * 
+ * @Drill_LE_param "SV敌人-%d-姿势"
+ * @Drill_LE_parentKey "--SV敌人组%d至%d--"
+ * @Drill_LE_var "Moghunter.poses_sv_list_length"
+ * 
+ * @Drill_LE_param "敌人-%d-姿势"
+ * @Drill_LE_parentKey "--敌人组%d至%d--"
+ * @Drill_LE_var "Moghunter.poses_list_length"
+ * 
  *
  * @param ======一般模式======
  * @default 
@@ -3335,6 +3344,8 @@
  * 部署时勾选去除无关文件，本插件中相关的文件不会被去除。
  * [v1.2]
  * 修改了插件的分类。
+ * [v1.3]
+ * 添加了最大值编辑的支持。
  *
  */
 
@@ -3365,9 +3376,12 @@
 	
 	Moghunter.poses_list_length = 200;
 	Moghunter.poses_list = {};
-	Moghunter.poses_sv_list = {};
 	for (var i = 1; i <= Moghunter.poses_list_length ; i++ ) {
 		Moghunter.poses_list[i] = String(Moghunter.parameters['敌人-' + String(i) + "-姿势" ]);
+	};
+	Moghunter.poses_sv_list_length = 200;
+	Moghunter.poses_sv_list = {};
+	for (var i = 1; i <= Moghunter.poses_sv_list_length ; i++ ) {
 		Moghunter.poses_sv_list[i] = String(Moghunter.parameters['SV敌人-' + String(i) + "-姿势" ]);
 	};
 	

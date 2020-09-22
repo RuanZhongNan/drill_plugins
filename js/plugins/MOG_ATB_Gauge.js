@@ -3,8 +3,17 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.0)[v1.2]  战斗 - 即时战斗固定框
+ * @plugindesc (v1.0)[v1.3]  战斗 - 即时战斗固定框
  * @author Moghunter （Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "角色图标-%d"
+ * @Drill_LE_parentKey "---角色图标%d至%d---"
+ * @Drill_LE_var "Moghunter.src_atb_actor_icon_list_length"
+ * 
+ * @Drill_LE_param "敌人图标-%d"
+ * @Drill_LE_parentKey "---敌人图标%d至%d---"
+ * @Drill_LE_var "Moghunter.src_atb_enemy_icon_list_length"
+ * 
  *
  * @param 资源-固定框
  * @desc 固定框的图片资源。
@@ -2263,6 +2272,8 @@
  * 部署时勾选去除无关文件，本插件中相关的文件不会被去除。
  * [v1.2]
  * 修改了插件关联的资源文件夹。
+ * [v1.3]
+ * 添加了最大值编辑的支持。
  *
  */
 

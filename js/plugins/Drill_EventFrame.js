@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        行走图 - 多帧行走图
+ * @plugindesc [v1.4]        行走图 - 多帧行走图
  * @author Drill_up
  * 
  *
@@ -208,6 +208,8 @@
  * 优化了内部结构，并且添加了性能测试说明。
  * [v1.3]
  * 大幅度完善了插件指令，以及文档、概念的说明。
+ * [v1.4]
+ * 修复了玩家初始帧设置无效的bug。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -216,7 +218,10 @@
 //		临时局部变量	this._drill_EF.xxxx（所有变量都放在这个json中控制）
 //		存储数据变量	无
 //		全局存储变量	无
-//		覆盖重写方法	无
+//		覆盖重写方法	Game_Player.prototype.isOriginalPattern
+//						Game_Player.prototype.resetPattern
+//						Game_Follower.prototype.isOriginalPattern
+//						Game_Follower.prototype.resetPattern
 //
 //		工作类型		持续执行
 //		时间复杂度		o(n)*o(贴图处理) 每帧
@@ -238,6 +243,7 @@
 //
 //		★必要注意事项：
 //			1._pattern与方向没有关系，该插件不需要考虑方向问题。
+//			2."_originalPattern"原先只有事件有，这里强加给了玩家和队员。
 //			
 //		★其它说明细节：
 //			1.Sprite_Character是附着在 Game_CharacterBase 上的，先有Character，后有Sprite。
@@ -261,8 +267,8 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_EventFrame');
 	
-	DrillUp.g_EF_fix = String(DrillUp.parameters['是否修正多帧连贯性'] || "true") === "true";	
-	DrillUp.g_EF_fix_inter = Number(DrillUp.parameters['连贯性帧间隔'] || 3); 
+	DrillUp.g_EF_fix = String(DrillUp.parameters["是否修正多帧连贯性"] || "true") === "true";	
+	DrillUp.g_EF_fix_inter = Number(DrillUp.parameters["连贯性帧间隔"] || 3); 
 	
 	
 //=============================================================================
@@ -273,6 +279,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_EF_pluginCommand.call(this, command, args);
 	if (command === ">多帧行走图") {
 		if(args.length >= 4){
+			
 			/*-----------------事件------------------*/
 			var unit = String(args[1]);
 			var type = String(args[3]);
@@ -322,37 +329,49 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( e_ids && e_ids.length > 0 ){
 				if( type == "帧数" ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EF_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_EF.num = Number(temp2);
 					}
 				}
 				if( type == "初始帧" ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EF_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._originalPattern = Number(temp2)-1;
 					}
 				}
 				if( type == "动画帧间隔" ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EF_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_EF.inter = String(temp2);
 					}
 				}
 				if( type == "固定帧" || type == "锁定帧" ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EF_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_EF.lockPattern = Number(temp2) -1;
 					}
 				}
 				if( type == "解除固定帧" || type == "解除锁定帧" ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EF_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_EF.lockPattern = -1;
 					}
 				}
 				if( type == "设置循环" ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EF_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						if( temp2.indexOf(",") != -1 || temp2.indexOf("，") != -1 ){
 							e._drill_EF.loop['enabled'] = true;
 							e._drill_EF.loop['type'] = "自定义序列";
@@ -425,6 +444,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EF_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventFrame.js 行走图 - 多帧行走图】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
+
 	
 //=============================================================================
 // ** 初始化
@@ -435,13 +469,15 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 var _drill_EF_c_initMembers = Game_CharacterBase.prototype.initMembers;
 Game_CharacterBase.prototype.initMembers = function() {
 	_drill_EF_c_initMembers.call(this);
+	
+	this._originalPattern = 1;					//强制附加初始帧
+	
 	this._drill_EF = {};	
 	this._drill_EF.num = -1;					//帧数	
 	this._drill_EF.inter = "";					//帧间隔
 	this._drill_EF.cur_inter = "";				//帧间隔 - 当前公式
 	this._drill_EF.cur_realSpeed = 0;			//帧间隔 - 当前移动速度
 	this._drill_EF.cur_evalInter = 0;			//帧间隔 - 当前间隔
-	
 	this._drill_EF.lockPattern = -1;			//固定帧
 	this._drill_EF.loop = {};					//循环动画
 	this._drill_EF.loop['enabled'] = false;		//循环动画 - 开关
@@ -510,78 +546,57 @@ Game_Event.prototype.setupPageSettings = function() {
 var _drill_EF_s_setCharacterBitmap = Sprite_Character.prototype.setCharacterBitmap;
 Sprite_Character.prototype.setCharacterBitmap = function() {
 	_drill_EF_s_setCharacterBitmap.call(this);
-	
-	if (this._isBigCharacter) {	//只对单图有效
-		//if( this._character && this._character.constructor.name === "Game_Event" ){
-		//	var page = this._character.page();
-		//	if ( page ) {
-		//		this._character.list().forEach(function(l) {
-		//			if (l.code === 108) {
-		//				var args = l.parameters[0].split(' ');
-		//				var command = args.shift();
-		//				if (command == "=>多帧行走图" ){	//刷新同步（事件如果不换页，却换图情况）
-		//					if( args.length >= 4 ){			
-		//						var type = String(args[1]);
-		//						var temp2 = String(args[3]);
-		//						if( type == "帧数"){
-		//							this._character._drill_EF.num = Number(temp2);
-		//						}
-		//						
-		//					}
-		//				};  
-		//			};
-		//		}, this);
-		//	}
-		//}
-		/* 玩家初始化 */
-		if( this._character && (this._character.constructor.name === "Game_Player" || this._character.constructor.name === "Game_Follower" ) ){
-			var actor = $gameParty.leader();
-			if ( this._character.constructor.name === "Game_Follower" ){
-				actor = this._character.actor();
-			}
-			if(!actor){return}
-			var note = String($dataActors[actor.actorId()].note);
-			
-			var types = (note.match( /<多帧行走图:([^<>]*?)>/g )) || [];
-			for(var r = 0;r< types.length; r++){
-				var l = (types[r].match( /<多帧行走图:([^<>]*?)>/ )) || [];
-				//alert(l);		//正则，g搜索每行符合列，然后在每个符合字符串中抽取出 数字。
+	if(!this._character ){ return; }
+	if( this._isBigCharacter == false ){ return; }	//只对单图有效
 
-				var args = String(l[1]).split(':');
-				if( args.length == 1 ){
-					var type = String(args[0]);
-					if( type == "解除固定帧"){
-						this._character._drill_EF.lockPattern = -1;
-					}
+	/*-----------------玩家（注释）初始化------------------*/
+	if( this._character.constructor.name === "Game_Player" || this._character.constructor.name === "Game_Follower" ){
+		var actor = $gameParty.leader();
+		if ( this._character.constructor.name === "Game_Follower" ){
+			actor = this._character.actor();
+		}
+		if(!actor){ return }
+		var note = String($dataActors[actor.actorId()].note);
+		
+		var types = (note.match( /<多帧行走图:([^<>]*?)>/g )) || [];
+		for(var r = 0;r< types.length; r++){
+			var l = (types[r].match( /<多帧行走图:([^<>]*?)>/ )) || [];
+			//alert(l);		//正则，g搜索每行符合列，然后在每个符合字符串中抽取出 数字。
+
+			var args = String(l[1]).split(':');
+			if( args.length == 1 ){
+				var type = String(args[0]);
+				if( type == "解除固定帧"){
+					this._character._drill_EF.lockPattern = -1;
 				}
-				if( args.length == 2 ){
-					var type = String(args[0]);
-					var temp2 = String(args[1]);
-					if( type == "帧数"){
-						this._character._drill_EF.num = Number(temp2);	//初始化图片信息相关内容，还需要同步到 this._character 中
-					}
-					if( type == "初始帧"){
-						this._character._originalPattern = Number(temp2)-1;
-					}
-					if( type == "动画帧间隔"){
-						this._character._drill_EF.inter = String(temp2);
-					}
-					if( type == "固定帧"){
-						this._character._drill_EF.lockPattern = Number(temp2)-1;
-					}
-					if( type == "设置循环"){
-						if( temp2.indexOf(",") != -1 || temp2.indexOf("，") != -1 ){
-							this._character._drill_EF.loop['enabled'] = true;
-							this._character._drill_EF.loop['type'] = "自定义序列";
-							var arr = temp2.split(/[,，]/);
-							var arr2 = [];
-							for(var j=0; j < arr.length ;j++ ){ arr2.push( Number(arr[j])-1 ); };
-							this._character._drill_EF.loop['seq'] = arr2;
-							this._character._drill_EF.loop['index'] = 0;
-						}else{
-							this._character._drill_EF.loop['enabled'] = true;
-							this._character._drill_EF.loop['type'] = String(temp2);
-						}
+			}
+			if( args.length == 2 ){
+				var type = String(args[0]);
+				var temp2 = String(args[1]);
+				if( type == "帧数"){
+					this._character._drill_EF.num = Number(temp2);	//初始化图片信息相关内容，还需要同步到 this._character 中
+				}
+				if( type == "初始帧"){
+					this._character._originalPattern = Number(temp2)-1;
+				}
+				if( type == "动画帧间隔"){
+					this._character._drill_EF.inter = String(temp2);
+				}
+				if( type == "固定帧"){
+					this._character._drill_EF.lockPattern = Number(temp2)-1;
+				}
+				if( type == "设置循环"){
+					if( temp2.indexOf(",") != -1 || temp2.indexOf("，") != -1 ){
+						this._character._drill_EF.loop['enabled'] = true;
+						this._character._drill_EF.loop['type'] = "自定义序列";
+						var arr = temp2.split(/[,，]/);
+						var arr2 = [];
+						for(var j=0; j < arr.length ;j++ ){ arr2.push( Number(arr[j])-1 ); };
+						this._character._drill_EF.loop['seq'] = arr2;
+						this._character._drill_EF.loop['index'] = 0;
+					}else{
+						this._character._drill_EF.loop['enabled'] = true;
+						this._character._drill_EF.loop['type'] = String(temp2);
 					}
 				}
 			}
@@ -740,5 +755,27 @@ Game_CharacterBase.prototype.drill_EF_resetPatternSlowly = function() {
 		this._pattern = this._pattern +1;
 	}
 }
+
+//=============================================================================
+// ** 玩家与队员
+//=============================================================================
+//==============================
+// * 玩家 - 覆写初始帧判定
+//==============================
+Game_Player.prototype.isOriginalPattern = function() {
+    return this.pattern() === this._originalPattern;
+};
+Game_Player.prototype.resetPattern = function() {
+    this.setPattern(this._originalPattern);
+};
+//==============================
+// * 队员 - 覆写初始帧判定
+//==============================
+Game_Follower.prototype.isOriginalPattern = function() {
+    return this.pattern() === this._originalPattern;
+};
+Game_Follower.prototype.resetPattern = function() {
+    this.setPattern(this._originalPattern);
+};
 
 

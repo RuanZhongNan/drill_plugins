@@ -3,9 +3,18 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        物体触发 - 固定区域核心
+ * @plugindesc [v1.3]        物体触发 - 固定区域核心
  * @author Drill_up
- *
+ * 
+ * @Drill_LE_param "自定义区域-%d"
+ * @Drill_LE_parentKey "---自定义固定区域%d至%d---"
+ * @Drill_LE_var "DrillUp.g_COFA_area_list_length"
+ * 
+ * @Drill_LE_param "筛选器-%d"
+ * @Drill_LE_parentKey "---筛选器%d至%d---"
+ * @Drill_LE_var "DrillUp.g_COFA_condition_list_length"
+ * 
+ * 
  * 
  * @help  
  * =============================================================================
@@ -79,6 +88,9 @@
  * 修复了玩家接触事件出错的bug。
  * [v1.2]
  * 修复了事件被消除后，随机点仍然识别事件的bug。
+ * [v1.3]
+ * 添加了最大值编辑的支持。
+ * 
  * 
  *
  * @param ---自定义固定区域1至20---

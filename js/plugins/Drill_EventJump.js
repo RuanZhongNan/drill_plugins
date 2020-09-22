@@ -430,7 +430,9 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 									  $gameVariables.value(Number(temp_arr[1])) ];
 									  
 							for( var k=0; k < e_ids.length; k++ ){
-								var e = $gameMap.event( e_ids[k] );
+								var e_id = e_ids[k];
+								if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ continue; }
+								var e = $gameMap.event( e_id );
 								e.jump( e_pos[0] - e.x, e_pos[1] - e.y );
 							}
 						}
@@ -444,7 +446,9 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 									  $gameVariables.value(Number(temp_arr[1])) ];
 							
 							for( var k=0; k < e_ids.length; k++ ){
-								var e = $gameMap.event( e_ids[k] );
+								var e_id = e_ids[k];
+								if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ continue; }
+								var e = $gameMap.event( e_id );
 								if (e.direction() === 2) {		//下
 									e.jump(e.x + e_pos[0], e.y + e_pos[1]);
 								} else if (e.direction() === 4) {	//左
@@ -466,7 +470,9 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 									  $gameVariables.value(Number(temp_arr[1])) ];
 							
 							for( var k=0; k < e_ids.length; k++ ){
-								var e = $gameMap.event( e_ids[k] );
+								var e_id = e_ids[k];
+								if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ continue; }
+								var e = $gameMap.event( e_id );
 								e.jump( e_pos[0], e_pos[1] );
 							}
 						}
@@ -479,7 +485,9 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 							e_pos = [ Number(temp_arr[0]),Number(temp_arr[1]) ];
 							
 							for( var k=0; k < e_ids.length; k++ ){
-								var e = $gameMap.event( e_ids[k] );
+								var e_id = e_ids[k];
+								if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ continue; }
+								var e = $gameMap.event( e_id );
 								e.jump( e_pos[0] - e.x, e_pos[1] - e.y );
 							}
 						}
@@ -492,7 +500,9 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 							e_pos = [ Number(temp_arr[0]),Number(temp_arr[1]) ];
 							
 							for( var k=0; k < e_ids.length; k++ ){
-								var e = $gameMap.event( e_ids[k] );
+								var e_id = e_ids[k];
+								if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ continue; }
+								var e = $gameMap.event( e_id );
 								if (e.direction() === 2) {		//下
 									e.jump(e.x + e_pos[0], e.y + e_pos[1]);
 								} else if (e.direction() === 4) {	//左
@@ -513,7 +523,9 @@ Game_Interpreter.prototype.drill_EJu_forceJumpCommand = function(command, args) 
 							e_pos = [ Number(temp_arr[0]),Number(temp_arr[1]) ];
 							
 							for( var k=0; k < e_ids.length; k++ ){
-								var e = $gameMap.event( e_ids[k] );
+								var e_id = e_ids[k];
+								if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ continue; }
+								var e = $gameMap.event( e_id );
 								e.jump( e_pos[0], e_pos[1] );
 							}
 						}
@@ -669,7 +681,9 @@ Game_Interpreter.prototype.drill_EJu_commonJumpCommand = function(command, args)
 					temp3 = temp3.replace("距离[","");
 					temp3 = temp3.replace("]","");
 					for( var k=0; k < e_ids.length; k++ ){
-						var e = $gameMap.event( e_ids[k] );
+						var e_id = e_ids[k];
+						if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						if( temp3 == "属性值" ){
 							e.drill_EJu_commonJumpCommand( e._drill_EJu_jump['distance'],temp2 );
 						}else{
@@ -732,16 +746,19 @@ Game_Interpreter.prototype.drill_EJu_tileCommand = function(command, args) {
 				temp2 = temp2.replace("]","");
 				temp2 = Number(temp2);
 				if( type == "获取当前悬崖高度" ){
+					if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ return; }
 					var e = $gameMap.event( e_id );
 					var h = e.drill_EJu_getCliffHeight( e._x,e._y );
 					$gameVariables.setValue( temp2,h );
 				}
 				if( type == "上一次跳跃前的悬崖高度" ){
+					if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ return; }
 					var e = $gameMap.event( e_id );
 					var h = e._drill_EJu_jump['lastCliff'];
 					$gameVariables.setValue( temp2,h );
 				}
 				if( type == "上一次跳跃后的悬崖高度" ){
+					if( $gameMap.drill_EJu_isEventExist( e_id ) == false ){ return; }
 					var e = $gameMap.event( e_id );
 					var h = e._drill_EJu_jump['tarCliff'];
 					$gameVariables.setValue( temp2,h );
@@ -773,7 +790,21 @@ Game_Interpreter.prototype.drill_EJu_tileCommand = function(command, args) {
 			}
 		}
 	}
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EJu_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventJump.js 物体 - 事件跳跃】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 
 //=============================================================================

@@ -3,8 +3,17 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        战斗UI - 角色肖像
+ * @plugindesc [v1.2]        战斗UI - 角色肖像
  * @author Drill_up
+ * 
+ * @Drill_LE_param "角色肖像-%d"
+ * @Drill_LE_parentKey "----角色肖像%d至%d----"
+ * @Drill_LE_var "DrillUp.g_AP_list_length"
+ * 
+ * @Drill_LE_param "肖像条件-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "DrillUp.g_AP_condition_list_length"
+ * 
  *
  * @help
  * =============================================================================
@@ -70,6 +79,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 修改了插件关联的资源文件夹。
+ * [v1.2]
+ * 添加了最大值编辑的支持。
  *
  *
  * @param ----常规----
@@ -84,7 +95,7 @@
  *
  * @param 平移-前视图 X
  * @parent ----常规----
- * @desc x轴方向平移，单位像素。0为肖像中心贴在最右边。注意，正数向左，负数向右。
+ * @desc x轴方向平移，单位像素。注意，0为肖像的中心点贴在最右边。正数向左，负数向右。
  * @default 265
  * 
  * @param 平移-前视图 Y
@@ -818,7 +829,7 @@
 　　var DrillUp = DrillUp || {}; 
 	DrillUp.parameters = PluginManager.parameters('Drill_ActorPortraiture');
 	
-	DrillUp.g_AP_layer = Number(DrillUp.parameters['图片层级'] || 100); 
+	DrillUp.g_AP_layer = Number(DrillUp.parameters["图片层级"] || 100); 
 	DrillUp.g_AP_p_x = Number(DrillUp.parameters["平移-前视图 X"] || 335);
 	DrillUp.g_AP_p_y = Number(DrillUp.parameters["平移-前视图 Y"] || -20);
 	DrillUp.g_AP_p_silde_x = Number(DrillUp.parameters["前视图起点 X"] || 60);

@@ -3,9 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        动画 - 多层动画GIF
+ * @plugindesc [v1.3]        动画 - 多层动画GIF
  * @author Drill_up
- *
+ * 
+ * @Drill_LE_param "GIF-%d"
+ * @Drill_LE_parentKey "---GIF组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_AGi_GIF_length"
+ * 
+ * 
  * @help
  * =============================================================================
  * +++ Drill_AnimationGIF +++
@@ -78,6 +83,8 @@
  * 修改了内部结构。
  * [v1.2]
  * 修改了插件关联的资源文件夹。
+ * [v1.3]
+ * 添加了最大值编辑的支持。
  *
  *
  * @param ---GIF组 1至20---
@@ -1522,10 +1529,10 @@
 　　var DrillUp = DrillUp || {}; 
 	DrillUp.parameters = PluginManager.parameters('Drill_AnimationGIF');
 	
-	DrillUp.g_AGi_GIF_max = 200;
+	DrillUp.g_AGi_GIF_length = 200;
 	DrillUp.g_AGi_GIF = [];
 	
-	for (var i = 0; i < DrillUp.g_AGi_GIF_max; i++) {
+	for (var i = 0; i < DrillUp.g_AGi_GIF_length; i++) {
 		if( DrillUp.parameters['GIF-' + String(i+1) ] != "" ){
 			DrillUp.g_AGi_GIF[i] = JSON.parse(DrillUp.parameters['GIF-' + String(i+1) ]);
 			DrillUp.g_AGi_GIF[i]['id'] = i+1;
@@ -1761,6 +1768,7 @@ Spriteset_Map.prototype.createCharacters = function() {
 	
 	if( !this._drill_anim_charBack ){		//图像后面层
 		this._drill_anim_charBack = new Sprite();
+		this._drill_anim_charBack.z = 0.75;		//（在中层上面，事件后面）
 		this._tilemap.addChild(this._drill_anim_charBack);
 	}
 	

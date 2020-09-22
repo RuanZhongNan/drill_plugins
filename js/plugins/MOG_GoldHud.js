@@ -3,8 +3,13 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.6)[v1.3]  地图UI - 金钱固定框
+ * @plugindesc (v1.6)[v1.4]  地图UI - 金钱固定框
  * @author Moghunter（Drill_up翻译+优化）
+ * 
+ * @Drill_LE_param "备用框-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "Moghunter.ghud_src_list_length"
+ * 
  *
  * @param 初始显示
  * @type boolean
@@ -140,6 +145,8 @@
  * 修改了插件分类。
  * [v1.3]
  * 修改了插件关联的资源文件夹。并添加了备用框替换的功能。
+ * [v1.4]
+ * 添加了最大值编辑的支持。
  */
 /*~struct~MogGoldHud:
  * 

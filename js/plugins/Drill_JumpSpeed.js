@@ -251,7 +251,9 @@ Game_Interpreter.prototype.drill_JSp_command = function(command, args) {
 					temp2 = temp2.replace("时间[","");
 					temp2 = temp2.replace("]","");
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_JSp_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_JS['enabled'] = true;
 						e._drill_JS['height'] = Number(temp1);
 						e._drill_JS['time'] = Number(temp2);
@@ -264,7 +266,9 @@ Game_Interpreter.prototype.drill_JSp_command = function(command, args) {
 					temp2 = temp2.replace("速度[","");
 					temp2 = temp2.replace("]","");
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_JSp_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_JS['enabled'] = true;
 						e._drill_JS['height'] = Number(temp1);
 						e._drill_JS['time'] = -1;
@@ -277,7 +281,9 @@ Game_Interpreter.prototype.drill_JSp_command = function(command, args) {
 					temp2 = temp2.replace("弹跳声音[","");
 					temp2 = temp2.replace("]","");
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_JSp_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_JS['level'] = Math.max(1, Number(temp1));
 						e._drill_JS['levelSound'] = Number(temp2);
 					}
@@ -340,7 +346,7 @@ Game_Interpreter.prototype.drill_JSp_command = function(command, args) {
 			}
 		}
 	}
-}
+};
 //==============================
 // * 插件指令 - 旧指令
 //==============================
@@ -399,7 +405,21 @@ Game_Interpreter.prototype.drill_JSp_oldCommand = function(command, args) {
 		}
 	};
 	
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_JSp_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_JumpSpeed.js 物体 - 跳跃速度】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //=============================================================================
 // ** 事件

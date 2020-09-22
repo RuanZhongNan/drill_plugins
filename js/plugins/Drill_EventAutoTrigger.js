@@ -594,6 +594,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var type = String(args[3]);
 			if( type == "去除全部条件" ){
 				for( var k=0; k < e_ids.length; k++ ){
+					if( $gameMap.drill_EAT_isEventExist( e_ids[k] ) == false ){ continue; }
 					var e = $gameMap.event( e_ids[k] );
 					e._drill_EAT.tags = {};
 				}
@@ -604,6 +605,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			var temp2 = String(args[5]);
 			if( type == "去除条件" ){
 				for( var k=0; k < e_ids.length; k++ ){
+					if( $gameMap.drill_EAT_isEventExist( e_ids[k] ) == false ){ continue; }
 					var e = $gameMap.event( e_ids[k] );
 					e._drill_EAT.tags[temp2] = false;
 				}
@@ -617,6 +619,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "设置条件" ){
 				if( temp3 == "触发独立开关"){
 					for( var k=0; k < e_ids.length; k++ ){
+						if( $gameMap.drill_EAT_isEventExist( e_ids[k] ) == false ){ continue; }
 						var e = $gameMap.event( e_ids[k] );
 						e._drill_EAT.tags[temp2] = true;
 						e._drill_EAT.self_switchs[temp2] = temp4;
@@ -631,6 +634,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "设置条件" ){
 				if( temp3 == "离开范围时自动OFF"){
 					for( var k=0; k < e_ids.length; k++ ){
+						if( $gameMap.drill_EAT_isEventExist( e_ids[k] ) == false ){ continue; }
 						var e = $gameMap.event( e_ids[k] );
 						e._drill_EAT.autoOff[temp2] = true;
 					}
@@ -652,6 +656,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 	}
 };
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EAT_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventAutoTrigger.js 物体触发 - 固定区域&玩家接近&条件触发】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+}
+
 
 //=============================================================================
 // ** 事件

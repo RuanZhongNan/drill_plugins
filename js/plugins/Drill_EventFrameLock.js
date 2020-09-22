@@ -238,7 +238,7 @@ Game_Event.prototype.setupPageSettings = function() {
 			};
 		}, this);
     }
-}
+};
 
 
 //=============================================================================
@@ -300,19 +300,25 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( e_ids && e_ids.length > 0 ){
 				if( type == "锁定" && args.length == 4 ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EFL_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_EFL_lock = true;
 					}
 				}
 				if( type == "解锁" && args.length == 4 ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EFL_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						e._drill_EFL_lock = false;
 					}
 				}
 				if ( type == "锁定帧动画" && args.length == 8 ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EFL_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						if( temp2 == "从左往右" ){
 							var seq_ = [1,2,3,4,5,6,7,8,9,10,11,12];
 						}else if( temp2 == "从右往左"){
@@ -331,7 +337,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				}
 				if ( type == "锁定帧动画" && args.length == 6 ){
 					for( var j=0; j < e_ids.length; j++ ){
-						var e = $gameMap.event( e_ids[j] );
+						var e_id = e_ids[j];
+						if( $gameMap.drill_EFL_isEventExist( e_id ) == false ){ continue; }
+						var e = $gameMap.event( e_id );
 						if( temp2 == "暂停" ){
 							e._drill_EFL_anim.paused = true;
 						}
@@ -348,7 +356,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		}
 		
 	}
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EFL_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventFrameLock.js 行走图 - 锁定帧】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //=============================================================================
 // * 图像帧锁定

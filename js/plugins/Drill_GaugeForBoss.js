@@ -1392,6 +1392,11 @@
 //					->BOSS死亡隐藏框	x
 //					->车轮战			x
 //		
+//		
+//		★配置参数结构体如下：
+//			~struct~GFBStyle:				固定框样式
+//			~struct~GFBBind:				BOSS设置
+//			~struct~DrillWindowMoving:		整体移动动画（弹道核心-两点式）
 //
 //		★私有类如下：
 //			* Drill_GFB_StyleSprite【固定框样式】

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        系统 - 弹道核心
+ * @plugindesc [v1.3]        系统 - 弹道核心
  * @author Drill_up
  *
  * 
@@ -75,6 +75,8 @@
  * 添加了两点式计算功能。
  * [v1.2]
  * 优化了内部接口的结构。
+ * [v1.3]
+ * 修复了 移动延迟 功能，并且调整了两点式移动细节。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -188,6 +190,7 @@ Game_Temp.prototype.drill_COBa_setBallisticsMove = function( data ){
 	//   移动（movement）
 	if( data['movementNum'] == undefined ){ data['movementNum'] = 1 };								//移动 - 子弹数量
 	if( data['movementTime'] == undefined ){ data['movementTime'] = 1 };							//移动 - 时长
+	if( data['movementDelay'] == undefined ){ data['movementDelay'] = 0 };							//移动 - 延迟时间
 	if( data['movementMode'] == undefined ){ data['movementMode'] = "极坐标模式" };					//移动 - 移动模式（极坐标模式/直角坐标模式）
 	//   极坐标（polar）		
 	if( data['polarSpeedType'] == undefined ){ data['polarSpeedType'] = "只初速度" };				//极坐标 - 速度 - 类型
@@ -218,7 +221,7 @@ Game_Temp.prototype.drill_COBa_setBallisticsMove = function( data ){
 	if( data['cartYSpeedMin'] == undefined ){ data['cartYSpeedMin'] = 0 };							//直角坐标 - y - 最小速度
 	if( data['cartYDistanceFormula'] == undefined ){ data['cartYDistanceFormula'] = "return 0" };	//直角坐标 - y - 路程计算公式
 	//   两点式（twoPoint）
-	if( data['twoPointType'] == undefined ){ data['twoPointType'] = "匀速移动" };					//两点式 - 类型（匀速移动/弹性移动/……）
+	if( data['twoPointType'] == undefined ){ data['twoPointType'] = "不移动" };						//两点式 - 类型（不移动/匀速移动/弹性移动/……）
 	if( data['twoPointDifferenceX'] == undefined ){ data['twoPointDifferenceX'] = 0 };				//两点式 - 距离差值x
 	if( data['twoPointDifferenceY'] == undefined ){ data['twoPointDifferenceY'] = 0 };				//两点式 - 距离差值y
 	if( data['twoPointInc'] == undefined ){ data['twoPointInc'] = 0 };								//两点式 - 加速度比
@@ -248,10 +251,12 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 	
 	obj_data['_drill_COBa_x'] = [];
 	obj_data['_drill_COBa_y'] = [];
-	obj_data['_drill_COBa_x'][0] = orgX;
-	obj_data['_drill_COBa_y'][0] = orgY;
 		
 	if( data['movementMode'] == "极坐标模式"){
+		
+		// > 起点值
+		obj_data['_drill_COBa_x'].push( orgX );
+		obj_data['_drill_COBa_y'].push( orgY );
 		
 		// > 随机值（只有随机值和时间没有关系）
 		var randomSpeed = Math.random();	//速度随机因子
@@ -347,6 +352,10 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 	}
 	
 	if( data['movementMode'] == "直角坐标模式"){
+		
+		// > 起点值
+		obj_data['_drill_COBa_x'].push( orgX );
+		obj_data['_drill_COBa_y'].push( orgY );
 		
 		// > 随机值（只有随机值和时间没有关系）
 		var x_randomSpeed = Math.random();	//速度随机因子
@@ -457,7 +466,7 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 	
 	if( data['movementMode'] == "两点式"){
 		
-		for(var time=1; time < data['movementTime']; time++){
+		for(var time = 0; time < data['movementTime']-1; time++){
 			// > 速度
 			var xx = 0;
 			var yy = 0;
@@ -512,7 +521,18 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 			obj_data['_drill_COBa_x'].push(xx);
 			obj_data['_drill_COBa_y'].push(yy);
 		}
+		
+		// > 终点值
+		obj_data['_drill_COBa_x'].push( orgX );
+		obj_data['_drill_COBa_y'].push( orgY );
 	}
+	
+	// > 延迟	
+	for(var i = 0; i < data['movementDelay']; i++){
+		obj_data['_drill_COBa_x'].unshift( obj_data['_drill_COBa_x'][0] );
+		obj_data['_drill_COBa_y'].unshift( obj_data['_drill_COBa_y'][0] );
+	}
+	
 }
 
 

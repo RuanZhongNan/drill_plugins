@@ -2,8 +2,8 @@
  * ======================================================================
  * 插件描述
  * ----------------------------------------------------------------------
- * @plugindesc Lagomoro任务系统 版本：V13.2.1 正式版
- * @author Lagomoro【66RPG：rpg-sheep】曾用昵称：小优
+ * @plugindesc Lagomoro任务系统 V14.1.2 正式版
+ * @author Lagomoro
  * ======================================================================
  * 插件参数
  * ----------------------------------------------------------------------
@@ -19,6 +19,47 @@
  * @desc 在任务状态发生变动时是否向玩家推送变动消息。（V13.0.0 Build 该功能禁用）
  * @default true
  * 
+ * @param 推送文字设置
+ * @type text
+ * @desc 推送文字相关设置列表。
+ * @default
+ * 
+ * @param 获得任务时的文字（禁用）
+ * @parent 推送文字设置
+ * @type text
+ * @desc 获得任务时推送的文字，%1表示任务名字。【触发：重置或者注册一个非隐藏任务，或者任务解除隐藏时】
+ * @default 获得任务：“%1”
+ *
+ * @param 完成任务时的文字
+ * @parent 推送文字设置
+ * @type text
+ * @desc 完成任务时推送的文字，%1表示任务名字。【触发：任务完成】
+ * @default 完成任务：“%1”
+ *
+ * @param 任务步骤改变时的文字(禁用)
+ * @parent 推送文字设置
+ * @type text
+ * @desc 改变任务步骤时推送的文字，%1表示任务步骤名字，%2表示进度。【触发：任务步骤改变】
+ * @default %1(%2)
+ * 
+ * @param 获得奖励时的文字
+ * @parent 推送文字设置
+ * @type text
+ * @desc 获得任务奖励时推送的文字，%1表示奖励名字，%2表示数量。【触发：任务步骤改变】
+ * @default 获得 %1 * %2
+ *
+ * @param 金币单位
+ * @parent 推送文字设置
+ * @type text
+ * @desc 推送的金币单位
+ * @default 金币
+ *
+ * @param 经验单位
+ * @parent 推送文字设置
+ * @type text
+ * @desc 推送的经验单位
+ * @default 经验
+ *
  * @param 困难度文字列表
  * @type text[]
  * @desc 多种困难度的文字列表，与数据库中 difficulty 的数字对应。
@@ -121,6 +162,7 @@
  * @help 
  * ======================================================================
  * Lagomoro新版任务系统 功能最强大的任务系统！
+ * https://github.com/Lagomoro/Lagomoro-Mission-MV
  * ----------------------------------------------------------------------
  * 帮助详情请参阅chm使用手册
  * ======================================================================
@@ -150,11 +192,19 @@
 // * 注册变量
 // ----------------------------------------------------------------------
 var Lagomoro = Lagomoro || {};
-Lagomoro.Mission = {};
+Lagomoro.Mission = Lagomoro.Mission || {};
 Lagomoro.Mission.Parameters = PluginManager.parameters('Lagomoro_Mission');
 // ----------------------------------------------------------------------
+Lagomoro.Mission.JSON               = "data/Mission.json";
 Lagomoro.Mission.PATH               = String(Lagomoro.Mission.Parameters['数据库存储路径']        || 'data/Lagomoro_Mission.xlsx');
-Lagomoro.Mission.TOAST              = Boolean(Lagomoro.Mission.Parameters['是否推送任务信息']     || true);
+Lagomoro.Mission.CANTOAST           = Boolean(Lagomoro.Mission.Parameters['是否推送任务信息']     || true);
+Lagomoro.Mission.TOAST              = Lagomoro.Mission.TOAST                                     || {};
+Lagomoro.Mission.TOAST.GETMIS       = String(Lagomoro.Mission.Parameters['获得任务时的文字']        || '获得任务：“%1”');
+Lagomoro.Mission.TOAST.COMPLETEMIS  = String(Lagomoro.Mission.Parameters['完成任务时的文字']        || '完成任务：“%1”');
+Lagomoro.Mission.TOAST.CHANGEMIS    = String(Lagomoro.Mission.Parameters['任务步骤改变时的文字']    || '%1(%2)');
+Lagomoro.Mission.TOAST.REWARDMIS    = String(Lagomoro.Mission.Parameters['获得奖励时的文字']       || '获得 %1 * %2');
+Lagomoro.Mission.TOAST.GOLD         = String(Lagomoro.Mission.Parameters['金币单位']              || '金币');
+Lagomoro.Mission.TOAST.EXP          = String(Lagomoro.Mission.Parameters['经验单位']              || '经验');
 Lagomoro.Mission.DIFFICULTY         = JSON.parse(Lagomoro.Mission.Parameters['困难度文字列表']    || "[\"简单\",\"一般\",\"中等\",\"困难\",\"超困难！\"]");
 Lagomoro.Mission.MENU               = Lagomoro.Mission.MENU                                     || {};
 Lagomoro.Mission.MENU.MENUNAME      = String(Lagomoro.Mission.Parameters['菜单显示名称']         || '任务');
@@ -177,20 +227,30 @@ Lagomoro.Mission.MAP.ALPHA          = Number(Lagomoro.Mission.Parameters['系统
 function Lagomoro_Xlsx() {throw new Error('This is a static class');};
 Lagomoro_Xlsx._category = [];
 Lagomoro_Xlsx._chapter = [];
+Lagomoro_Xlsx._listener = [];
 Lagomoro_Xlsx._data = [];
 Lagomoro_Xlsx.isLocalMode = function(){
     return StorageManager.isLocalMode();
 };
 Lagomoro_Xlsx.load = function(){
+    var path = require('path');
+    var fs = require('fs');
+    var base = path.join(path.dirname(process.mainModule.filename), Lagomoro.Mission.JSON);
+    var base2 = path.join(path.dirname(process.mainModule.filename), Lagomoro.Mission.PATH);
+    if(fs.existsSync(base) && !fs.existsSync(base2)){
+        this.loadExecuteJson();
+        return;
+    }
     var filetype = Lagomoro.Mission.PATH.split('.').pop();
     if(filetype === 'xlsx'||filetype === 'xls'||filetype === 'xlsm'||filetype === 'xlsb'){
         if(this.isLocalMode()){
             this.loadLocalXlsx();
+            this.saveExecuteJson();
         }else{
             this.loadWebXlsx();
         }
     }else if(filetype === 'json'){
-        this.loadJson(base);
+        this.loadJson();
     }
 };
 Lagomoro_Xlsx.loadLocalXlsx = function(){
@@ -201,7 +261,8 @@ Lagomoro_Xlsx.loadLocalXlsx = function(){
     var workbook = XLSX.readFile(base,{cellStyles:true});
     this.loadCategory(workbook.Sheets[workbook.SheetNames[0]]);
     this.loadChapter(workbook.Sheets[workbook.SheetNames[1]]);
-    for(var i = 2;i < workbook.SheetNames.length;i++){
+    this.loadListener(workbook.Sheets[workbook.SheetNames[2]]);
+    for(var i = 3;i < workbook.SheetNames.length;i++){
         this.loadData(workbook.Sheets[workbook.SheetNames[i]]);
     }
 };
@@ -220,7 +281,8 @@ Lagomoro_Xlsx.loadWebXlsx = function(){
                     var workbook = XLSX.read(new Uint8Array(xhr2.response),{type:'array',cellStyles:true});
                     Lagomoro_Xlsx.loadCategory(workbook.Sheets[workbook.SheetNames[0]]);
                     Lagomoro_Xlsx.loadChapter(workbook.Sheets[workbook.SheetNames[1]]);
-                    for(var i = 2;i < workbook.SheetNames.length;i++){
+                    Lagomoro_Xlsx.loadListener(workbook.Sheets[workbook.SheetNames[2]]);
+                    for(var i = 3;i < workbook.SheetNames.length;i++){
                         Lagomoro_Xlsx.loadData(workbook.Sheets[workbook.SheetNames[i]]);
                     }
                 }
@@ -230,15 +292,52 @@ Lagomoro_Xlsx.loadWebXlsx = function(){
     };
     xhr.send();
 };
+Lagomoro_Xlsx.loadExecuteJson = function(){
+    var path = require('path');
+    var filePath = path.join(path.dirname(process.mainModule.filename), Lagomoro.Mission.JSON);
+    var fs = require('fs');
+    if (fs.existsSync(filePath)) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', Lagomoro.Mission.JSON);
+        xhr.overrideMimeType('application/json');
+        xhr.onload = function() {
+            if (xhr.status < 400) {
+                var data = JSON.parse(LZString.decompressFromBase64(xhr.responseText) || {"category":[],"chapter":[],"listener":[],"data":[]});
+                Lagomoro_Xlsx._category = data.category["@a"];
+                Lagomoro_Xlsx._chapter = data.chapter["@a"];
+                Lagomoro_Xlsx._listener = data.listener["@a"];
+                Lagomoro_Xlsx._data = data.data["@a"];
+            }
+        };
+        xhr.send();
+    }
+};
+Lagomoro_Xlsx.saveExecuteJson = function(){
+    var json = {};
+    json.category = this._category;
+    json.chapter  = this._chapter;
+    json.listener = this._listener;
+    json.data     = this._data;
+    var data = LZString.compressToBase64(JsonEx.stringify(json));
+    var fs = require('fs');
+    var path = require('path');
+    var dirPath = path.join(path.dirname(process.mainModule.filename), "data/");
+    var filePath = path.join(path.dirname(process.mainModule.filename), Lagomoro.Mission.JSON);
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath);
+    }
+    fs.writeFileSync(filePath, data);
+};
 Lagomoro_Xlsx.loadJson = function(){
     var xhr = new XMLHttpRequest();
     xhr.open('GET', Lagomoro.Mission.PATH);
     xhr.overrideMimeType('application/json');
     xhr.onload = function() {
         if (xhr.status < 400) {
-            var data = JSON.parse(xhr.responseText || {"category":[],"chapter":[],"data":[]});
+            var data = JSON.parse(xhr.responseText || {"category":[],"chapter":[],"listener":[],"data":[]});
             Lagomoro_Xlsx._category = data.category;
             Lagomoro_Xlsx._chapter = data.chapter;
+            Lagomoro_Xlsx._listener = data.listener;
             Lagomoro_Xlsx._data = data.data;
         }
     };
@@ -265,6 +364,17 @@ Lagomoro_Xlsx.loadChapter = function(worksheet){
             "name":this.readXlsxCellValue(worksheet,'C'+linenumber,'string'),
             "description":this.readXlsxCellValue(worksheet,'D'+linenumber,'string'),
             "color":this.readXlsxCellColor(worksheet,'E'+linenumber)
+        })
+        linenumber ++;
+    }
+};
+Lagomoro_Xlsx.loadListener = function(worksheet){
+    var linenumber = 2;
+    while(!this.isXlsxEnd(worksheet,linenumber)){
+        this._listener.push({
+            "id":this.readXlsxCellValue(worksheet,'A'+linenumber,'string'),
+            "formula":this.readXlsxCellValue(worksheet,'B'+linenumber,'string'),
+            "value":this.readXlsxCellValue(worksheet,'C'+linenumber,'string'),
         })
         linenumber ++;
     }
@@ -444,13 +554,13 @@ Game_System.prototype.registerMission = function(dataClass) {
         if(!this._Lagomoro_Mission_Data[data[0]][data[1]]){
             this._Lagomoro_Mission_Data[data[0]][data[1]] = {
                 "hide" : readData.hidden,
-                "completed" : false,
+                "completed" : false
             }
             for(var i = 0;i < readData.childs.length;i++){
                 this._Lagomoro_Mission_Data[data[0]][data[1]][readData.childs[i].id] = {
                     "hide" : readData.childs[i].hidden,
-                    "variable" : (parseInt(readData.childs[i].variable).toString() === 'NaN' ? undefined : readData.childs[i].variable),
-                    "completed" : false,
+                    "variable" : (parseFloat(readData.childs[i].variable).toString() !== "NaN" ? readData.childs[i].variable : 0),
+                    "completed" : false
                 }
             }
         }else{
@@ -458,9 +568,27 @@ Game_System.prototype.registerMission = function(dataClass) {
                 if(!this._Lagomoro_Mission_Data[data[0]][data[1]][readData.childs[i].id]){
                     this._Lagomoro_Mission_Data[data[0]][data[1]][readData.childs[i].id] = {
                         "hide" : readData.childs[i].hidden,
-                        "variable" : (parseInt(readData.childs[i].variable).toString() === 'NaN' ? undefined : readData.childs[i].variable),
-                        "completed" : false,
+                        "variable" : (parseFloat(readData.childs[i].variable).toString() !== "NaN" ? readData.childs[i].variable : 0),
+                        "completed" : false
                     }
+                }
+            }
+        }
+    }
+};
+Game_System.prototype.resetMission = function(dataClass) {
+    var data = dataClass.split('.');
+    if(data.length !== 2) return;
+    var readData = Lagomoro_Xlsx.getData(dataClass);
+    if(readData){
+        if(this._Lagomoro_Mission_Data[data[0]] && this._Lagomoro_Mission_Data[data[0]][data[1]]){
+            this._Lagomoro_Mission_Data[data[0]][data[1]]["hide"] = readData.hidden;
+            this._Lagomoro_Mission_Data[data[0]][data[1]]["completed"] = false;
+            for(var i = 0;i < readData.childs.length;i++){
+                if(this._Lagomoro_Mission_Data[data[0]][data[1]][readData.childs[i].id]){
+                    this._Lagomoro_Mission_Data[data[0]][data[1]][readData.childs[i].id]["hide"] = readData.childs[i].hidden;
+                    this._Lagomoro_Mission_Data[data[0]][data[1]][readData.childs[i].id]["variable"] = (parseFloat(readData.childs[i].variable).toString() !== "NaN" ? readData.childs[i].variable : 0);
+                    this._Lagomoro_Mission_Data[data[0]][data[1]][readData.childs[i].id]["completed"] = false;
                 }
             }
         }
@@ -483,6 +611,7 @@ Game_System.prototype.missionExist = function(dataClass){
     var data = dataClass.split('.');
     if(data.length > 2 && (data[2] === 'hide' || data[2] === 'completed')) return false;
     var temp = this._Lagomoro_Mission_Data;
+    if(temp === null || temp === undefined) return false;
     while(data.length > 0){
         temp = temp[data.shift()];
         if(temp === null || temp === undefined) return false;
@@ -503,15 +632,16 @@ Game_System.prototype.missionData = function(dataClass){
 };
 Game_System.prototype.missionIsVariable = function(dataClass){
     if(dataClass.split('.').length !== 3) return false;
-    return parseInt(Lagomoro_Xlsx.getData(dataClass).variable).toString() === 'NaN';
+    var data = this.missionExist(dataClass) ? Lagomoro_Xlsx.getData(dataClass) : null;
+    return data ? (parseFloat(data.variable).toString() !== "NaN" ? true : false) : false;
 };
 Game_System.prototype.missionVariable = function(dataClass){
     var data = this.missionExist(dataClass) ? Lagomoro_Xlsx.getData(dataClass) : null;
-    return data ? (this.missionIsVariable(dataClass) ? eval(data.variable) : this.missionData(dataClass).variable) : 0;
+    return data ? (this.missionIsVariable(dataClass) ? this.missionData(dataClass).variable : this.missionEvalParse(this.missionData(dataClass).variable, data.variable)) : 0;
 };
 Game_System.prototype.missionStandard = function(dataClass){
     var data = Lagomoro_Xlsx.getData(dataClass);
-    return data ? (parseInt(data.standard).toString() === 'NaN' ? eval(data.standard) : data.standard) : 1;
+    return data ? (parseFloat(data.standard).toString() !== "NaN" ? data.standard : this.missionEvalParse(this.missionData(dataClass).variable, data.standard)) : 1;
 };
 Game_System.prototype.isMissionHide = function(dataClass){
     if(this.missionExist(dataClass) && (dataClass.split('.').length === 2 || dataClass.split('.').length === 3)){
@@ -573,9 +703,11 @@ Game_System.prototype.missionReward = function(dataClass){
             if(reward[i][0] === 'EXP'){
                 $gameParty.members().forEach(function(actor) {
                     actor.changeExp(actor.currentExp() + reward[i][1], true);
+                    $gameTemp.toast(actor.name() + " " + Lagomoro.Mission.TOAST.REWARDMIS.format(Lagomoro.Mission.TOAST.EXP, reward[i][1]));
                 }.bind(this));
             }else if(reward[i][0] === 'MONEY'){
                 $gameParty.gainGold(reward[i][1]);
+                $gameTemp.toast(Lagomoro.Mission.TOAST.REWARDMIS.format(Lagomoro.Mission.TOAST.GOLD, reward[i][1]));
             }else if(reward[i][0] === 'EVAL'){
                 eval(reward[i][1]);
             }else if(reward[i][0] === 'MISSION'){
@@ -584,10 +716,13 @@ Game_System.prototype.missionReward = function(dataClass){
                 this.missionEvent(reward[i][1]);
             }else if(reward[i][0] === 'ITEM'){
                 $gameParty.gainItem($dataItems[reward[i][1]], reward[i][2]);
+                $gameTemp.toast(Lagomoro.Mission.TOAST.REWARDMIS.format($dataItems[reward[i][1]].name, reward[i][1]));
             }else if(reward[i][0] === 'WEAPON'){
                 $gameParty.gainItem($dataWeapons[reward[i][1]], reward[i][2]);
+                $gameTemp.toast(Lagomoro.Mission.TOAST.REWARDMIS.format($dataWeapons[reward[i][1]].name, reward[i][1]));
             }else if(reward[i][0] === 'ARMOR'){
                 $gameParty.gainItem($dataArmors[reward[i][1]], reward[i][2]);
+                $gameTemp.toast(Lagomoro.Mission.TOAST.REWARDMIS.format($dataArmors[reward[i][1]].name, reward[i][1]));
             }
         }
     }
@@ -601,12 +736,14 @@ Game_System.prototype.missionComplete = function(dataClass){
         if(dataClass.split('.').length === 2){
             if(!this.missionData(dataClass).completed){
                 this.missionReward(dataClass);
+                $gameTemp.toast(Lagomoro.Mission.TOAST.COMPLETEMIS.format(Lagomoro_Xlsx.getData(dataClass).name));
             }
             this._Lagomoro_Mission_Data[data[0]][data[1]].completed = true;
         }
         if(dataClass.split('.').length === 3){
             if(Lagomoro_Xlsx.getData(dataClass).event){
                 this.missionEvent(Lagomoro_Xlsx.getData(dataClass).event);
+                $gameTemp.toast(Lagomoro.Mission.TOAST.COMPLETEMIS.format(Lagomoro_Xlsx.getData(dataClass).name));
             }
             this._Lagomoro_Mission_Data[data[0]][data[1]][data[2]].completed = true;
         }
@@ -720,7 +857,7 @@ Game_System.prototype.testAllMission = function() {
                 for(var key_c in this._Lagomoro_Mission_Data[key_a][key_b]){
                     if((key_c !== 'hide' && key_c !== 'completed') && !this.isMissionCompleted(key_a+'.'+key_b+'.'+key_c)){
                         pass = false;
-                        return;
+                        break;
                     }
                 }
                 if(pass && !this.isMissionHide(key_a+'.'+key_b+'.'+key_c) && this.isMissionUpfrontCompleted(key_a+'.'+key_b+'.'+key_c)){
@@ -753,18 +890,51 @@ Game_System.prototype.getmissionStatus = function(dataClass) {
     return 0
 };
 // ======================================================================
+// * 任务监听处理
+// ======================================================================
+Game_System.prototype.appendListener = function(formula, count) {
+    var listener;
+    var status;
+    count = count || 1;
+    for(i = 0; i < Lagomoro_Xlsx._listener.length; i++){
+        listener = Lagomoro_Xlsx._listener[i];
+        status = this.getmissionStatus(listener.id);
+        if((status === 3 || status === 4) && formula === listener.formula){
+            this.mission_addrate(listener.id, (parseFloat(listener.value).toString() !== "NaN" ? this.missionEvalParse(this.missionData(listener.id).variable, listener.value) : listener.value) * count);
+        }
+    }
+}
+// ======================================================================
+// * 任务公式处理
+// ======================================================================
+Game_System.prototype.missionEvalParse = function(value, formula) {
+    var G = $gameParty.gold();
+    var V = function(variableId){return $gameVariables.value(variableId)};
+    var S = function(switchId){return $gameSwitches.value(switchId) ? 1 : 0};
+    var Gold = G,Variable = V,Switch = S,GOLD = G,VARIABLE = V, SWITCH = S;
+    var I = function(itemId){return $gameParty.numItems($dataItems[itemId])};
+    var W = function(weaponId){return $gameParty.numItems($dataWeapons[weaponId])};
+    var A = function(armorId){return $gameParty.numItems($dataArmors[armorId])};
+    var Item = I,Weapon = W,Armor = A,ITEM = I,WEAPON = W,ARMOR = A;
+    var LV = function(actorId){return $gameActors.actor(actorId)._level};
+    var Level = LV,LEVEL = LV;
+    var T = value;
+    var Temp = T,TEMP = T;
+    return eval(formula);
+}
+// ======================================================================
 // * 任务相关接口
 // ======================================================================
 //增加任务完成度（仅对任务步骤有效）
 Game_System.prototype.mission_addrate = function(dataClass,rate){
-    if(this.missionExist(dataClass) && !this.missionIsVariable(dataClass)){
+    if(this.missionExist(dataClass)){
         var data = dataClass.split('.');
         this._Lagomoro_Mission_Data[data[0]][data[1]][data[2]].variable += (rate ? rate : 1);
     }
 };
 //设置任务完成度（仅对任务步骤有效）
 Game_System.prototype.mission_setrate = function(dataClass,rate){
-    if(this.missionExist(dataClass) && !this.missionIsVariable(dataClass)){
+    if(this.missionExist(dataClass)){
         var data = dataClass.split('.');
         this._Lagomoro_Mission_Data[data[0]][data[1]][data[2]].variable = rate;
     }
@@ -789,6 +959,10 @@ Game_System.prototype.mission_register = function(dataClass,all){
         this.registerMission(dataClass);
     }
 };
+//重置任务
+Game_System.prototype.mission_reset = function(dataClass){
+    this.resetMission(dataClass);
+};
 //检测任务是否达成（包含完成）
 Game_System.prototype.mission_iscomplete = function(dataClass){
     return this.isMissionCompleted(dataClass) || this.isMissionComplete(dataClass);
@@ -801,7 +975,7 @@ Game_System.prototype.mission_iscompleted = function(dataClass){
 Game_System.prototype.mission_isdone = function(dataClass){
     var temp = this.isMissionCompleted(dataClass) || this.isMissionComplete(dataClass);
     if(temp) this.missionComplete(dataClass);
-    return this.isMissionUpfrontCompleted(dataClass);
+    return temp;
 };
 //检测任务的前置任务是否全部达成
 Game_System.prototype.mission_isfrontComplete = function(dataClass){
@@ -856,7 +1030,7 @@ Game_Temp.prototype.initialize = function() {
     this._toastlist = [];
 };
 Game_Temp.prototype.toast = function(text, color) {
-    if(!Lagomoro.Mission.TOAST) return;
+    if(!Lagomoro.Mission.CANTOAST) return;
 	var sprite = new Sprite();
 	sprite.bitmap = new Bitmap(Graphics.boxWidth, 36);
 	sprite.bitmap.textColor = (color ? color : '#ffff00');
@@ -934,6 +1108,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
             case '完成任务':case 'complete':$gameSystem.mission_complete(args[1],args[2]);break;
             case '设置隐藏':case 'sethidden':$gameSystem.mission_setHideen(args[1],Boolean(args[2]));break;
             case '注册任务':case 'register':$gameSystem.mission_register(args[1],args[2]);break;
+            case '重置任务':case 'reset':$gameSystem.mission_reset(args[1]);break;
             case '推送消息':case 'toast':$gameTemp.toast(args[1],args[2] || '#FFFFFF');break;
             case '追踪任务':case 'trace':$gameSystem.mission_trace(args[1]);break;
             case '打开菜单':case 'menu':SceneManager.push(Scene_Lagomoro_Mission);break;
@@ -1602,7 +1777,7 @@ Window_Lagomoro_Mission.prototype.windowHeight = function() {return Graphics.box
 Window_Lagomoro_Mission.prototype.update = function() {
     Window_Base.prototype.update.call(this);
     this._updateTime ++;
-    if(this._updateTime === 30 && $gameSystem._Lagomoro_Mission_Mapshow){
+    if(this._updateTime === 15 && $gameSystem._Lagomoro_Mission_Mapshow){
         this.refresh();
         this._updateTime = 0;
     }

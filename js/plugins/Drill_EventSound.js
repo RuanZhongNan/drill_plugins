@@ -223,7 +223,7 @@ var _drill_ESo_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_ESo_pluginCommand.call(this, command, args);
 	/*-----------------声音距离化------------------*/
-	if (command === '>事件的声音') { // >事件的声音 : 开启声音距离化
+	if( command === ">事件的声音" ){ // >事件的声音 : 开启声音距离化
 		if(args.length == 2){
 			var type = String(args[1]);
 			if( type == "开启声音距离化" ){
@@ -248,7 +248,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	}
 	
 	/*-----------------声音中断------------------*/
-	if (command === '>事件的声音') { // >事件的声音 : 本事件 : 立即中断SE
+	if( command === ">事件的声音" ){ // >事件的声音 : 本事件 : 立即中断SE
 		if(args.length == 4){
 			var unit = String(args[1]);
 			var type = String(args[3]);
@@ -280,7 +280,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			
 		}
 	}
-}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_ESo_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventSound.js 物体 - 事件的声音】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
+};
 
 //=============================================================================
 // ** 变量初始化

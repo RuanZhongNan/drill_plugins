@@ -170,7 +170,7 @@ if( !Utils.RPGMAKER_VERSION || Utils.RPGMAKER_VERSION < "1.5.0" ){
 var _drill_EDu_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_EDu_pluginCommand.call(this, command, args);
-	if (command === '>事件复制器') {
+	if( command === ">事件复制器" ){
 		if(args.length >= 8){
 			var type = String(args[1]);
 			var temp1 = Number(args[3]);
@@ -180,6 +180,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			
 			if( type == "复制本图事件" ){
 				if( pos == "指定位置" ){
+					if( $gameMap.drill_EDu_isEventExist( temp1 ) == false ){ return; }
 					var data = JSON.parse(JSON.stringify($gameMap.event(temp1).event()));
 					data['x'] = temp2;
 					data['y'] = temp3;
@@ -189,6 +190,8 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					if($gameSystem._drill_EDu_is_opacity){ e._opacity = 0; }
 				}
 				if( pos == "事件位置" ){
+					if( $gameMap.drill_EDu_isEventExist( temp1 ) == false ){ return; }
+					if( $gameMap.drill_EDu_isEventExist( temp2 ) == false ){ return; }
 					var data = JSON.parse(JSON.stringify($gameMap.event(temp1).event()));
 					data['x'] = $gameMap.event(temp2)._x;
 					data['y'] = $gameMap.event(temp2)._y;
@@ -226,6 +229,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					if( $gameTemp.drill_EDu_hasMapId( temp1 ) ){
 						var map_data = DataManager.drill_getMapData(temp1);
 						if( map_data ){
+							if( $gameMap.drill_EDu_isEventExist( temp3 ) == false ){ return; }
 							var data = JSON.parse(JSON.stringify( map_data.events[temp2] ));
 							data['x'] = $gameMap.event(temp3)._x;
 							data['y'] = $gameMap.event(temp3)._y;
@@ -255,6 +259,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 事件检查
+//==============================
+Game_Map.prototype.drill_EDu_isEventExist = function( e_id ){
+	if( e_id == 0 ){ return false; }
+	
+	var e = this.event( e_id );
+	if( e == undefined ){
+		alert( "【Drill_EventDuplicator.js 物体 - 事件复制器】\n" +
+				"插件指令错误，当前地图并不存在id为"+e_id+"的事件。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

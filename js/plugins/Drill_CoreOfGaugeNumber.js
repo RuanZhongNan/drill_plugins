@@ -704,6 +704,10 @@
 //				->时间符号			x
 //				->弹出数字 ？ （扣除超过某个量，直接扣除，弹出一个数字？）
 //				->粒子 ？
+//		
+//		
+//		★配置参数结构体如下：
+//			~struct~GaugeNumber:					参数数字样式
 //				
 //		★私有类如下：
 //			* Drill_COGN_NumberSprite【参数数字】
@@ -732,13 +736,18 @@
 	
 	//==============================
 	// * 变量获取 - 数字样式（必须写在前面）
+	//				（~struct~GaugeNumber）
 	//
-	//				说明：函数未定义下列参数，若不定义则为默认值： 
-	//						x, y, visible, xxx_file
+	//				说明：函数未定义白色括号中的参数，需要子插件定义。若不定义则为默认值。
 	//==============================
 	DrillUp.drill_COGN_initStyle = function( dataFrom ) {
 		var data = {};
 		// > 主体
+		//		data['x']【平移x（非实时赋值）】
+		//		data['y']【平移y（非实时赋值）】
+		//		data['visible']【可见】
+		//		data['symbol_src_file']【资源文件夹】
+		//		data['symbolEx_src_file']【资源文件夹】
 		data['rotation'] = Number( dataFrom["整体旋转角度"] || 0 );
 		data['symbol_src'] = String( dataFrom["资源-基本符号"] || "" );
 		data['symbolEx_src'] = String( dataFrom["资源-扩展符号"] || "" );
@@ -756,6 +765,8 @@
 		data['rolling_mode'] = String( dataFrom["滚动模式"] || "弹性滚动");
 		data['rolling_speed'] = Number( dataFrom["弹性变化速度"] || 10.0 );
 		// > 额定值
+		//		data['specified_symbol_src_file']【资源文件夹】
+		//		data['specified_symbolEx_src_file']【资源文件夹】
 		data['specified_enable'] = String( dataFrom["是否启用额定值"] || "false") === "true";
 		data['specified_visible'] = String( dataFrom["是否显示额定值"] || "false") === "true";
 		data['specified_conditionNum'] = Number( dataFrom["默认额定值"] || 100 );
@@ -798,7 +809,7 @@
 // **				this.addChild( temp_sprite );
 // **		说明：1.sprite贴在任意地方都可以。
 // **			  2.你可以先取【DrillUp.g_COGN_list样式数据】再赋值各个额外属性，也可以【直接new】全参数自己建立控制。
-// **			  3.需要实时调用函数.drill_reflashValue(value)改变参数数字的值。
+// **			  3.需要实时调用函数.drill_COGN_reflashValue(value)改变参数数字的值。
 //=============================================================================
 //==============================
 // * 参数数字 - 定义
@@ -872,7 +883,6 @@ Drill_COGN_NumberSprite.prototype.drill_initData = function() {
 	if( data['symbolEx_src'] == undefined ){ data['symbolEx_src'] = "" };								//主体 - 资源
 	if( data['symbolEx_src_file'] == undefined ){ data['symbolEx_src_file'] = "img/Special__number/" };	//主体 - 资源文件夹
 	
-	if( data['symbol_hasMax'] == undefined ){ data['symbol_hasMax'] = false };							//符号 - 是否包含最大值
 	if( data['symbol_hasNegative'] == undefined ){ data['symbol_hasNegative'] = true };					//符号 - 是否显示负号
 	if( data['symbol_prefix'] == undefined ){ data['symbol_prefix'] = "" };								//符号 - 额外符号前缀
 	if( data['symbol_suffix'] == undefined ){ data['symbol_suffix'] = "" };								//符号 - 额外符号后缀

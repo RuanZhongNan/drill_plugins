@@ -3,8 +3,12 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        UI - 高级BOSS框的滤镜效果[扩展]
+ * @plugindesc [v1.4]        UI - 高级BOSS框的滤镜效果[扩展]
  * @author Drill_up
+ * 
+ * @Drill_LE_param "滤镜条件-%d"
+ * @Drill_LE_parentKey ""
+ * @Drill_LE_var "DrillUp.g_XGBF_condition_list_length"
  *
  *
  * @help  
@@ -77,6 +81,8 @@
  * [v1.3]
  * 分离了滤镜核心，大幅度优化了底层结构。
  * 添加了填充滤镜功能，降低了模糊滤镜的性能消耗。
+ * [v1.4]
+ * 添加了最大值编辑的支持。
  *
  *
  * @param BOSS头像是否与敌人滤镜同步

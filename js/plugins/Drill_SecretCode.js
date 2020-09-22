@@ -3,8 +3,12 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        系统 - 秘籍输入器
+ * @plugindesc [v1.3]        系统 - 秘籍输入器
  * @author Drill_up
+ * 
+ * @Drill_LE_param "秘籍-%d"
+ * @Drill_LE_parentKey "---秘籍组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_SCo_list_length"
  *
  * @help  
  * =============================================================================
@@ -13,26 +17,37 @@
  * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
- * 对鼠标、键盘、手柄有效。触屏不支持。
- * 你可以使得根据指定顺序，按键，并触发指定的公共事件。
- * 公共事件为你在rmmv中内置的特殊秘籍。
+ * 输入指定特殊序列的 鼠标/键盘/手柄 按键，触发指定的公共事件。
  * ★★必须放在所有"基于"的插件后面★★
  *
  * -----------------------------------------------------------------------------
  * ----插件扩展
  * 该插件 不能 单独使用，必须基于下面插件才能运行。
  * 基于：
- *   - Drill_CoreOfInput 系统 - 输入设备核心
+ *   - Drill_CoreOfInput          系统 - 输入设备核心
+ * 被扩展：
+ *   - Drill_LayerCommandThread   地图 - 多线程
+ *     多线程插件可以使得秘籍的公共事件执行 串行/并行 操作。
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
  * 1.插件的作用域：地图界面、战斗界面。
  *   秘籍输入只在 地图、战斗 有效。
- * 2.战斗场景中，出现选择窗口时，是不能执行公共事件的，公共事件会在选择
- *   窗口结束后执行。
- * 3.鼠标滚轮的上下滚动不计算在序列内。
- * 4.注意秘籍的键盘按键，不要出现菜单键。进入菜单后，按键会被重新统计。
- * 5.你可以设置剧情中指定的某个地点的特殊开关，必须输入秘籍才能进入。
+ * 按键监听：
+ *   (1.对鼠标、键盘、手柄有效。触屏不支持。
+ *   (2.鼠标滚轮的上下滚动不计算在序列内。
+ *   (3.注意秘籍的键盘按键，不要出现菜单键。
+ *      进入菜单返回地图后，按键会被重新统计。
+ * 公共事件：
+ *   (1.地图公共事件的执行可通过 地图-多线程 插件来控制。
+ *      可选择串行与并行，具体可以看看"关于公共事件与并行.docx"。
+ *   (2.战斗界面中，公共事件只能串行执行，当弹出战斗选择窗口时，
+ *      指令都不能立即生效。
+ *   (3.注意，对话框事件指令 是特殊的指令体，只要执行对话框，就会强
+ *      制串行，阻塞其他所有事件的线程。
+ * 设计：
+ *   (1.你可以设置剧情中指定的某个地点的特殊开关，必须输入秘籍才能
+ *      进入。
  * 
  * -----------------------------------------------------------------------------
  * ----可选设定
@@ -70,7 +85,9 @@
  * 修改了插件的内部结构。
  * [v1.2]
  * 修复了地图界面中按键不是很灵的问题。优化了插件性能。
- *
+ * [v1.3]
+ * 添加了 地图界面 中串行并行的支持。
+ * 
  *
  * @param ---秘籍组 1至20---
  * @default
@@ -337,6 +354,15 @@
  * @desc 下列的触发条件满足后，执行的公共事件。
  * @default 0
  *
+ * @param 公共事件执行方式
+ * @type select
+ * @option 串行
+ * @value 串行
+ * @option 并行
+ * @value 并行
+ * @desc 公共事件的执行方式。战斗界面中没有并行，只能串行。
+ * @default 串行
+ *
  * @param 是否启用鼠标触发
  * @type boolean
  * @on 启用
@@ -438,34 +464,38 @@
 //=============================================================================
 // ** 变量获取
 //=============================================================================
-　　var Imported = Imported || {};
-　　Imported.Drill_SecretCode = true;
-　　var DrillUp = DrillUp || {}; 
-    DrillUp.parameters = PluginManager.parameters('Drill_SecretCode');
+	var Imported = Imported || {};
+	Imported.Drill_SecretCode = true;
+	var DrillUp = DrillUp || {}; 
+	DrillUp.parameters = PluginManager.parameters('Drill_SecretCode');
 	
 	DrillUp.g_SCo_list_length = 40;
 	DrillUp.g_SCo_list = [];
-	
 	for (var i = 0; i < DrillUp.g_SCo_list_length; i++) {
-		if( DrillUp.parameters['秘籍-' + String(i+1) ] != "" ){
-			DrillUp.g_SCo_list[i] = JSON.parse(DrillUp.parameters['秘籍-' + String(i+1) ]);
+		if( DrillUp.parameters["秘籍-" + String(i+1) ] != undefined &&
+			DrillUp.parameters["秘籍-" + String(i+1) ] != "" ){
+			DrillUp.g_SCo_list[i] = JSON.parse(DrillUp.parameters["秘籍-" + String(i+1) ]);
 			DrillUp.g_SCo_list[i]['enable'] = String(DrillUp.g_SCo_list[i]["初始是否开启"] || "true") == "true";
-			DrillUp.g_SCo_list[i]['common_event'] = Number(DrillUp.g_SCo_list[i]["执行的公共事件"]);
-			DrillUp.g_SCo_list[i]['mouse_enable'] = String(DrillUp.g_SCo_list[i]["是否启用鼠标触发"] || "true") == "true";
-			if( DrillUp.g_SCo_list[i]['鼠标触发顺序'] ){
-				DrillUp.g_SCo_list[i]['mouse_seq'] = JSON.parse(DrillUp.g_SCo_list[i]['鼠标触发顺序']);
+			DrillUp.g_SCo_list[i]['commonEventId'] = Number(DrillUp.g_SCo_list[i]["执行的公共事件"] || 0);
+			DrillUp.g_SCo_list[i]['pipeType'] = String(DrillUp.g_SCo_list[i]["公共事件执行方式"] || "串行");
+			DrillUp.g_SCo_list[i]['mouse_enable'] = String(DrillUp.g_SCo_list[i]["是否启用鼠标触发"] || "false") == "true";
+			if( DrillUp.g_SCo_list[i]["鼠标触发顺序"] != undefined &&
+				DrillUp.g_SCo_list[i]["鼠标触发顺序"] != "" ){
+				DrillUp.g_SCo_list[i]['mouse_seq'] = JSON.parse(DrillUp.g_SCo_list[i]["鼠标触发顺序"]);
 			}else{
 				DrillUp.g_SCo_list[i]['mouse_seq'] = [];
 			}
-			DrillUp.g_SCo_list[i]['key_enable'] = String(DrillUp.g_SCo_list[i]["是否启用键盘触发"] || "true") == "true";
-			if( DrillUp.g_SCo_list[i]['键盘触发顺序'] ){
-				DrillUp.g_SCo_list[i]['key_seq'] = JSON.parse(DrillUp.g_SCo_list[i]['键盘触发顺序']);
+			DrillUp.g_SCo_list[i]['key_enable'] = String(DrillUp.g_SCo_list[i]["是否启用键盘触发"] || "false") == "true";
+			if( DrillUp.g_SCo_list[i]["键盘触发顺序"] != undefined &&
+				DrillUp.g_SCo_list[i]["键盘触发顺序"] != "" ){
+				DrillUp.g_SCo_list[i]['key_seq'] = JSON.parse(DrillUp.g_SCo_list[i]["键盘触发顺序"]);
 			}else{
 				DrillUp.g_SCo_list[i]['key_seq'] = [];
 			}
-			DrillUp.g_SCo_list[i]['pad_enable'] = String(DrillUp.g_SCo_list[i]["是否启用手柄触发"] || "true") == "true";
-			if( DrillUp.g_SCo_list[i]['手柄触发顺序'] ){
-				DrillUp.g_SCo_list[i]['pad_seq'] = JSON.parse(DrillUp.g_SCo_list[i]['手柄触发顺序']);
+			DrillUp.g_SCo_list[i]['pad_enable'] = String(DrillUp.g_SCo_list[i]["是否启用手柄触发"] || "false") == "true";
+			if( DrillUp.g_SCo_list[i]["手柄触发顺序"] != undefined &&
+				DrillUp.g_SCo_list[i]["手柄触发顺序"] != "" ){
+				DrillUp.g_SCo_list[i]['pad_seq'] = JSON.parse(DrillUp.g_SCo_list[i]["手柄触发顺序"]);
 			}else{
 				DrillUp.g_SCo_list[i]['pad_seq'] = [];
 			}
@@ -479,6 +509,7 @@
 //=============================================================================
 if( Imported.Drill_CoreOfInput ){
 	
+	
 //=============================================================================
 // ** 插件指令
 //=============================================================================
@@ -490,7 +521,6 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 		if( args.length == 2 ){
 			var temp1 = Number(args[1]) - 1;
 			$gameSystem._drill_SCo[temp1]['enable'] = true;
-			
 		}
 	};
 	if (command === ">关闭秘籍")  {
@@ -533,55 +563,89 @@ Scene_Map.prototype.update = function() {
 // * 帧刷新 - 输入监听
 //==============================
 Scene_Map.prototype.drill_SCo_updateInput = function() {
-	
 	for(var i=0; i<$gameSystem._drill_SCo.length; i++){
 		var data = $gameSystem._drill_SCo[i];
-		if( data['enable'] == true ){
-			if( data['mouse_enable'] == true ){
-				if( data['mouse_cur'] >= data['mouse_seq'].length ){
-					$gameTemp.reserveCommonEvent( data['common_event'] );
+		if( data['enable'] == false ){ continue; }
+		
+		// > 鼠标监听
+		if( data['mouse_enable'] == true ){
+			if( data['mouse_seq'].length == 0 ){ continue; }
+			// > 序列完成
+			if( data['mouse_cur'] >= data['mouse_seq'].length ){
+				this.drill_SCo_doCommonEvent( data );
+				data['mouse_cur'] = 0;
+				continue;
+			}
+			// > 序列+1
+			if( this.drill_SCo_isAnyOnMouse() ){
+				var seq = data['mouse_seq'][ Math.floor(data['mouse_cur']) ];
+				if( this.drill_SCo_isOnMouse( seq ) ){
+					data['mouse_cur'] += 1;
+				}else{
 					data['mouse_cur'] = 0;
-					continue;
-				}
-				if( this.drill_SCo_isAnyOnMouse() ){
-					var seq = data['mouse_seq'][ Math.floor(data['mouse_cur']) ];
-					if( this.drill_SCo_isOnMouse( seq ) ){
-						data['mouse_cur'] += 1;
-					}else{
-						data['mouse_cur'] = 0;
-					}
 				}
 			}
-			if( data['key_enable'] == true ){
-				if( data['key_cur'] >= data['key_seq'].length ){
-					$gameTemp.reserveCommonEvent( data['common_event'] );
+		}
+		// > 键盘监听
+		if( data['key_enable'] == true ){
+			if( data['key_seq'].length == 0 ){ continue; }
+			// > 序列完成
+			if( data['key_cur'] >= data['key_seq'].length ){
+				this.drill_SCo_doCommonEvent( data );
+				data['key_cur'] = 0;
+				continue;
+			}
+			// > 序列+1
+			if( Input.drill_isAnyKeyReleased() ){
+				var seq = data['key_seq'][ Math.floor(data['key_cur']) ];
+				if( Input.drill_isKeyReleased( String(seq).toLowerCase() ) ){
+					data['key_cur'] += 1;
+				}else{
 					data['key_cur'] = 0;
-					continue;
-				}
-				if( Input.drill_isAnyKeyReleased() ){
-					var seq = data['key_seq'][ Math.floor(data['key_cur']) ];
-					if( Input.drill_isKeyReleased( String(seq).toLowerCase() ) ){
-						data['key_cur'] += 1;
-					}else{
-						data['key_cur'] = 0;
-					}
 				}
 			}
-			if( data['pad_enable'] == true ){
-				if( data['pad_cur'] >= data['pad_seq'].length ){
-					$gameTemp.reserveCommonEvent( data['common_event'] );
+		}
+		// > 手柄监听
+		if( data['pad_enable'] == true ){
+			if( data['pad_seq'].length == 0 ){ continue; }
+			// > 序列完成
+			if( data['pad_cur'] >= data['pad_seq'].length ){
+				this.drill_SCo_doCommonEvent( data );
+				data['pad_cur'] = 0;
+				continue;
+			}
+			// > 序列+1
+			if( Input.drill_isAnyPadReleased() ){
+				var seq = data['pad_seq'][ Math.floor(data['pad_cur']) ];
+				if( Input.drill_isPadReleased( String(seq).toUpperCase() ) ){
+					data['pad_cur'] += 1;
+				}else{
 					data['pad_cur'] = 0;
-					continue;
-				}
-				if( Input.drill_isAnyPadReleased() ){
-					var seq = data['pad_seq'][ Math.floor(data['pad_cur']) ];
-					if( Input.drill_isPadReleased( String(seq).toUpperCase() ) ){
-						data['pad_cur'] += 1;
-					}else{
-						data['pad_cur'] = 0;
-					}
 				}
 			}
+		}
+		
+	}
+}
+//==============================
+// * 帧刷新 - 执行公共事件
+//==============================
+Scene_Map.prototype.drill_SCo_doCommonEvent = function( data ){
+	// > 战斗界面的公共事件
+	if( SceneManager._scene.constructor.name === "Scene_Battle" ){
+		$gameTemp.reserveCommonEvent( data['commonEventId'] );
+	}
+	// > 地图界面的公共事件
+	if( SceneManager._scene.constructor.name === "Scene_Map" ){
+		if( Imported.Drill_LayerCommandThread ){
+			var e_data = {
+				'type':"公共事件",
+				'pipeType': data['pipeType'],
+				'commonEventId': data['commonEventId'],
+			};
+			$gameMap.drill_LCT_addPipeEvent( e_data );
+		}else{
+			$gameTemp.reserveCommonEvent( data['commonEventId'] );
 		}
 	}
 }
@@ -627,6 +691,10 @@ Scene_Battle.prototype.update = function() {
 //==============================
 Scene_Battle.prototype.drill_SCo_updateInput = Scene_Map.prototype.drill_SCo_updateInput;
 //==============================
+// * 帧刷新 - 执行公共事件
+//==============================
+Scene_Battle.prototype.drill_SCo_doCommonEvent = Scene_Map.prototype.drill_SCo_doCommonEvent;
+//==============================
 // * 帧刷新 - 鼠标按下监听
 //==============================
 Scene_Battle.prototype.drill_SCo_isAnyOnMouse = Scene_Map.prototype.drill_SCo_isAnyOnMouse;
@@ -644,7 +712,7 @@ Scene_Battle.prototype.drill_SCo_isOnMouse = Scene_Map.prototype.drill_SCo_isOnM
 		Imported.Drill_SecretCode = false;
 		alert(
 			"【Drill_SecretCode.js 系统 - 秘籍输入器】\n缺少基础插件，去看看下列插件是不是 未添加 / 被关闭 / 顺序不对："+
-			"\n- Drill_CoreOfInput 系统-输入设备核心"
+			"\n- Drill_CoreOfInput 系统-输入设备核心" 
 		);
 }
 

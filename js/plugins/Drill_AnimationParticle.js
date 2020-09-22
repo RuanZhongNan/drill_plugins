@@ -3,9 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        动画 - 多层动画粒子
+ * @plugindesc [v1.4]        动画 - 多层动画粒子
  * @author Drill_up
- *
+ * 
+ * @Drill_LE_param "粒子-%d"
+ * @Drill_LE_parentKey "---粒子组%d至%d---"
+ * @Drill_LE_var "DrillUp.g_APa_length"
+ * 
+ * 
  * @help
  * =============================================================================
  * +++ Drill_AnimationParticle +++
@@ -80,6 +85,8 @@
  * 修改了内部结构。
  * [v1.3]
  * 修改了插件关联的资源文件夹。
+ * [v1.4]
+ * 添加了最大值编辑的支持。
  *
  *
  * @param ---粒子组 1至20---
@@ -1535,10 +1542,10 @@
 　　var DrillUp = DrillUp || {}; 
 	DrillUp.parameters = PluginManager.parameters('Drill_AnimationParticle');
 	
-	DrillUp.g_APa_max = 200;
+	DrillUp.g_APa_length = 200;
 	DrillUp.g_APa = [];
 	
-	for (var i = 0; i < DrillUp.g_APa_max; i++) {
+	for (var i = 0; i < DrillUp.g_APa_length; i++) {
 		if( DrillUp.parameters['粒子-' + String(i+1) ] != "" ){
 			DrillUp.g_APa[i] = JSON.parse(DrillUp.parameters['粒子-' + String(i+1) ]);
 			DrillUp.g_APa[i]['id'] = i+1;
@@ -1767,6 +1774,7 @@ Spriteset_Map.prototype.createCharacters = function() {
 	
 	if( !this._drill_anim_charBack ){		//图像后面层
 		this._drill_anim_charBack = new Sprite();
+		this._drill_anim_charBack.z = 0.75;		//（在中层上面，事件后面）
 		this._tilemap.addChild(this._drill_anim_charBack);
 	}
 	
