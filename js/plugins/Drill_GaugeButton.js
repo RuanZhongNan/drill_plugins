@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        地图UI - 地图按钮集
+ * @plugindesc [v1.1]        地图UI - 地图按钮集
  * @author Drill_up
  * 
  * @Drill_LE_param "按钮-%d"
@@ -111,6 +111,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 优化了内部结构，修复了镜头缩放时按钮被缩小的bug。
  * 
  *
  *
@@ -475,9 +477,18 @@
 //				->功能按钮
 //					->自定义公共事件
 //					->按钮移动
+//		
+//		
+//		★配置参数结构体如下：
+//			~struct~DrillGBuBtn:		按钮参数
+//		
+//		
+//		★私有类如下：
+//			* Drill_GBu_ButtonSprite		状态按钮
 //
 //		★必要注意事项：
 //			1.插件的图片层级与多个插件共享。【必须自写 层级排序 函数】
+//			2.【镜头兼容】该插件的按钮如果放在 图片层 ，需要对其进行相关的镜头缩放控制。
 //
 //		★其它说明细节：
 //			1.鼠标是个很复杂的持续性动作，在update中会持续触发。需要加锁。
@@ -499,6 +510,7 @@
 	
 	//==============================
 	// * 变量获取 - 按钮参数（必须写在前面）
+	//				（~struct~DrillGBuBtn）
 	//==============================
 	DrillUp.drill_GBu_initParam = function( dataFrom ) {
 		var data = {};
@@ -535,7 +547,6 @@
 		
 		return data;
 	}
-	
 	
 	/*-----------------按钮集------------------*/
 	DrillUp.g_GBu_button_length = 20;
@@ -617,17 +628,14 @@ var _drill_GBu_initialize = Game_System.prototype.initialize;
 Game_System.prototype.initialize = function() {
 	_drill_GBu_initialize.call(this);
 	
-	this._drill_GBu_dataTank = [];						//按钮数据容器
+	this._drill_GBu_dataTank = [];							//按钮数据容器
 	for( var i=0; i < DrillUp.g_GBu_button.length; i++ ){
 		var temp_data = DrillUp.g_GBu_button[i];
 		if( temp_data == null ){
 			this._drill_GBu_dataTank[i] = null;
 			continue;
 		}
-		
 		var data = JSON.parse(JSON.stringify( temp_data ));	//深拷贝数据
-		data['gif_time'] = 0;		
-		
 		this._drill_GBu_dataTank[i] = data;
 	}
 }
@@ -648,7 +656,7 @@ Scene_Map.prototype.processMapTouch = function() {
 //==============================
 Scene_Map.prototype.drill_GBu_isOnGaugeButton = function() {	
 	for(var i=0; i < this._drill_GBu_spriteTank.length; i++){
-		if( this.drill_GBu_isHover( i ) ){
+		if( this.drill_GBu_isHoverInTank( i ) ){
 			return true;
 		}
 	}
@@ -665,7 +673,7 @@ Scene_Map.prototype.drill_GBu_isOnGaugeButton = function() {
 var _drill_GBu_layer_createPictures = Spriteset_Map.prototype.createPictures;
 Spriteset_Map.prototype.createPictures = function() {
 	_drill_GBu_layer_createPictures.call(this);		//rmmv图片 < 图片层 < rmmv对话框
-	if( !this._drill_mapPicArea ){
+	if(!this._drill_mapPicArea ){
 		this._drill_mapPicArea = new Sprite();
 		this.addChild(this._drill_mapPicArea);	
 	}
@@ -709,7 +717,7 @@ Scene_Map.prototype.initialize = function() {
 var _drill_GBu_map_createSpriteset = Scene_Map.prototype.createSpriteset;
 Scene_Map.prototype.createSpriteset = function() {
 	_drill_GBu_map_createSpriteset.call(this);
-	this.drill_GBu_createBitmap();			//创建bitmap对象
+	
 	this.drill_GBu_createButton();			//创建按钮
 }
 //==============================
@@ -719,55 +727,11 @@ var _drill_GBu_map_update = Scene_Map.prototype.update;
 Scene_Map.prototype.update = function() {	
 	_drill_GBu_map_update.call(this);
 	if( this.isActive() ){
-		this.drill_GBu_updateButtonBitmap();		//按钮bitmap刷新
 		this.drill_GBu_updateHoverHighlight();		//高亮捕获
 		this.drill_GBu_updatePlayerInput();			//操作监听
+		this.drill_GBu_updateButtonAttr();			//按钮属性刷新
 	}
 };
-
-//==============================
-// * 创建 - bitmap对象
-//==============================
-Scene_Map.prototype.drill_GBu_createBitmap = function() {
-	this._drill_GBu_bitmapTank = [];
-	for(var i=0; i < $gameSystem._drill_GBu_dataTank.length; i++ ){
-		var data = $gameSystem._drill_GBu_dataTank[i];
-		if( data == null ){
-			this._drill_GBu_bitmapTank[i] = {};
-			continue;
-		}
-		// > gif图片
-		var bitmapObj = {};
-		bitmapObj['bitmap_gif'] = [];															
-		for( var j=0; j < data['gif_src'].length; j++ ){	
-			bitmapObj['bitmap_gif'][j] = ImageManager.load_MapGaugeButton( data['gif_src'] );
-		}
-		// > 高亮图片 
-		if( data['hover_mode'] == "图片切换" || data['hover_mode'] == "图片叠加" ){
-			bitmapObj['bitmap_hover'] = ImageManager.load_MapGaugeButton( data['hover_src_img'] );
-		}else{
-			bitmapObj['bitmap_hover'] = null;
-		}
-		// > 按下图片
-		if( data['press_mode'] == "图片切换" || data['press_mode'] == "图片叠加" ){
-			bitmapObj['bitmap_press'] = ImageManager.load_MapGaugeButton( data['press_src_img'] );
-		}else{
-			bitmapObj['bitmap_press'] = null;
-		}
-		
-		// > 封印图片
-		bitmapObj['bitmap_lock'] = ImageManager.load_MapGaugeButton( data['lock_src'] );		
-		
-		// > 封印高亮图片
-		if( data['lockHover_mode'] == "图片切换" || data['lockHover_mode'] == "图片叠加" ){
-			bitmapObj['bitmap_lockHover'] = ImageManager.load_MapGaugeButton( data['lockHover_src_img'] );
-		}else{
-			bitmapObj['bitmap_lockHover'] = null;
-		}
-		
-		this._drill_GBu_bitmapTank[i] = bitmapObj;
-	}
-}
 //==============================
 // * 创建 - 按钮
 //==============================
@@ -776,26 +740,12 @@ Scene_Map.prototype.drill_GBu_createButton = function() {
 	for( var i=0; i < $gameSystem._drill_GBu_dataTank.length; i++ ){
 		var data = $gameSystem._drill_GBu_dataTank[i];
 		if( data == null ){
-			this._drill_GBu_spriteTank[i] = null;
+			this._drill_GBu_spriteTank[i] = null;	//data和贴图一对一，null也包括
 			continue;
 		}
 		
 		// > 创建按钮贴图
-		var temp_sprite = new Sprite();
-		temp_sprite.anchor.x = 0.5;
-		temp_sprite.anchor.y = 0.5;
-		temp_sprite.visible = data['visible'];
-		temp_sprite.x = data['x'];
-		temp_sprite.y = data['y'];
-		temp_sprite.zIndex = data['zIndex'];	//图片层级
-		temp_sprite.bitmap = this._drill_GBu_bitmapTank[i]['bitmap_gif'][0];
-		
-		// > 叠加贴图
-		var addition_sprite = new Sprite();
-		addition_sprite.anchor.x = 0.5;
-		addition_sprite.anchor.y = 0.5;
-		temp_sprite.addChild(addition_sprite);
-		temp_sprite._addition_sprite = addition_sprite;
+		var temp_sprite = new Drill_GBu_ButtonSprite( data );
 		
 		// > 贴图层级
 		if( data['layer_index'] == "图片层" ){
@@ -808,113 +758,30 @@ Scene_Map.prototype.drill_GBu_createButton = function() {
 	}
 };
 //==============================
-// * 帧刷新 - 按钮bitmap刷新
+// * 帧刷新 - 按钮属性刷新
 //==============================
-Scene_Map.prototype.drill_GBu_updateButtonBitmap = function() {	
+Scene_Map.prototype.drill_GBu_updateButtonAttr = function() {	
 	for( var i=0; i < this._drill_GBu_spriteTank.length; i++ ){
 		var data = $gameSystem._drill_GBu_dataTank[i];
 		var sprite = this._drill_GBu_spriteTank[i];
-		var bitmapObj = this._drill_GBu_bitmapTank[i];
 		if( data == null ){ continue; }
 		if( sprite == null ){ continue; }
 		
-		// > 显示/隐藏
-		if( sprite.visible != data['visible'] ){
-			sprite.visible = data['visible'];		
-		}
-		// > 激活
-		if( data['status'] == "激活" ){
-			
-			// > 高亮bitmap
-			if( this._drill_GBu_hoveringOne == sprite ){
-				if( data['hover_mode'] == "关闭效果" ){
-					// （不操作）
-				}
-				if( data['hover_mode'] == "图片切换" ){
-					sprite.bitmap = bitmapObj['bitmap_hover'];		
-				}
-				if( data['hover_mode'] == "图片叠加" ){
-					sprite._addition_sprite.bitmap = bitmapObj['bitmap_hover'];	
-				}
-				if( data['hover_mode'] == "透明度切换" ){
-					sprite.opacity = data['hover_lightOpacity'];
-				}
-			}else{
-				if( data['hover_mode'] == "关闭效果" ){
-					// （不操作）
-				}
-				if( data['hover_mode'] == "图片切换" ){
-					// （不操作）
-				}
-				if( data['hover_mode'] == "图片叠加" ){
-					sprite._addition_sprite.bitmap = null;
-				}
-				if( data['hover_mode'] == "透明度切换" ){
-					sprite.opacity = data['hover_opacity'];
-				}
-			}
-			
-			// > 按下bitmap
-			if( this._drill_GBu_pressingOne == sprite ){
-				if( data['press_mode'] == "关闭效果" ){
-					// （不操作）
-				}
-				if( data['press_mode'] == "图片切换" ){
-					sprite.bitmap = bitmapObj['bitmap_press'];
-				}
-				if( data['press_mode'] == "图片叠加" ){
-					sprite._addition_sprite.bitmap = bitmapObj['bitmap_press'];	
-				}
-				continue;
-			}
-			
-			// > 播放GIF
-			data.gif_time += 1;		
-			var inter = data.gif_time ;
-			inter = inter / data['gif_interval'];
-			inter = inter % bitmapObj['bitmap_gif'].length;
-			if( data['gif_back_run'] ){
-				inter = bitmapObj['bitmap_gif'].length - 1 - inter;
-			}
-			inter = Math.floor(inter);
-			sprite.bitmap = bitmapObj['bitmap_gif'][inter];
+		sprite.drill_setStatus( data['status'] );		//实时赋值 状态数据
+		sprite.drill_setVisible( data['visible'] );		//实时赋值 显示数据
+		
+		if( this._drill_GBu_hoveringOne == sprite ){	//实时赋值 高亮情况
+			sprite.drill_setHover( true );
+		}else{
+			sprite.drill_setHover( false );
 		}
 		
-		// > 封印
-		if( data['status'] == "封印" ){	
-			
-			// > 封印高亮bitmap
-			if( this._drill_GBu_hoveringOne == sprite ){
-				if( data['lockHover_mode'] == "关闭效果" ){
-					// （不操作）
-				}
-				if( data['lockHover_mode'] == "图片切换" ){
-					sprite.bitmap = bitmapObj['bitmap_lockHover'];		
-				}
-				if( data['lockHover_mode'] == "图片叠加" ){
-					sprite._addition_sprite.bitmap = bitmapObj['bitmap_lockHover'];	
-				}
-				if( data['lockHover_mode'] == "透明度切换" ){
-					sprite.opacity = data['lockHover_lightOpacity'];
-				}
-			}else{
-				if( data['lockHover_mode'] == "关闭效果" ){
-					// （不操作）
-				}
-				if( data['lockHover_mode'] == "图片切换" ){
-					// （不操作）
-				}
-				if( data['lockHover_mode'] == "图片叠加" ){
-					sprite._addition_sprite.bitmap = null;
-				}
-				if( data['lockHover_mode'] == "透明度切换" ){
-					sprite.opacity = data['lockHover_opacity'];
-				}
-			}
-		
-			// > 封印bitmap
-			sprite.bitmap = bitmapObj['bitmap_lock'];		
+		if( this._drill_GBu_pressingOne == sprite ){	//实时赋值 按下情况
+			sprite.drill_setPress( true );
+		}else{
+			sprite.drill_setPress( false );
 		}
+		
 	}
 }
 
@@ -936,21 +803,20 @@ Scene_Map.prototype.drill_GBu_updateHoverHighlight = function() {
 		if( data == null ){ continue; }
 		if( sprite == null ){ continue; }
 		
-		if( this.drill_GBu_isHover( i ) ){			//判断高亮
-			this.drill_GBu_setHover( i );			//设置高亮
+		if( this.drill_GBu_isHoverInTank( i ) ){			//判断高亮
+			this.drill_GBu_setHoverInTank( i );				//设置高亮
 			break;
 		}else{
-			this.drill_GBu_setUnhover( i );			//设置未高亮（如果按钮关闭，高亮会立即摘除）
+			this.drill_GBu_setUnhoverInTank( i );			//设置未高亮（如果按钮关闭，高亮会立即摘除）
 		}
 	}
 };
 //==============================
 // * 高亮 - 设置高亮
 //==============================
-Scene_Map.prototype.drill_GBu_setHover = function( index ){
+Scene_Map.prototype.drill_GBu_setHoverInTank = function( index ){
 	var data = $gameSystem._drill_GBu_dataTank[ index ];
 	var sprite = this._drill_GBu_spriteTank[ index ];
-	var bitmapObj = this._drill_GBu_bitmapTank[ index ];
 	
 	// > 找到了层级更高的高亮按钮
 	if( this._drill_GBu_hoveringOne != sprite ){
@@ -966,10 +832,9 @@ Scene_Map.prototype.drill_GBu_setHover = function( index ){
 //==============================
 // * 高亮 - 设置未高亮
 //==============================
-Scene_Map.prototype.drill_GBu_setUnhover = function( index ){
+Scene_Map.prototype.drill_GBu_setUnhoverInTank = function( index ){
 	var data = $gameSystem._drill_GBu_dataTank[ index ];
 	var sprite = this._drill_GBu_spriteTank[ index ];
-	var bitmapObj = this._drill_GBu_bitmapTank[ index ];
 	
 	// > 非正在高亮的按钮，返回
 	if( sprite != this._drill_GBu_hoveringOne ){ return };
@@ -980,10 +845,9 @@ Scene_Map.prototype.drill_GBu_setUnhover = function( index ){
 //==============================
 // * 高亮 - 判断指定按钮高亮
 //==============================
-Scene_Map.prototype.drill_GBu_isHover = function( index ){
+Scene_Map.prototype.drill_GBu_isHoverInTank = function( index ){
 	var data = $gameSystem._drill_GBu_dataTank[ index ];
 	var sprite = this._drill_GBu_spriteTank[ index ];
-	var bitmapObj = this._drill_GBu_bitmapTank[ index ];
 	
 	if( sprite == null ){ return false };
 	if( sprite.bitmap == null ){ return false };
@@ -994,8 +858,8 @@ Scene_Map.prototype.drill_GBu_isHover = function( index ){
 	
 	var cw = sprite.bitmap.width ;
 	var ch = sprite.bitmap.height ;
-	var cx = sprite.x ;
-	var cy = sprite.y ;
+	var cx = sprite.drill_getUIposX() ;
+	var cy = sprite.drill_getUIposY() ;
 	
 	var _x = _drill_mouse_x;
 	var _y = _drill_mouse_y;
@@ -1063,6 +927,301 @@ Scene_Map.prototype.drill_GBu_updatePlayerInput = function() {
 	}
 	
 }
+
+
+//=============================================================================
+// ** 状态按钮
+// 
+// 			说明：这里将按钮的各个状态封装在一起。
+//				  初始化设置资源后，调用接口状态切换，能够随时切换到指定的按钮状态。
+//=============================================================================
+//==============================
+// * 状态按钮 - 定义
+//==============================
+function Drill_GBu_ButtonSprite() {
+    this.initialize.apply(this, arguments);
+}
+Drill_GBu_ButtonSprite.prototype = Object.create(Sprite_Base.prototype);
+Drill_GBu_ButtonSprite.prototype.constructor = Drill_GBu_ButtonSprite;
+//==============================
+// * 状态按钮 - 初始化
+//==============================
+Drill_GBu_ButtonSprite.prototype.initialize = function( data ) {
+	Sprite_Base.prototype.initialize.call(this);
+	this._drill_data = JSON.parse(JSON.stringify( data ));	//深拷贝数据
+	this._drill_bitmapTank = {};
+	
+	this.drill_initData();		//初始化数据
+	this.drill_initSprite();	//初始化对象
+};
+//==============================
+// * 状态按钮 - 帧刷新
+//==============================
+Drill_GBu_ButtonSprite.prototype.update = function() {
+	Sprite_Base.prototype.update.call(this);
+	
+	this.drill_updateSprite();			//帧刷新对象
+};
+//==============================
+// * 初始化 - 数据
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_initData = function() {
+	var data = this._drill_data;
+	
+	// > 默认值
+	if( data['visible'] == undefined ){ data['visible'] = true };					//贴图 - 显示/隐藏
+	if( data['status'] == undefined ){ data['status'] = "激活" };					//贴图 - 激活
+	if( data['commonEventId'] == undefined ){ data['commonEventId'] = 0 };			//贴图 - 执行的公共事件
+	if( data['pipeType'] == undefined ){ data['pipeType'] = "并行" };				//贴图 - 公共事件执行方式
+	if( data['x'] == undefined ){ data['x'] = 0 };									//贴图 - x
+	if( data['y'] == undefined ){ data['y'] = 0 };									//贴图 - y
+	if( data['layer_index'] == undefined ){ data['layer_index'] = "图片层" };		//贴图 - 地图层级
+	if( data['zIndex'] == undefined ){ data['zIndex'] = 10 };						//贴图 - 图片层级
+	// （其他参数见 函数DrillUp.drill_GBu_initParam ）
+	
+};
+//==============================
+// * 初始化 - 对象
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_initSprite = function() {
+	var data = this._drill_data;
+	
+	// > 私有对象初始化
+	this._drill_cur_time = 0;					//当前时间
+	this._drill_isHovering = false;				//状态 - 选中
+	this._drill_isPressing = false;				//状态 - 被按下
+	this._drill_status = data['status'];		//状态 - 激活
+	this._drill_visible = data['visible'];		//状态 - 显示/隐藏
+	
+	// > 自身属性初始化
+	this.x = data['x'];
+	this.y = data['y'];
+	this.anchor.x = 0.5;
+	this.anchor.y = 0.5;
+	this.visible = data['visible'];
+	this.zIndex = data['zIndex'];	//图片层级
+	
+	this.drill_createBitmapTank();			//创建bitmap容器
+	this.drill_createAddtionSprite();		//创建叠加贴图
+};
+//==============================
+// * 接口 - 设置激活状态
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_setStatus = function( status ) {
+	this._drill_status = status;
+}
+//==============================
+// * 接口 - 设置显示/隐藏
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_setVisible = function( v ) {
+	this._drill_visible = v;
+}
+//==============================
+// * 接口 - 设置高亮
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_setHover = function( h ) {
+	this._drill_isHovering = h;
+}
+//==============================
+// * 接口 - 设置按下
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_setPress = function( p ) {
+	this._drill_isPressing = p;
+}
+//==============================
+// * 创建 - bitmap容器
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_createBitmapTank = function() {
+	var data = this._drill_data;
+	
+	// > gif图片
+	var bitmapObj = {};
+	bitmapObj['bitmap_gif'] = [];															
+	for( var j=0; j < data['gif_src'].length; j++ ){	
+		bitmapObj['bitmap_gif'][j] = ImageManager.load_MapGaugeButton( data['gif_src'] );
+	}
+	// > 高亮图片 
+	if( data['hover_mode'] == "图片切换" || data['hover_mode'] == "图片叠加" ){
+		bitmapObj['bitmap_hover'] = ImageManager.load_MapGaugeButton( data['hover_src_img'] );
+	}else{
+		bitmapObj['bitmap_hover'] = null;
+	}
+	// > 按下图片
+	if( data['press_mode'] == "图片切换" || data['press_mode'] == "图片叠加" ){
+		bitmapObj['bitmap_press'] = ImageManager.load_MapGaugeButton( data['press_src_img'] );
+	}else{
+		bitmapObj['bitmap_press'] = null;
+	}
+	
+	// > 封印图片
+	bitmapObj['bitmap_lock'] = ImageManager.load_MapGaugeButton( data['lock_src'] );		
+	
+	// > 封印高亮图片
+	if( data['lockHover_mode'] == "图片切换" || data['lockHover_mode'] == "图片叠加" ){
+		bitmapObj['bitmap_lockHover'] = ImageManager.load_MapGaugeButton( data['lockHover_src_img'] );
+	}else{
+		bitmapObj['bitmap_lockHover'] = null;
+	}
+	
+	this._drill_bitmapTank = bitmapObj;
+	this.bitmap = this._drill_bitmapTank['bitmap_gif'][0];
+}
+//==============================
+// * 创建 - 叠加贴图
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_createAddtionSprite = function() {
+	
+	// > 叠加贴图
+	var addition_sprite = new Sprite();
+	addition_sprite.anchor.x = 0.5;
+	addition_sprite.anchor.y = 0.5;
+	this.addChild(addition_sprite);
+	
+	this._drill_GBu_additionSprite = addition_sprite;
+}
+//==============================
+// * 帧刷新对象
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_updateSprite = function() {
+	
+	this._drill_cur_time += 1;
+	this.drill_updateBitmap();			//刷新bitmap
+	this.drill_updatePosition();		//镜头与位置
+}
+//==============================
+// * 帧刷新 - 刷新bitmap
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_updateBitmap = function() {
+	var data = this._drill_data;
+	var bitmapObj = this._drill_bitmapTank;
+	
+	// > 显示/隐藏
+	if( this.visible != this._drill_visible ){
+		this.visible = this._drill_visible;		
+	}
+	// > 激活
+	if( this._drill_status == "激活" ){
+		
+		// > 高亮bitmap
+		if( this._drill_isHovering == true ){
+			if( data['hover_mode'] == "关闭效果" ){
+				// （不操作）
+			}
+			if( data['hover_mode'] == "图片切换" ){
+				this.bitmap = bitmapObj['bitmap_hover'];		
+			}
+			if( data['hover_mode'] == "图片叠加" ){
+				this._drill_GBu_additionSprite.bitmap = bitmapObj['bitmap_hover'];	
+			}
+			if( data['hover_mode'] == "透明度切换" ){
+				this.opacity = data['hover_lightOpacity'];
+			}
+		}else{
+			if( data['hover_mode'] == "关闭效果" ){
+				// （不操作）
+			}
+			if( data['hover_mode'] == "图片切换" ){
+				// （不操作）
+			}
+			if( data['hover_mode'] == "图片叠加" ){
+				this._drill_GBu_additionSprite.bitmap = null;
+			}
+			if( data['hover_mode'] == "透明度切换" ){
+				this.opacity = data['hover_opacity'];
+			}
+		}
+		
+		// > 按下bitmap
+		if( this._drill_isPressing == true ){
+			if( data['press_mode'] == "关闭效果" ){
+				// （不操作）
+			}
+			if( data['press_mode'] == "图片切换" ){
+				this.bitmap = bitmapObj['bitmap_press'];
+			}
+			if( data['press_mode'] == "图片叠加" ){
+				this._drill_GBu_additionSprite.bitmap = bitmapObj['bitmap_press'];	
+			}
+			return;
+		}
+		
+		// > 播放GIF
+		var inter = this._drill_cur_time ;
+		inter = inter / data['gif_interval'];
+		inter = inter % bitmapObj['bitmap_gif'].length;
+		if( data['gif_back_run'] ){
+			inter = bitmapObj['bitmap_gif'].length - 1 - inter;
+		}
+		inter = Math.floor(inter);
+		this.bitmap = bitmapObj['bitmap_gif'][inter];
+	}
+	
+	// > 封印
+	if( this._drill_status == "封印" ){	
+		
+		// > 封印高亮bitmap
+		if( this._drill_isHovering == true ){
+			if( data['lockHover_mode'] == "关闭效果" ){
+				// （不操作）
+			}
+			if( data['lockHover_mode'] == "图片切换" ){
+				this.bitmap = bitmapObj['bitmap_lockHover'];		
+			}
+			if( data['lockHover_mode'] == "图片叠加" ){
+				this._drill_GBu_additionSprite.bitmap = bitmapObj['bitmap_lockHover'];	
+			}
+			if( data['lockHover_mode'] == "透明度切换" ){
+				this.opacity = data['lockHover_lightOpacity'];
+			}
+		}else{
+			if( data['lockHover_mode'] == "关闭效果" ){
+				// （不操作）
+			}
+			if( data['lockHover_mode'] == "图片切换" ){
+				// （不操作）
+			}
+			if( data['lockHover_mode'] == "图片叠加" ){
+				this._drill_GBu_additionSprite.bitmap = null;
+			}
+			if( data['lockHover_mode'] == "透明度切换" ){
+				this.opacity = data['lockHover_opacity'];
+			}
+		}
+	
+		// > 封印bitmap
+		this.bitmap = bitmapObj['bitmap_lock'];		
+	}
+}
+//==============================
+// * 帧刷新 - 镜头与位置
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_updatePosition = function() {
+	var data = this._drill_data;
+	
+	var xx = data['x'];
+	var yy = data['y'];
+	if( Imported.Drill_LayerCamera && 	//地图镜头修正
+		data['layer_index'] == "图片层" ){
+		xx = $gameSystem.drill_LCa_cameraToMapX( xx );
+		yy = $gameSystem.drill_LCa_cameraToMapY( yy );
+		this.scale.x = 1.00 / $gameSystem.drill_LCa_curScaleX();
+		this.scale.y = 1.00 / $gameSystem.drill_LCa_curScaleY();
+	}
+	this.x = Math.floor(xx);
+	this.y = Math.floor(yy);
+}
+//==============================
+// * 获取 - 按钮在ui上的位置（ui位置与实际sprite位置不一定重合）
+//==============================
+Drill_GBu_ButtonSprite.prototype.drill_getUIposX = function() {
+	var data = this._drill_data;
+	return data['x'];
+}
+Drill_GBu_ButtonSprite.prototype.drill_getUIposY = function() {
+	var data = this._drill_data;
+	return data['y'];
+}
+
 
 
 

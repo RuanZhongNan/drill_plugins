@@ -2742,7 +2742,7 @@ Window_Selectable.prototype.isInsideFrame = function() {
 
 GT.OIWin.Window_Selectable_processWheel = Window_Selectable.prototype.processWheel;
 Window_Selectable.prototype.processWheel = function() {
-	if (!this.isInsideFrame()) return;
+	//if (!this.isInsideFrame()) return;
 	GT.OIWin.Window_Selectable_processWheel.call(this);
 };
 

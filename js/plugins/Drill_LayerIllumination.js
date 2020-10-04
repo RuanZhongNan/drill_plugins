@@ -2283,7 +2283,10 @@ Scene_Map.prototype.update = function() {
 // * 帧刷新 - 黑暗层
 //==============================
 Scene_Map.prototype.drill_LIl_updateDarkLayer = function() {
-	if( $gameMap._drill_LIl_lock['enableLocked'] == true ){ return; }		//地图锁定时，黑暗层无法变化
+	if( $gameMap._drill_LIl_lock['enableLocked'] == true ){ 		//地图锁定时，黑暗层无法变化
+		this._drill_LIl_darkSprite.opacity = $gameMap._drill_LIl_lock['targetOpacity'];
+		return;
+	}
 	
 	// > 透明度控制
 	if( $gameSystem._drill_LIl['enable'] == true ){

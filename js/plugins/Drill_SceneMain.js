@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        面板 - 全自定义主菜单面板
+ * @plugindesc [v1.1]        面板 - 全自定义主菜单面板
  * @author Drill_up
  * 
  * @Drill_LE_param "角色固定框样式-%d"
@@ -54,6 +54,8 @@
  *   (1.菜单选项可以设置为 窗口 或者 按钮组 。
  *   (2.其中菜单按钮组的 样式 在按钮组核心中设置。
  *      你可以在 按钮组核心 中，开启debug规划轨迹，看到红线。
+ *   (3.注意按钮组的排列方式，你需要根据排列实际情况，配置合适的键
+ *      盘模式。270度朝上的直线排列，使用的是反向上下切换键盘模式。
  * 按钮关键字：
  *   (1.菜单选项的按钮贴图序列中，需要根据 关键字 来控制一一对应。
  *      如果关键字没有对应上，则使用默认的贴图。
@@ -148,6 +150,10 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修复了显示直线排列的状态出错的bug，以及设置不显示空角色时全部角色框不显示的bug。
+ * 将 键盘无障碍 功能移动到 按钮组核心 中可供修改更多效果。
+ * 
  * 
  * @param ----杂项----
  * @desc
@@ -184,6 +190,18 @@
  * @min 1
  * @desc 地图名称的字体大小。
  * @default 24
+ * 
+ * @param 所在地图名对齐方式
+ * @parent 是否显示所在地图名
+ * @type select
+ * @option 左对齐
+ * @value 左对齐
+ * @option 居中
+ * @value 居中
+ * @option 右对齐
+ * @value 右对齐
+ * @desc 所在地图名的对齐方式。
+ * @default 居中
  * 
  * 
  * @param ----时间显示----
@@ -310,14 +328,6 @@
  * @param ----菜单选项----
  * @desc
  * 
- * @param 键盘-是否开启无障碍滚动菜单选项
- * @parent ----菜单选项----
- * @type boolean
- * @on 开启
- * @off 关闭
- * @desc 关闭时，键盘只能按上下切换选项。开启后，上、左能够实现上的切换，下、右能够实现下的切换。
- * @default true
- * 
  * @param 菜单选项模式
  * @parent ----菜单选项----
  * @type select
@@ -343,14 +353,6 @@
  * 
  * @param ----角色头像按钮----
  * @desc
- * 
- * @param 键盘-是否开启无障碍滚动角色头像
- * @parent ----角色头像按钮----
- * @type boolean
- * @on 开启
- * @off 关闭
- * @desc 关闭时，键盘只能按上下切换选项。开启后，上、左能够实现上的切换，下、右能够实现下的切换。
- * @default true
  *
  * @param 流程-只一个角色时是否跳过选头像
  * @parent ----角色头像按钮----
@@ -1000,12 +1002,12 @@
  * @param 对齐方式
  * @parent ---排列---
  * @type select
- * @option 右对齐
- * @value 右对齐
- * @option 居中
- * @value 居中
  * @option 左对齐
  * @value 左对齐
+ * @option 居中
+ * @value 居中
+ * @option 右对齐
+ * @value 右对齐
  * @desc 符号的对齐方式。
  * @default 右对齐
  *
@@ -1174,15 +1176,15 @@
  * @desc 出列时间的时长。
  * @default 20
  * 
- * @param 激活后出列相对坐标 X
+ * @param 激活后出列绝对坐标 X
  * @parent ---激活的按钮---
- * @desc x轴方向平移，单位像素。0为按钮组中心。
- * @default -200
+ * @desc x轴方向平移，单位像素。0为贴在最左边。单位像素。。
+ * @default 150
  * 
- * @param 激活后出列相对坐标 Y
+ * @param 激活后出列绝对坐标 Y
  * @parent ---激活的按钮---
- * @desc y轴方向平移，单位像素。0为按钮组中心。
- * @default 100
+ * @desc y轴方向平移，单位像素。0为贴在最上面。单位像素。
+ * @default 467
  * 
  */
 /*~struct~DrillSMaCommandButtonSeq:
@@ -1472,6 +1474,18 @@
  * @desc 姓名的字体大小。
  * @default 20
  * 
+ * @param 姓名对齐方式
+ * @parent ----姓名显示----
+ * @type select
+ * @option 左对齐
+ * @value 左对齐
+ * @option 居中
+ * @value 居中
+ * @option 右对齐
+ * @value 右对齐
+ * @desc 姓名的对齐方式。
+ * @default 左对齐
+ * 
  * @param ----状态显示----
  * @desc 
  * 
@@ -1661,12 +1675,12 @@
  * @parent ==直线排列==
  * @type number
  * @min 0
- * @desc 直线排列时，按钮间的间距。单位像素。
+ * @desc 直线排列时，角色框间的间距。单位像素。
  * @default 192
  *
  * @param 直线W间距
  * @parent ==直线排列==
- * @desc 直线排列时，偶数个按钮的垂直方向间距。单位像素。设置0则按钮组成一条直线。可为负数。
+ * @desc 直线排列时，偶数个角色框的垂直方向间距。单位像素。设置0则角色框组成一条直线。可为负数。
  * @default 48
  *
  * @param 直线旋转角度
@@ -1676,6 +1690,19 @@
  * @desc 直线排列时，排列延长线的旋转角度，单位角度。（逆时针，90度朝下，270度朝上）
  * @default 0
  * 
+ * @param 是否限制最大长度
+ * @parent ==直线排列==
+ * @type boolean
+ * @on 限制
+ * @off 关闭
+ * @desc true - 限制，false - 关闭。限制长度后，如果 角色框数*间距 超过了最大长度，将会缩短间距，确保挤压在一起。
+ * @default false
+ *
+ * @param 直线最大长度
+ * @parent 是否限制最大长度
+ * @desc 限制指定长度后，如果 角色框数*间距 超过了最大长度，将会缩短间距，确保挤压在一起。
+ * @default 600
+ * 
  * @param ==环形排列==
  * @parent ---排列---
  * @desc 
@@ -1684,7 +1711,7 @@
  * @parent ==环形排列==
  * @type number
  * @min 0
- * @desc 环形排列时，按钮围绕的半径。单位像素。
+ * @desc 环形排列时，角色框围绕的半径。单位像素。
  * @default 192
  * 
  * @param 环形起始角
@@ -1692,7 +1719,7 @@
  * @type number
  * @min 0
  * @max 360
- * @desc 环形排列时，第一个按钮所在的角度位置。
+ * @desc 环形排列时，第一个角色框所在的角度位置。
  * @default 0
  * 
  * @param 环形终止角
@@ -1700,7 +1727,7 @@
  * @type number
  * @min 0
  * @max 360
- * @desc 环形排列时，最后一个按钮所在的角度位置。
+ * @desc 环形排列时，最后一个角色框所在的角度位置。
  * @default 360
  * 
  * @param ==矩阵排列==
@@ -2179,7 +2206,7 @@
  * @param 依次移动延迟间隔
  * @type number
  * @min 0
- * @desc 每个按钮比前一个按钮延迟移动的间隔时间。
+ * @desc 每个角色框比前一个角色框延迟移动的间隔时间。
  * @default 20
  *
  * @param ---起点---
@@ -2231,8 +2258,9 @@
 //		工作类型		持续执行
 //		时间复杂度		o(n^3)*o(场景元素) 每帧
 //		性能测试因素	直接进入主菜单面板进行测试。
-//		性能测试消耗	44.39ms
+//		性能测试消耗	44.39ms  58.25ms
 //		最坏情况		如果有很多角色固定框，且都有x4的参数条和x5的参数数字，可能会有些性能影响。
+//		备注			4个角色固定框的时候，每隔几秒会有一个性能大消耗，然后复原，但是有时候不会出现这种情况，原因不明。
 //
 //插件记录：
 //		★大体框架与功能如下：
@@ -2252,7 +2280,6 @@
 //					->日期/时间 格式化
 //				->金钱数字
 //				->菜单选项按钮集
-//					->无障碍滚动
 //					->按钮组样式
 //						->排列
 //							->单一指针激活
@@ -2264,8 +2291,10 @@
 //							->选中时变化方式
 //							->按钮选择指针
 //							->点击选中/进入
+//						->输入设备
+//							->鼠标自动选中
+//							->无障碍滚动
 //				->角色头像按钮集	
-//					->无障碍滚动
 //					->流程-只一个角色时是否跳过选头像
 //					->按钮组样式
 //				->角色固定框	
@@ -2291,11 +2320,11 @@
 //						->空角色槽位
 //						->空角色前视图
 //				->队形面板
-//				->插件指令				x
+//				->插件指令
 //					->获取真实时间		x
-//					->修改按钮样式		x
-//					->修改按钮组位置		x
-//					->修改角色固定框样式		x
+//					->修改按钮样式
+//					->修改按钮组位置
+//					->修改角色固定框样式
 //				->其它
 //					->mog时间系统的框
 //		
@@ -2492,14 +2521,14 @@ if( Imported.Drill_CoreOfWindowAuxiliary &&
 		data['active_hide'] = false;			//（激活后是否瞬间隐藏，克隆选中按钮用）
 		data['active_out'] = String( dataFrom["按钮激活后是否出列"] || "false") == "true";
 		data['active_out_time'] = Number( dataFrom["激活后出列变化时长"] || 20);
-		data['active_out_x'] = Number( dataFrom["激活后出列相对坐标 X"] || 0);
-		data['active_out_y'] = Number( dataFrom["激活后出列相对坐标 Y"] || 0);
+		data['active_out_x'] = Number( dataFrom["激活后出列绝对坐标 X"] || 150);
+		data['active_out_y'] = Number( dataFrom["激活后出列绝对坐标 Y"] || 467);
 		return data;
 	}
 	
 	
 	//==============================
-	// * 变量获取 - 角色头像 - 角色选项按钮组（必须写在前面）
+	// * 变量获取 - 角色头像 - 角色头像按钮组（必须写在前面）
 	//				（~struct~DrillSMaActorButton）
 	//==============================
 	DrillUp.drill_SMa_initActorAvatarButton = function( dataFrom ) {
@@ -2718,6 +2747,7 @@ if( Imported.Drill_CoreOfWindowAuxiliary &&
 		data['name_x'] = Number( dataFrom["平移-姓名 X"] || 0 );
 		data['name_y'] = Number( dataFrom["平移-姓名 Y"] || 0 );
 		data['name_fontsize'] = Number( dataFrom["姓名字体大小"] || 20 );
+		data['name_align'] = String( dataFrom["姓名对齐方式"] || "左对齐");
 		// > 状态显示
 		data['state_enable'] = String( dataFrom["是否显示状态"] || "true") === "true";
 		data['state_x'] = Number( dataFrom["平移-状态 X"] || 0 );
@@ -2798,6 +2828,8 @@ if( Imported.Drill_CoreOfWindowAuxiliary &&
 		data['arrange_spacing'] = Number( dataFrom["直线间距"] || 10);
 		data['arrange_wSpacing'] = Number( dataFrom["直线W间距"] || 0);
 		data['arrange_angle'] = Number( dataFrom["直线旋转角度"] || 0);
+		data['arrange_limitEnable'] = String( dataFrom["是否限制最大长度"] || "false") == "true";
+		data['arrange_limitLength'] = Number( dataFrom["直线最大长度"] || 600);
 		data['arrange_radius'] = Number( dataFrom["环形半径"] || 10);
 		data['arrange_angleStart'] = Number( dataFrom["环形起始角"] || 0);
 		data['arrange_angleEnd'] = Number( dataFrom["环形终止角"] || 0);
@@ -2821,6 +2853,7 @@ if( Imported.Drill_CoreOfWindowAuxiliary &&
 	DrillUp.g_SMa_mapName_x = Number(DrillUp.parameters["平移-所在地图名 X"] || 0);	
 	DrillUp.g_SMa_mapName_y = Number(DrillUp.parameters["平移-所在地图名 Y"] || 0);	
 	DrillUp.g_SMa_mapName_fontSize = Number(DrillUp.parameters["所在地图名字体大小"] || 22);
+	DrillUp.g_SMa_mapName_align = String(DrillUp.parameters["所在地图名对齐方式"] || "居中");
 
 	/*-----------------时间显示------------------*/	
 	DrillUp.g_SMa_playTime_enable = String(DrillUp.parameters["是否显示累积游戏时长"] || "true") == "true";
@@ -2857,7 +2890,6 @@ if( Imported.Drill_CoreOfWindowAuxiliary &&
 	}
 	
 	/*-----------------菜单选项------------------*/
-	DrillUp.g_SMa_command_cursorLoop = String(DrillUp.parameters["键盘-是否开启无障碍滚动菜单选项"] || "true") == "true";
 	DrillUp.g_SMa_command_mode = String(DrillUp.parameters["菜单选项模式"] || "按钮组模式");
 	if( DrillUp.parameters["菜单选项窗口"] != undefined &&
 		DrillUp.parameters["菜单选项窗口"] != "" ){
@@ -2880,7 +2912,6 @@ if( Imported.Drill_CoreOfWindowAuxiliary &&
 	}
 	
 	/*-----------------角色头像按钮------------------*/
-	DrillUp.g_SMa_actorAvatar_cursorLoop = String(DrillUp.parameters["键盘-是否开启无障碍滚动角色头像"] || "true") == "true";
 	DrillUp.g_SMa_actorAvatar_skip = String(DrillUp.parameters["流程-只一个角色时是否跳过选头像"] || "false") == "true";
 	DrillUp.g_SMa_actorAvatar_visibleNum = Number(DrillUp.parameters["可显示的角色头像数量"] || 4);	
 	if( DrillUp.parameters["角色头像按钮组"] != undefined &&
@@ -3133,9 +3164,13 @@ Scene_Menu.prototype.drill_SMa_createMapName = function() {
 	var temp_sprite = new Sprite();
 	temp_sprite.x = DrillUp.g_SMa_mapName_x;
 	temp_sprite.y = DrillUp.g_SMa_mapName_y;
-	temp_sprite.bitmap = new Bitmap(250,32);
+	temp_sprite.bitmap = new Bitmap( 320, DrillUp.g_SMa_mapName_fontSize + 4 );
 	temp_sprite.bitmap.fontSize = DrillUp.g_SMa_mapName_fontSize;
-	temp_sprite.bitmap.drawText( $gameMap.displayName(),0,0,250,32,"center" );
+	var align = "center";
+	if( DrillUp.g_SMa_mapName_align == "右对齐" ){ align = "right"; }
+	if( DrillUp.g_SMa_mapName_align == "居中" ){ align = "center"; }
+	if( DrillUp.g_SMa_mapName_align == "左对齐" ){ align = "left"; }
+	temp_sprite.bitmap.drawText( $gameMap.displayName(),0,0, 320, DrillUp.g_SMa_mapName_fontSize + 4, align );
 	
 	this._layer_outer.addChild( temp_sprite );
 	this._drill_SMa_mapNameSprite = temp_sprite;
@@ -3270,14 +3305,14 @@ Scene_Menu.prototype.drill_SMa_createActorBoard = function() {
 	// > 角色固定框容器
 	this._drill_SMa_actorSpriteTank = [];
 	this._drill_SMa_actorPositionTank = [];
-	for( var i = 0; i < temp_data['visible_rowCount']; i++ ){
+	var count = temp_data['visible_rowCount'];
+	for( var i = 0; i < count; i++ ){
 		
 		// > 固定框初始化
 		var actor = $gameParty.members()[i];
 		var temp_sprite = new Drill_SMa_ActorSprite( actor, i );
-		if( temp_data['visible_force'] == true ){
-			temp_sprite['_org_visible'] = true;
-		}else{
+		temp_sprite['_org_visible'] = true;
+		if( temp_data['visible_force'] == false && i >= $gameParty.members().length ){
 			temp_sprite['_org_visible'] = false;
 		}
 		
@@ -3288,6 +3323,11 @@ Scene_Menu.prototype.drill_SMa_createActorBoard = function() {
 			var xx = temp_data['arrange_spacing'] * i;
 			var yy = (i % 2) * temp_data['arrange_wSpacing'];
 			var angle = temp_data['arrange_angle'] / 180.0 * Math.PI;
+			if( count > 1 && 	//（限宽）
+				temp_data['arrange_limitEnable'] == true &&	
+				temp_data['arrange_spacing'] * (count - 1) > temp_data['arrange_limitLength'] ){
+				xx = temp_data['arrange_limitLength'] / (count - 1) * i;
+			}
 			orgX = xx * Math.cos(angle) - yy * Math.sin(angle);
 			orgY = xx * Math.sin(angle) + yy * Math.cos(angle);
 		}
@@ -3433,78 +3473,6 @@ Scene_Menu.prototype.drill_SMa_updateActorAvatarButton = function() {
 // ** 原装窗口
 //=============================================================================
 //==============================
-// * 原装菜单选项窗口 - 无障碍滚动
-//==============================
-var _drill_SMa_commandProcessCursorMove = Window_MenuCommand.prototype.processCursorMove;
-Window_MenuCommand.prototype.processCursorMove = function() {
-	if( DrillUp.g_SMa_command_cursorLoop == true && 
-		this.isCursorMovable() ){
-		var lastIndex = this.index();
-		
-		// > 下、右
-		if( Input.isRepeated('down') || Input.isRepeated('right') ){
-			if( lastIndex == this.maxRows()-1 ){	//（循环选择）
-				this.select(0);
-			}else{
-				this.cursorDown();
-			}
-			if (this.index() !== lastIndex) {
-				SoundManager.playCursor();
-			};
-			return;
-		};
-		// > 上、左
-		if( Input.isRepeated('up') || Input.isRepeated('left') ){
-			if( lastIndex == 0 ){
-				this.select(this.maxRows()-1);
-			}else{
-				this.cursorUp();
-			}
-			if (this.index() !== lastIndex) {
-				SoundManager.playCursor();
-			};
-			return;
-		};
-	};
-	_drill_SMa_commandProcessCursorMove.call(this);
-};
-//==============================
-// * 原装状态窗口 - 无障碍滚动
-//==============================
-var _drill_SMa_statusProcessCursorMove = Window_MenuStatus.prototype.processCursorMove;
-Window_MenuStatus.prototype.processCursorMove = function() {
-	if( DrillUp.g_SMa_actorAvatar_cursorLoop == true && 
-		this.isCursorMovable() ){
-		var lastIndex = this.index();
-		
-		// > 下、右
-		if( Input.isRepeated('down') || Input.isRepeated('right') ){
-			if( lastIndex == this.maxRows()-1 ){	//（循环选择）
-				this.select(0);
-			}else{
-				this.cursorDown();
-			}
-			if (this.index() !== lastIndex) {
-				SoundManager.playCursor();
-			};
-			return;
-		};
-		// > 上、左
-		if( Input.isRepeated('up') || Input.isRepeated('left') ){
-			if( lastIndex == 0 ){
-				this.select(this.maxRows()-1);
-			}else{
-				this.cursorUp();
-			}
-			if (this.index() !== lastIndex) {
-				SoundManager.playCursor();
-			};
-			return;
-		};
-	};
-	_drill_SMa_statusProcessCursorMove.call(this);
-};
-//==============================
 // * 原装状态窗口 - 流程-只一个角色时跳过选头像
 //==============================
 var _drill_SMa_commandPersonal = Scene_Menu.prototype.commandPersonal;
@@ -3525,12 +3493,11 @@ var _drill_SMa_statusWindowRefresh = Window_MenuStatus.prototype.refresh;
 Window_MenuStatus.prototype.refresh = function() {
 
 	// > 列表刷新
-	this._list = [];						//名称列表
+	this._list = [];						//名称列表（VisibleRows并不影响list数量）
 	this._drill_COSB_indexList = [];		//交叉列表
 	var actors = $gameParty.members();
 	for( var i=0; i < actors.length; i++ ){
 		var actor = actors[i];
-		if( i >= this.numVisibleRows() ){ break; }	//（最多画VisibleRows个头像）
 		this._list.push( actor.name() );
 		this._drill_COSB_indexList.push( actor.actorId() -1 );
 	}
@@ -3649,8 +3616,8 @@ Drill_SMa_ActorSprite.prototype.drill_initSprite = function() {
 	this.drill_createEXPMeter();			//创建经验参数条
 	this.drill_createForeground();			//创建前景
 	
-	this.drill_createName();				//创建姓名
 	this.drill_createState();				//创建状态
+	this.drill_createName();				//创建姓名
 	this.drill_createHPNumber();			//创建生命参数数字
 	this.drill_createMPNumber();			//创建魔法参数数字
 	this.drill_createTPNumber();			//创建怒气参数数字
@@ -3816,8 +3783,12 @@ Drill_SMa_ActorSprite.prototype.drill_createName = function() {
 	temp_sprite.visible = data_b['name_visible'];		//（不显示，也要创建）
 	
 	// > 绘制字符
-	temp_sprite.bitmap = new Bitmap(360, data_s['name_fontsize'] + 4 );
+	temp_sprite.bitmap = new Bitmap(320, data_s['name_fontsize'] + 4 );
 	temp_sprite.bitmap.fontSize = data_s['name_fontsize'];
+	temp_sprite.bitmap._align = "center";
+	if( data_s['name_align'] == "右对齐" ){ temp_sprite.bitmap._align = "right"; }
+	if( data_s['name_align'] == "居中" ){ temp_sprite.bitmap._align = "center"; }
+	if( data_s['name_align'] == "左对齐" ){ temp_sprite.bitmap._align = "left"; }
 	this.addChild(temp_sprite);
 	this._drill_name_sprite = temp_sprite;
 	this.drill_drawName();
@@ -3827,9 +3798,11 @@ Drill_SMa_ActorSprite.prototype.drill_createName = function() {
 //==============================
 Drill_SMa_ActorSprite.prototype.drill_drawName = function() {
 	if(!this._drill_actor ){ return; } 
-	this._drill_name_sprite.bitmap.drawText(
-		this._drill_actor.actor().name, 
-		0, 0, this._drill_name_sprite.bitmap.width, this._drill_name_sprite.bitmap.height, 0 );	
+	var text = this._drill_actor.actor().name;
+	var width = this._drill_name_sprite.bitmap.width;
+	var height = this._drill_name_sprite.bitmap.height;
+	var align = this._drill_name_sprite.bitmap._align;
+	this._drill_name_sprite.bitmap.drawText( text, 0, 0, width, height, align );	
 }
 //==============================
 // * 创建 - 状态
@@ -4080,8 +4053,8 @@ Drill_SMa_ActorSprite.prototype.drill_updateStates = function(){
 	if( !this._drill_states_systemIcon.isReady() ){ return }
 	
 	// > 直线并排
-	if( data_s['state_mode'] == "直线并排" ){
-		var icons = this._drill_enemy.allIcons();
+	if( data_s['state_mode'] == "直线并排" && this._drill_actor ){
+		var icons = this._drill_actor.allIcons();
 		for(var i=0; i<this._drill_state_sprite_tank.length; i++){	
 			var temp_sprite = this._drill_state_sprite_tank[i];
 			var id = Number(icons[i]);

@@ -138,10 +138,10 @@
 //					$gameTemp.drill_COBa_preBallisticsMove( obj, index , orgX, orgY );		//推演赋值
 //					// > 透明度
 //					$gameTemp.drill_COBa_setBallisticsOpacity( data );						//初始化
-//					$gameTemp.drill_COBa_preBallisticsOpacity( obj, index , orgX, orgY );	//推演赋值
+//					$gameTemp.drill_COBa_preBallisticsOpacity( obj, index , orgOpacity );	//推演赋值
 //					// > 旋转
 //					$gameTemp.drill_COBa_setBallisticsRotate( data );						//初始化
-//					$gameTemp.drill_COBa_preBallisticsRotate( obj, index , orgX, orgY );	//推演赋值
+//					$gameTemp.drill_COBa_preBallisticsRotate( obj, index , orgRotate );		//推演赋值
 //	
 //			  【注意，初始化和推演函数不要隔得太远】因为有可能会被重叠推演盖掉。
 //			  obj用于放配置数据，执行完后，结果集会放到下面两个数组中：

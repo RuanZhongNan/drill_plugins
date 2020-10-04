@@ -767,15 +767,16 @@
 	//==============================
 	// * 变量获取 - 弹道样式（必须写在前面）
 	//
-	//				说明：函数未定义下列参数，若不定义则为默认值： 
-	//						movementNum（数量）
+	//				说明：函数未定义白色括号中的参数，需要子插件定义。若不定义则为默认值。
 	//==============================
 	DrillUp.drill_COSE_ballisticsInit = function( dataFrom ) {
 		var data = {};
-		//   移动（movement）
+		// > 移动（movement）
+		//		data['movementNum']【碎片数量】
 		data['movementTime'] = Number( dataFrom["移动时长"] || 0);
+		data['movementDelay'] = 0;
 		data['movementMode'] = String( dataFrom["移动模式"] || "极坐标模式" );
-		//   极坐标（polar）
+		// > 极坐标（polar）
 		data['polarSpeedType'] = String( dataFrom["速度类型"] || "只初速度" );
 		data['polarSpeedBase'] = Number( dataFrom["初速度"] || 0.0);
 		data['polarSpeedRandom'] = Number( dataFrom["速度随机波动量"] || 0.0);
@@ -790,7 +791,7 @@
 		data['polarDirSectorFace'] = Number( dataFrom["扇形朝向"] || 0);
 		data['polarDirSectorDegree'] = Number( dataFrom["扇形角度"] || 0);
 		data['polarDirFormula'] = String( dataFrom["方向公式"] || "return 0" );
-		//   直角坐标（cartesian）
+		// > 直角坐标（cartesian）
 		data['cartXSpeedType'] = String( dataFrom["X轴速度类型"] || "只初速度" );
 		data['cartXSpeedBase'] = Number( dataFrom["X轴初速度"] || 0.0);
 		data['cartXSpeedRandom'] = Number( dataFrom["X轴速度随机波动量"] || 0.0);
@@ -809,6 +810,7 @@
 		temp_str = String( dataFrom["Y轴路程计算公式"] || "return 0" );
 		temp_str = temp_str.substring(1,temp_str.length-1);
 		data['cartYDistanceFormula'] = temp_str.replace(/\\\\/g,"\\");
+		// > 两点式（twoPoint）（关闭）
 		return data;
 	}
 	

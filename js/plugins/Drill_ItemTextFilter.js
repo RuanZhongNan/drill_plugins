@@ -579,7 +579,12 @@ if(Imported.MOG_ActionName ){
 		f_data.setBlurWave = [0,0];
 		f_data.setNoiseWave = [0,0];
 		if (DataManager.isSkill(item)){  f_data = $gameSystem.drill_ITFi_getSkillFData(item.id); };
-		if (DataManager.isItem(item)){  f_data = $gameSystem.drill_ITFi_getItemFData(item.id); }
+		if (DataManager.isItem(item)){  
+			f_data = $gameSystem.drill_ITFi_getItemFData(item.id); 
+			if( $dataItems[item.id].baseItemId ){	//Yep物品核心兼容
+				f_data = $gameSystem.drill_ITFi_getItemFData($dataItems[item.id].baseItemId); 
+			}
+		}	
 		if (DataManager.isWeapon(item)){  f_data = $gameSystem.drill_ITFi_getWeaponFData(item.id); }
 		if (DataManager.isArmor(item)){  f_data = $gameSystem.drill_ITFi_getArmorFData(item.id); }
 		
@@ -706,7 +711,12 @@ if( Imported.MOG_TreasurePopup ){
 		var item = this._item;
 		if (!item){ return; }
 		if (DataManager.isSkill(item)){ var f_data = $gameSystem.drill_ITFi_getSkillFData(item.id); };
-		if (DataManager.isItem(item)){ var f_data = $gameSystem.drill_ITFi_getItemFData(item.id); }
+		if (DataManager.isItem(item)){
+			var f_data = $gameSystem.drill_ITFi_getItemFData(item.id); 
+			if( $dataItems[item.id].baseItemId ){	//Yep物品核心兼容
+				f_data = $gameSystem.drill_ITFi_getItemFData($dataItems[item.id].baseItemId); 
+			}
+		}
 		if (DataManager.isWeapon(item)){ var f_data = $gameSystem.drill_ITFi_getWeaponFData(item.id); }
 		if (DataManager.isArmor(item)){ var f_data = $gameSystem.drill_ITFi_getArmorFData(item.id); }
 		if (!f_data){ return; }
@@ -767,7 +777,12 @@ if( Imported.MOG_TreasureHud  ){
 		f_data.setBlurWave = [0,0];
 		f_data.setNoiseWave = [0,0];
 		if (DataManager.isSkill(item)){  f_data = $gameSystem.drill_ITFi_getSkillFData(item.id); };
-		if (DataManager.isItem(item)){  f_data = $gameSystem.drill_ITFi_getItemFData(item.id); }
+		if (DataManager.isItem(item)){
+			f_data = $gameSystem.drill_ITFi_getItemFData(item.id);
+			if( $dataItems[item.id].baseItemId ){	//Yep物品核心兼容
+				f_data = $gameSystem.drill_ITFi_getItemFData($dataItems[item.id].baseItemId); 
+			}
+		}
 		if (DataManager.isWeapon(item)){  f_data = $gameSystem.drill_ITFi_getWeaponFData(item.id); }
 		if (DataManager.isArmor(item)){  f_data = $gameSystem.drill_ITFi_getArmorFData(item.id); }
 		

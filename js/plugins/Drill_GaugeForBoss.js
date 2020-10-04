@@ -2131,8 +2131,8 @@ Drill_GFB_StyleSprite.prototype.drill_initSprite = function() {
 	this.drill_createHeadImage();			//创建头像
 	this.drill_createForeground();			//创建前景
 	
-	this.drill_createName();				//创建姓名
 	this.drill_createState();				//创建状态
+	this.drill_createName();				//创建姓名
 	this.drill_createHPNumber();			//创建生命参数数字
 	this.drill_createMPNumber();			//创建魔法参数数字
 	this.drill_createTPNumber();			//创建怒气参数数字
