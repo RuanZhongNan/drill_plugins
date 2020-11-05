@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        地图UI - 漂浮参数数字
+ * @plugindesc [v1.1]        地图UI - 漂浮参数数字
  * @author Drill_up
  * 
  * @Drill_LE_param "漂浮数字样式-%d"
@@ -56,9 +56,11 @@
  * 插件指令：>地图漂浮数字 : 玩家 : 样式[1] : +10 : 持续时间[20]
  * 插件指令：>地图漂浮数字 : 玩家 : 样式[1] : 500 : 持续时间[20]
  * 插件指令：>地图漂浮数字 : 玩家 : 样式[1] : +a50 : 持续时间[20]
+ * 插件指令：>地图漂浮数字 : 玩家 : 样式[1] : +\v[21] : 持续时间[20]
  * 
  * 1."+10"、"500"、"+a50"都为 自定义符号。
  *   参数数字核心会将指定的 符号字符串 转换为对应的贴图数字。
+ * 2."\v[21]"表示变量id对应的值。
  * 
  * -----------------------------------------------------------------------------
  * ----插件性能
@@ -87,6 +89,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 添加了漂浮数字的变量值支持。
  * 
  *
  *
@@ -714,6 +718,20 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				temp4 = temp4.replace("持续时间[","");
 				temp4 = temp4.replace("]","");
 				temp4 = Number(temp4);
+				
+				// > 变量转换
+				temp3 = temp3.replace(/\\V\[(\d+)\]/gi, function() {
+					return $gameVariables.value(parseInt(arguments[1]));
+				}.bind(this));
+				temp3 = temp3.replace(/\\V\[(\d+)\]/gi, function() {
+					return $gameVariables.value(parseInt(arguments[1]));
+				}.bind(this));
+				temp3 = temp3.replace(/\\v\[(\d+)\]/gi, function() {
+					return $gameVariables.value(parseInt(arguments[1]));
+				}.bind(this));
+				temp3 = temp3.replace(/\\v\[(\d+)\]/gi, function() {
+					return $gameVariables.value(parseInt(arguments[1]));
+				}.bind(this));
 				
 				var data = {
 					'x': pos[0],

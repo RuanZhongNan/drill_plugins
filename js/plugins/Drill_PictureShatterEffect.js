@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        图片 - 方块粉碎效果
+ * @plugindesc [v1.2]        图片 - 方块粉碎效果
  * @author Drill_up
  * 
  *
@@ -96,6 +96,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 修改了与核心的部分兼容设置。
+ * [v1.2]
+ * 添加了插件指令图片检查。
  * 
  * 
  * @param 默认图片碎片消失方式
@@ -194,19 +196,24 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					temp1 = temp1.replace("方块粉碎[","");
 					temp1 = temp1.replace("]","");
 					
-					$gameScreen.picture(pic_id)._drill_PSE['shatter_command'] = true;
-					$gameScreen.picture(pic_id)._drill_PSE['shatter_id'] = Number(temp1)-1;
-					$gameScreen.picture(pic_id)._drill_PSE['shatter_converted'] = false;
+					if( $gameScreen.drill_PSE_isPictureExist( pic_id ) == false ){ return; }
+					var pic = $gameScreen.picture( pic_id );
+					pic._drill_PSE['shatter_command'] = true;
+					pic._drill_PSE['shatter_id'] = Number(temp1)-1;
+					pic._drill_PSE['shatter_converted'] = false;
 				}
 				if( temp1.indexOf("方块反转粉碎[") != -1 ){
 					temp1 = temp1.replace("方块反转粉碎[","");
 					temp1 = temp1.replace("]","");
 					
-					$gameScreen.picture(pic_id)._drill_PSE['shatter_command'] = true;
-					$gameScreen.picture(pic_id)._drill_PSE['shatter_id'] = Number(temp1)-1;
-					$gameScreen.picture(pic_id)._drill_PSE['shatter_converted'] = true;
+					if( $gameScreen.drill_PSE_isPictureExist( pic_id ) == false ){ return; }
+					var pic = $gameScreen.picture( pic_id );
+					pic._drill_PSE['shatter_command'] = true;
+					pic._drill_PSE['shatter_id'] = Number(temp1)-1;
+					pic._drill_PSE['shatter_converted'] = true;
 				}
 				if( temp1 == "立刻复原" ){
+					if( $gameScreen.drill_PSE_isPictureExist( pic_id ) == false ){ return; }
 					$gameScreen.picture(pic_id)._drill_PSE['redraw_command'] = true;
 				}
 			}
@@ -224,6 +231,21 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 图片检查
+//==============================
+Game_Screen.prototype.drill_PSE_isPictureExist = function( pic_id ){
+	if( pic_id == 0 ){ return false; }
+	
+	var pic = this.picture( pic_id );
+	if( pic == undefined ){
+		alert( "【Drill_PictureShatterEffect.js 图片 - 方块粉碎效果】\n" +
+				"插件指令错误，id为"+pic_id+"的图片还没被创建。\n" + 
+				"你可能需要将指令放在'显示图片'事件指令之后。");
+		return false;
+	}
+	return true;
 };
 
 

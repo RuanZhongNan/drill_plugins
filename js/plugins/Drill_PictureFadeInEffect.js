@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        图片 - 显现动作效果
+ * @plugindesc [v1.1]        图片 - 显现动作效果
  * @author Drill_up
  * 
  * 
@@ -101,6 +101,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 添加了插件指令图片检查。
  * 
  * 
  * 
@@ -199,7 +201,9 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				pics = [];
 				var temp_arr = unit.split(/[,，]/);
 				for( var k=0; k < temp_arr.length; k++ ){
-					var p = $gameScreen.picture( Number(temp_arr[k]) );
+					var pic_id = Number(temp_arr[k]);
+					if( $gameScreen.drill_PFIE_isPictureExist( pic_id ) == false ){ continue; }
+					var p = $gameScreen.picture( pic_id );
 					pics.push( p );
 				}
 			}
@@ -209,20 +213,26 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				pics = [];
 				var temp_arr = unit.split(/[,，]/);
 				for( var k=0; k < temp_arr.length; k++ ){
-					var p = $gameScreen.picture( $gameVariables.value(Number(temp_arr[k])) );
+					var pic_id = $gameVariables.value(Number(temp_arr[k]));
+					if( $gameScreen.drill_PFIE_isPictureExist( pic_id ) == false ){ continue; }
+					var p = $gameScreen.picture( pic_id );
 					pics.push( p );
 				}
 			}
 			if( pics == null && unit.indexOf("图片变量[") != -1 ){
 				unit = unit.replace("图片变量[","");
 				unit = unit.replace("]","");
-				var p = $gameScreen.picture( $gameVariables.value(Number(unit)) );
+				var pic_id = $gameVariables.value(Number(unit));
+				if( $gameScreen.drill_PFIE_isPictureExist( pic_id ) == false ){ return; }
+				var p = $gameScreen.picture( pic_id );
 				pics = [ p ];
 			}
 			if( pics == null && unit.indexOf("图片[") != -1 ){
 				unit = unit.replace("图片[","");
 				unit = unit.replace("]","");
-				var p = $gameScreen.picture( Number(unit) );
+				var pic_id = Number(unit);
+				if( $gameScreen.drill_PFIE_isPictureExist( pic_id ) == false ){ return; }
+				var p = $gameScreen.picture( pic_id );
 				pics = [ p ];
 			}
 		}
@@ -327,9 +337,24 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			
 		}
 	}
-	
 
 };
+//==============================
+// ** 插件指令 - 图片检查
+//==============================
+Game_Screen.prototype.drill_PFIE_isPictureExist = function( pic_id ){
+	if( pic_id == 0 ){ return false; }
+	
+	var pic = this.picture( pic_id );
+	if( pic == undefined ){
+		alert( "【Drill_PictureFadeInEffect.js 图片 - 显现动作效果】\n" +
+				"插件指令错误，id为"+pic_id+"的图片还没被创建。\n" + 
+				"你可能需要将指令放在'显示图片'事件指令之后。");
+		return false;
+	}
+	return true;
+};
+
 
 //=============================================================================
 // ** 存储变量初始化

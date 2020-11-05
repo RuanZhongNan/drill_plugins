@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        系统 - 输入设备核心
+ * @plugindesc [v1.3]        系统 - 输入设备核心
  * @author Drill_up、汗先生
  * 
  * @param 键盘双击判定时长
@@ -118,12 +118,24 @@
  * ----插件扩展
  * 该插件为基础插件，下列插件需要该核心才能运行：
  * 作用于：
- *   - Drill_SecretCode        系统 - 秘籍输入器
- *   - Drill_OperateHud        互动 - 鼠标辅助操作面板
- *   - Drill_MiniPlateForEvent 鼠标 - 事件说明窗口
- *   - Drill_MiniPlateForState 鼠标 - 状态和buff说明窗口
- *   - Drill_MouseTriggerEvent 鼠标 - 鼠标触发事件
- *
+ *   - Drill_SecretCode          系统 - 秘籍输入器
+ *   - Drill_OperateHud          互动 - 鼠标辅助操作面板
+ *   - Drill_MiniPlateForEvent   鼠标 - 事件说明窗口
+ *   - Drill_MiniPlateForState   鼠标 - 状态和buff说明窗口
+ *   - Drill_MouseTriggerEvent   鼠标 - 鼠标触发事件
+ *   - Drill_MouseTriggerPicture 鼠标 - 鼠标触发图片
+ * 
+ * -----------------------------------------------------------------------------
+ * ----可选设定
+ * 你可以通过插件指令控制部分配置。
+ * 
+ * 插件指令：>输入设备核心 : 鼠标右键菜单 : 开启
+ * 插件指令：>输入设备核心 : 鼠标右键菜单 : 关闭
+ * 插件指令：>输入设备核心 : 触屏双指菜单 : 开启
+ * 插件指令：>输入设备核心 : 触屏双指菜单 : 关闭
+ * 
+ * 1.插件指令配置执行后，永久有效，且能够被存储到存档中。
+ * 
  * -----------------------------------------------------------------------------
  * ----插件性能
  * 测试仪器：   4G 内存，Intel Core i5-2520M CPU 2.5GHz 处理器
@@ -155,6 +167,8 @@
  * 修改了注释说明。
  * [v1.2]
  * 优化了内部接口的结构。
+ * [v1.3]
+ * 给右键菜单功能添加了插件指令开关。
  *
  */
  
@@ -180,11 +194,15 @@
 //		★大体框架与功能如下：
 //			按键核心：
 //				->鼠标按键
+//					->鼠标失去窗口焦点优化
 //				->手柄按键
 //				->键盘按键
 //				->触屏辅助联动
 //				->优化，手柄按键自动打盹
 //				->优化，键盘按键自动打盹
+//				->禁用设置
+//					->右键菜单
+//					->触屏双指菜单
 //
 //		★必要注意事项：
 //			1.键盘/手柄按键自动打盹：键位触发后，如果超过一定时间，就认定为打盹。
@@ -230,6 +248,38 @@
 
 
 //=============================================================================
+// ** 插件指令
+//=============================================================================
+var _drill_COI_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function(command, args) {
+	_drill_COI_pluginCommand.call(this, command, args);
+	if( command === ">输入设备核心" ){
+		var type = String(args[1]);
+		var temp2 = String(args[3]);
+		if( type == "鼠标右键菜单" ){
+			if( temp2 == "开启" ){ $gameSystem._drill_COI_menu_mouse = true;  }
+			if( temp2 == "关闭" ){ $gameSystem._drill_COI_menu_mouse = false; }
+		}
+		if( type == "触屏双指菜单" ){
+			if( temp2 == "开启" ){ $gameSystem._drill_COI_menu_touchPad = true;  }
+			if( temp2 == "关闭" ){ $gameSystem._drill_COI_menu_touchPad = false; }
+		}
+	}
+}
+
+
+//=============================================================================
+// ** 存储数据变量初始化
+//=============================================================================
+var _drill_COI_initialize = Game_System.prototype.initialize;
+Game_System.prototype.initialize = function() {
+	_drill_COI_initialize.call(this);
+	this._drill_COI_menu_mouse = DrillUp.g_COI_menu_mouse;			//鼠标右键菜单
+	this._drill_COI_menu_touchPad = DrillUp.g_COI_menu_touchPad;	//触屏双指菜单
+}
+
+
+//=============================================================================
 // ** 禁用设置
 //=============================================================================
 //==============================
@@ -237,7 +287,7 @@
 //==============================
 var _drill_COI_onRightButtonDown = TouchInput._onRightButtonDown;
 TouchInput._onRightButtonDown = function(event) {
-	if( DrillUp.g_COI_menu_mouse == true && SceneManager._scene.constructor.name === "Scene_Map" ){
+	if( $gameSystem._drill_COI_menu_mouse == true && SceneManager._scene.constructor.name === "Scene_Map" ){
 		
 	}else{
 		_drill_COI_onRightButtonDown.call(this,event);
@@ -248,7 +298,7 @@ TouchInput._onRightButtonDown = function(event) {
 //==============================
 var _drill_COI_onTouchStart = TouchInput._onTouchStart;
 TouchInput._onTouchStart = function(event) {
-	if( DrillUp.g_COI_menu_touchPad == true && SceneManager._scene.constructor.name === "Scene_Map" ){
+	if( $gameSystem._drill_COI_menu_touchPad == true && SceneManager._scene.constructor.name === "Scene_Map" ){
 		if (event.touches.length >= 2) {
 			this._drill_COI_forbid_menu = true;
 		}
@@ -264,6 +314,19 @@ TouchInput._onCancel = function(x, y) {
 	}
 	_drill_COI_onCancel.call(this,x, y);
 };
+
+//=============================================================================
+// ** 鼠标失去窗口焦点优化（添加焦点函数）
+//=============================================================================
+var _drill_COI__setupEventHandlers = TouchInput._setupEventHandlers;
+TouchInput._setupEventHandlers = function() {
+	_drill_COI__setupEventHandlers.call(this);
+    window.addEventListener("blur", this._onLostFocus.bind(this));
+};
+TouchInput._onLostFocus = function() {
+    this.clear();
+};
+
 
 //=============================================================================
 // ** 鼠标

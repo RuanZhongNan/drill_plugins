@@ -3,10 +3,10 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        图片 - 滤镜效果
+ * @plugindesc [v1.3]        图片 - 滤镜效果
  * @author Drill_up
  *
- *
+ * 
  * @help  
  * =============================================================================
  * +++ Drill_PictureFilter +++
@@ -39,40 +39,44 @@
  * 你需要通过插件指令设置滤镜：
  * （注意，冒号左右两边有空格）
  *
- * 插件指令：>图片滤镜 : 1 : 纯色滤镜 : 纯黑 : 155 : 60
- * 插件指令：>图片滤镜 : 1 : 纯色滤镜 : 纯蓝 : 155 : 60
- * 插件指令：>图片滤镜 : 1 : 纯色滤镜 : 纯绿 : 155 : 60
- * 插件指令：>图片滤镜 : 1 : 纯色滤镜 : 纯红 : 155 : 60
- * 插件指令：>图片滤镜 : 1 : 纯色滤镜 : 黄色 : 155 : 60
- * 插件指令：>图片滤镜 : 1 : 纯色滤镜 : 紫色 : 155 : 60
- * 插件指令：>图片滤镜 : 1 : 纯色滤镜 : 青色 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 纯黑 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片变量[1] : 纯色滤镜 : 纯黑 : 155 : 60
  * 
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 黑白 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 反色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 鲜艳 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 漂白 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 饱和度降低 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 古墨水画色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 古铜色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 宝丽来相机色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 红绿蓝翻转 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 夜色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 着色滤镜 : 致幻色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 纯黑 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 纯蓝 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 纯绿 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 纯红 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 黄色 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 紫色 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 纯色滤镜 : 青色 : 155 : 60
  * 
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 纯黑 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 纯蓝 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 纯绿 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 纯红 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 黄色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 紫色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 青色 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : 纯白 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 填充滤镜 : #dd99ff : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 黑白 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 反色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 鲜艳 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 漂白 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 饱和度降低 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 古墨水画色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 古铜色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 宝丽来相机色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 红绿蓝翻转 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 夜色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 着色滤镜 : 致幻色 : 255 : 60
  * 
- * 插件指令：>图片滤镜 : 1 : 模糊滤镜 : 255 : 60
- * 插件指令：>图片滤镜 : 1 : 噪点滤镜 : 155 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 纯黑 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 纯蓝 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 纯绿 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 纯红 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 黄色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 紫色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 青色 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : 纯白 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 填充滤镜 : #dd99ff : 255 : 60
  * 
- * 1.第一个参数，表示：图片编号。
+ * 插件指令：>图片滤镜 : 图片[1] : 模糊滤镜 : 255 : 60
+ * 插件指令：>图片滤镜 : 图片[1] : 噪点滤镜 : 155 : 60
+ * 
+ * 1.前半部分（图片）和 后半部分（纯色滤镜）的参数可以随意组合。
+ *   一共有2*29种组合方式。
  * 2.滤镜后面的两个参数表示：目标程度，变化时长。
  * 3.目标程度范围为0-255。255的程度最强烈。
  *   比如，纯蓝滤镜的255表示敌人图像完全过滤为蓝色。
@@ -128,6 +132,8 @@
  * [v1.2]
  * 分离了滤镜核心，大幅度优化了底层结构。
  * 添加了填充滤镜功能，降低了模糊滤镜的性能消耗。
+ * [v1.3]
+ * 添加了插件指令图片检查。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -177,56 +183,93 @@
 var _drill_PFi_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_PFi_pluginCommand.call(this, command, args);
-	if (command === '>图片滤镜') { // >图片滤镜 : 10 : 纯色滤镜 : 纯蓝 : 155 : 60
+	if( command === ">图片滤镜" ){		// >图片滤镜 : 图片[10] : 纯色滤镜 : 纯蓝 : 155 : 60
 		if(args.length == 8 || args.length == 10){
-			var pic_id = Number(args[1]);
+			var pic_id = String(args[1]);
 			var type = String(args[3]);
 			var temp1 = String(args[5]);
 			var temp2 = Number(args[7]);
 			if( args[9]!=undefined ){ var temp3 = Number(args[9]); }
 			
-			if( type == "纯色滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setPureLinear = [temp1,temp2,temp3];
+			var pic = null;
+			if( pic_id.indexOf("图片变量[") != -1 ){
+				pic_id = pic_id.replace("图片变量[","");
+				pic_id = pic_id.replace("]","");
+				pic_id = $gameVariables.value( Number(pic_id) );
+				if( $gameScreen.drill_PFi_isPictureExist( pic_id ) == false ){ return; }
+				pic = $gameScreen.picture( pic_id );
+				
+			}else if( pic_id.indexOf("图片[") != -1 ){
+				pic_id = pic_id.replace("图片[","");
+				pic_id = pic_id.replace("]","");
+				pic_id = Number(pic_id);
+				if( $gameScreen.drill_PFi_isPictureExist( pic_id ) == false ){ return; }
+				pic = $gameScreen.picture( pic_id );
+				
+			}else{
+				pic_id = Number(pic_id);
+				if( $gameScreen.drill_PFi_isPictureExist( pic_id ) == false ){ return; }
+				pic = $gameScreen.picture( pic_id );
 			}
-			if( type == "着色滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setColorLinear = [temp1,temp2,temp3];
+			
+			
+			if( pic != null && type == "纯色滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setPureLinear = [temp1,temp2,temp3];
 			}
-			if( type == "填充滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setFillLinear = [temp1,temp2,temp3];
+			if( pic != null && type == "着色滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setColorLinear = [temp1,temp2,temp3];
 			}
-			if( type == "模糊滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setBlurLinear = [Number(temp1),temp2];
+			if( pic != null && type == "填充滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setFillLinear = [temp1,temp2,temp3];
 			}
-			if( type == "噪点滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setNoiseLinear = [Number(temp1),temp2];
+			if( pic != null && type == "模糊滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setBlurLinear = [Number(temp1),temp2];
 			}
-			if( type == "波动纯色滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setPureWave = [temp1,temp2,temp3];
+			if( pic != null && type == "噪点滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setNoiseLinear = [Number(temp1),temp2];
 			}
-			if( type == "波动着色滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setColorWave = [temp1,temp2,temp3];
+			if( pic != null && type == "波动纯色滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setPureWave = [temp1,temp2,temp3];
 			}
-			if( type == "波动填充滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setFillWave = [temp1,temp2,temp3];
+			if( pic != null && type == "波动着色滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setColorWave = [temp1,temp2,temp3];
 			}
-			if( type == "波动模糊滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setBlurWave = [Number(temp1),temp2];
+			if( pic != null && type == "波动填充滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setFillWave = [temp1,temp2,temp3];
 			}
-			if( type == "波动噪点滤镜" ){
-				$gameScreen.picture(pic_id)._drill_PFi.openFilter = true;
-				$gameScreen.picture(pic_id)._drill_PFi.setNoiseWave = [Number(temp1),temp2];
+			if( pic != null && type == "波动模糊滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setBlurWave = [Number(temp1),temp2];
+			}
+			if( pic != null && type == "波动噪点滤镜" ){
+				pic._drill_PFi.openFilter = true;
+				pic._drill_PFi.setNoiseWave = [Number(temp1),temp2];
 			}
 		}
 	}
+};
+//==============================
+// ** 插件指令 - 图片检查
+//==============================
+Game_Screen.prototype.drill_PFi_isPictureExist = function( pic_id ){
+	if( pic_id == 0 ){ return false; }
+	
+	var pic = this.picture( pic_id );
+	if( pic == undefined ){
+		alert( "【Drill_PictureFilter.js 图片 - 滤镜效果】\n" +
+				"插件指令错误，id为"+pic_id+"的图片还没被创建。\n" + 
+				"你可能需要将指令放在'显示图片'事件指令之后。");
+		return false;
+	}
+	return true;
 };
 
 //=============================================================================

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        物体 - 玩家的事件
+ * @plugindesc [v1.1]        物体 - 玩家的事件
  * @author Drill_up
  * 
  * 
@@ -37,6 +37,7 @@
  *   (1.被绑定的事件的触发条件："确定键"，"玩家接近"，"事件接近"等
  *      将会完全失效，由于时刻跟随玩家，所以不能执行相关触发。
  *   (2.事件的独立开关开启后永久有效，可以跨地图，且不会被重置。
+ *   (3.你可以使用插件指令，使得事件的贴图保持与玩家贴图同步。
  * 
  * -----------------------------------------------------------------------------
  * ----激活条件 - 绑定
@@ -54,9 +55,11 @@
  * （注意，冒号左右有空格）
  * 
  * 插件指令：>玩家的事件 : 事件名[玩家事件-伤害] : 赋值事件id给变量 : 变量[10]
+ * 插件指令：>玩家的事件 : 事件名[玩家事件-伤害] : 事件贴图与玩家同步 : 开启
+ * 插件指令：>玩家的事件 : 事件名[玩家事件-伤害] : 事件贴图与玩家同步 : 关闭
  * 
  * 1.由于进入不同的地图，事件变量id的值也不同，所以使用前，需要先赋值给变量。
- *   如果事件还没有被完全创建，则获得的变量值是-1。
+ * 2.注意，事件绑定执行后不会立即创建事件对象，所以短期内获得的变量值是-1。
  * 
  * -----------------------------------------------------------------------------
  * ----可选设定
@@ -90,6 +93,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 添加了事件贴图与玩家贴图同步的功能。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -125,6 +130,7 @@
 //		★其它说明细节：
 //			1.从原理实现上，就是复制一个事件然后绑定。
 //			  只是由于附带条件太多，藕断丝连。事件id随时变，开关需要存储，所以关联在一起非常复杂。
+//			2.这里是【直接记录】玩家的贴图位置，后期需要
 //			
 //		★存在的问题：
 //			暂无
@@ -169,18 +175,36 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 				var data = {
 					'mapId': temp2,
 					'eventName': temp3,
+					'spriteSynchronized': false,
 				}
 				$gameSystem.drill_EFP_pushBind( data );
 			}
 			
-			/*-----------------事件操作------------------*/
-			if( temp1.indexOf("事件名[") ){
+			/*-----------------绑定数据操作------------------*/
+			if( temp1.indexOf("事件名[") != -1 ){
 				temp1 = temp1.replace("事件名[","");
 				temp1 = temp1.replace("]","");
+				
+				if( temp2 == "事件贴图与玩家同步" ){
+					if( temp3 == "开启" ){
+						var data = $gameSystem.drill_EFP_getBindByName( temp1 );
+						data['spriteSynchronized'] = true;
+						$gameSystem.drill_EFP_setBindByName( data['eventName'], data );
+					}
+					if( temp3 == "关闭" ){
+						var data = $gameSystem.drill_EFP_getBindByName( temp1 );
+						data['spriteSynchronized'] = false;
+						$gameSystem.drill_EFP_setBindByName( data['eventName'], data );
+					}
+				}
+				
+				/*-----------------获取变量（注意有延迟）------------------*/
 				var e_id = -1;
-				var e = $gameMap.drill_EFP_getCurMapEventDataByName( temp1 );
+				var e = $gameMap.drill_EFP_getCurMapEventByName( temp1 );
 				if( e != null ){
 					e_id = e._eventId;
+				}else{
+					return;
 				}
 				
 				if( temp2 == "赋值事件id给变量" ){
@@ -188,8 +212,8 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					temp3 = temp3.replace("]","");
 					$gameVariables.setValue( Number(temp3), e_id );
 				}
-				
 			}
+			
 		}
 		if(args.length == 2){
 			var temp1 = String(args[1]);
@@ -241,6 +265,30 @@ Game_System.prototype.drill_EFP_pushBind = function( bind ) {
 	}
 	this._drill_EFP_bindTank.push( bind );
 	this._drill_EFP_switchTank.push( {} );
+};
+//==============================
+// * 获取绑定
+//==============================
+Game_System.prototype.drill_EFP_getBindByName = function( eventName ) {
+	for(var i=0; i < $gameSystem._drill_EFP_bindTank.length; i++ ){
+		var temp_bind = $gameSystem._drill_EFP_bindTank[i];
+		if( temp_bind['eventName'] == eventName ){
+			return temp_bind;
+		}
+	}
+	return {}
+};
+//==============================
+// * 绑定赋值
+//==============================
+Game_System.prototype.drill_EFP_setBindByName = function( eventName, data ) {
+	for(var i=0; i < $gameSystem._drill_EFP_bindTank.length; i++ ){
+		var temp_bind = $gameSystem._drill_EFP_bindTank[i];
+		if( temp_bind['eventName'] == eventName ){
+			$gameSystem._drill_EFP_bindTank[i] = data;
+			break;
+		}
+	}
 };
 
 
@@ -349,6 +397,8 @@ Game_Map.prototype.drill_EFP_updateCreate = function(){
 			// > 根据数据生成事件对象
 			var e = this.drill_newEvent_createEvent( e_data );
 		
+			e._drill_EFP_isBinded = true;	//（玩家的事件 标记）
+		
 			// > 记录上一个id
 			$gameSystem._drill_EDu_last_id = e._eventId;
 			
@@ -374,6 +424,7 @@ Game_Map.prototype.drill_EFP_updateCreate = function(){
 Game_Map.prototype.drill_EFP_updateEventLocks = function(){
 	for( var i=0; i < this._drill_EFP_eventTank.length; i++ ){
 		var e = this._drill_EFP_eventTank[i];
+		var bind = this._drill_EFP_dataTank[i];
 		if( e == null ){ continue; }
 		
 		e._x = $gamePlayer._x;						//坐标x
@@ -386,6 +437,7 @@ Game_Map.prototype.drill_EFP_updateEventLocks = function(){
 		if( e._trigger === 0 || e._trigger === 1 || e._trigger === 2 ){	//去掉 确定键/玩家接近/事件接近 的触发条件
 			e._trigger = null;
 		}
+		e._drill_EFP_spriteSynchronized = bind['spriteSynchronized'];
 		
 	}
 }
@@ -396,7 +448,8 @@ Game_Map.prototype.drill_EFP_getTarMapEventDataByName = function( mapId, eventNa
 	if( this._mapId == mapId ){
 		
 		// > 本地图
-		return this.drill_EFP_getCurMapEventDataByName( eventName );
+		var e = this.drill_EFP_getCurMapEventByName( eventName );
+		return e.event();
 		
 	}else{
 		
@@ -425,14 +478,14 @@ Game_Map.prototype.drill_EFP_getTarMapEventDataByName = function( mapId, eventNa
 	}
 }
 //==============================
-// * 地图 - 获取本地图的事件数据（根据事件名）
+// * 地图 - 获取本地图的事件对象（根据事件名）
 //==============================
-Game_Map.prototype.drill_EFP_getCurMapEventDataByName = function( eventName ) {
+Game_Map.prototype.drill_EFP_getCurMapEventByName = function( eventName ) {
 	var events = this.events();
 	for(var i = 0; i < events.length; i++ ){
-		var e_data = events[i].event();
-		if( e_data.name == eventName ){
-			return e_data;
+		var e = events[i];
+		if( e.event().name == String(eventName) ){
+			return e;
 		}
 	}
 	return null;
@@ -460,6 +513,60 @@ Game_SelfSwitches.prototype.setValue = function( key, value ){
 			}
 		}
 	}
+};
+
+
+//=============================================================================
+// ** 事件贴图
+//=============================================================================
+//==============================
+// * 事件贴图 - 帧刷新
+//==============================
+var _drill_EFP_sprite_update = Sprite_Character.prototype.update;
+Sprite_Character.prototype.update = function() {
+    _drill_EFP_sprite_update.call(this);
+	
+	// > 玩家的贴图位置记录
+	if( this._character &&
+		this._character instanceof Game_Player ){
+		this.drill_EFP_updatePlayerSprite();
+	}
+	
+	// > 刷新贴图位置
+	if( this._character && 
+		this._character._drill_EFP_isBinded == true ){
+		this.drill_EFP_updateSpriteData();
+	}
+}
+//==============================
+// * 事件贴图 - 玩家的贴图位置记录
+//==============================
+Sprite_Character.prototype.drill_EFP_updatePlayerSprite = function() {
+	if((Imported.Drill_LayerReverseReflection && this instanceof Drill_Sprite_LRR) || 			//镜像屏蔽
+	   (Imported.Drill_LayerSynchronizedReflection && this instanceof Drill_Sprite_LSR) ){ return; }
+	$gameTemp._drill_EFP_playerSpite_x = this.x;
+	$gameTemp._drill_EFP_playerSpite_y = this.y;
+	$gameTemp._drill_EFP_playerSpite_scale_x = this.scale.x;
+	$gameTemp._drill_EFP_playerSpite_scale_y = this.scale.y;
+	$gameTemp._drill_EFP_playerSpite_rotation = this.rotation;
+	$gameTemp._drill_EFP_playerSpite_opacity = this.opacity;
+	$gameTemp._drill_EFP_playerSpite_visible = this.visible;
+}
+//==============================
+// * 事件贴图 - 刷新贴图位置
+//==============================
+Sprite_Character.prototype.drill_EFP_updateSpriteData = function() {
+	if( $gameTemp._drill_EFP_playerSpite_x == undefined ){ return; }
+	if(!this._character ){ return; }
+	if( this._character._drill_EFP_spriteSynchronized != true ){ return; }
+	
+	this.x = $gameTemp._drill_EFP_playerSpite_x;
+	this.y = $gameTemp._drill_EFP_playerSpite_y;
+	this.scale.x = $gameTemp._drill_EFP_playerSpite_scale_x;
+	this.scale.y = $gameTemp._drill_EFP_playerSpite_scale_y;
+	this.rotation = $gameTemp._drill_EFP_playerSpite_rotation;
+	this.opacity = $gameTemp._drill_EFP_playerSpite_opacity;
+	this.visible = $gameTemp._drill_EFP_playerSpite_visible;
 };
 
 

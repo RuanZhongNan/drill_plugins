@@ -2090,6 +2090,10 @@ Drill_COSB_LayerSprite.prototype.drill_updateButtonStartMove = function() {
 		var yy = temp_sprite['_org_y'] + temp_sprite['_drill_COBa_y'][ end_index ] - temp_sprite['_drill_COBa_y'][ time ];
 		var oo = temp_data['selected_opacity_default'] * time / end_index;
 		
+		//if( temp_data['btn_slideAnim']['slideMoveType'] == "不移动" ){
+		//	（注意，不移动的轨迹，是真的不会移动，终点设置无效的，链式移动时，要注意该情况。）
+		//}
+		
 		// > 属性赋值
 		temp_sprite['_opacity'] += oo;
 		temp_sprite['_x'] += Math.floor(xx);

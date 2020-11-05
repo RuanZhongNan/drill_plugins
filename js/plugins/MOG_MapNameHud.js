@@ -899,6 +899,8 @@ Map_Name_Hud.prototype.update = function() {
 // * 切换备用框
 //==============================
 Map_Name_Hud.prototype.mog_mhud_updateFrame = function() {	
+	if( this._layout == undefined ){ return; }
+	if( this._circle == undefined ){ return; }
 	if( this._hud_layout_name == $gameSystem._mhud_layout 
 	 && this._hud_circle_name == $gameSystem._mhud_circle 
 	 && this._hud_par_name == $gameSystem._mhud_par ){ return; }

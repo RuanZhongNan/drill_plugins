@@ -652,6 +652,7 @@ Object.defineProperty(Window.prototype, '_drill_COWA_frameOpacity', {	//这部�
 // **		类型：装饰函数集
 // **		功能：对菜单界面贴图的一些简单平移移动属性（菜单界面专用）。
 // **			  注意，菜单界面专用，其它界面的去找 弹道核心-两点式 。
+// **			  【一定是贴图偏移后会到自己原来的位置。】
 // **		接口：移动初始化：
 // **			    sprite.drill_COWA_setButtonMove( data );
 // **			  重新移动：

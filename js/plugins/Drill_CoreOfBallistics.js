@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        系统 - 弹道核心
+ * @plugindesc [v1.4]        系统 - 弹道核心
  * @author Drill_up
  *
  * 
@@ -77,6 +77,8 @@
  * 优化了内部接口的结构。
  * [v1.3]
  * 修复了 移动延迟 功能，并且调整了两点式移动细节。
+ * [v1.4]
+ * 修复了 两点式 不移动时，闪移的bug。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -222,8 +224,8 @@ Game_Temp.prototype.drill_COBa_setBallisticsMove = function( data ){
 	if( data['cartYDistanceFormula'] == undefined ){ data['cartYDistanceFormula'] = "return 0" };	//直角坐标 - y - 路程计算公式
 	//   两点式（twoPoint）
 	if( data['twoPointType'] == undefined ){ data['twoPointType'] = "不移动" };						//两点式 - 类型（不移动/匀速移动/弹性移动/……）
-	if( data['twoPointDifferenceX'] == undefined ){ data['twoPointDifferenceX'] = 0 };				//两点式 - 距离差值x
-	if( data['twoPointDifferenceY'] == undefined ){ data['twoPointDifferenceY'] = 0 };				//两点式 - 距离差值y
+	if( data['twoPointDifferenceX'] == undefined ){ data['twoPointDifferenceX'] = 0 };				//两点式 - 距离差值x（终点减起点）
+	if( data['twoPointDifferenceY'] == undefined ){ data['twoPointDifferenceY'] = 0 };				//两点式 - 距离差值y（终点减起点）
 	if( data['twoPointInc'] == undefined ){ data['twoPointInc'] = 0 };								//两点式 - 加速度比
 	
 	//   公式obj
@@ -464,25 +466,28 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 		}
 	}	
 	
-	if( data['movementMode'] == "两点式"){
+	if( data['movementMode'] == "两点式"){		
+		//【匀速移动/增减速移动/弹性移动 经过了反复验证，公式以0,0起点为准，向终点值靠近，差值可为负数。】
+		//（这里的公式默认递增，你可以反转，变为递减。）
+		//（不固定开始点也不固定结束点，由于子插件进行了取反，两头只要固定一处，就会出现各种各样的问题，所以不加了）
 		
-		for(var time = 0; time < data['movementTime']-1; time++){
+		for(var time = 0; time < data['movementTime']; time++){
 			// > 速度
 			var xx = 0;
 			var yy = 0;
 			
 			if( data['twoPointType'] == "不移动"){
-				xx = data['twoPointDifferenceX'];
-				yy = data['twoPointDifferenceY'];
+				xx = 0;							//（一直待在原位置）
+				yy = 0;
 			}
 			
-			if( data['twoPointType'] == "匀速移动"){
+			if( data['twoPointType'] == "匀速移动"){	
 				xx = time * data['twoPointDifferenceX']/data['movementTime'];
 				yy = time * data['twoPointDifferenceY']/data['movementTime'];
 			}
 			
 			if( data['twoPointType'] == "增减速移动"){	
-				var d = data['twoPointDifferenceX'];		//先加速后减速
+				var d = data['twoPointDifferenceX'];		//（先加速后减速）
 				var t = data['movementTime'];
 				var v_max = d/t*2;
 				var a = v_max/t*2;
@@ -512,8 +517,8 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 				var ax = 2 * dx / t / t;
 				var ay = 2 * dy / t / t;	
 				var c_time = t - time;
-				xx = -1 * 0.5 * ax * c_time * c_time ;
-				yy = -1 * 0.5 * ay * c_time * c_time ;
+				xx = 0.5 * ax * t * t - 0.5 * ax * c_time * c_time ;
+				yy = 0.5 * ay * t * t - 0.5 * ay * c_time * c_time ;
 			}
 			
 			xx = orgX + xx;
@@ -521,10 +526,6 @@ Game_Temp.prototype.drill_COBa_preBallisticsMove = function( obj_data, obj_index
 			obj_data['_drill_COBa_x'].push(xx);
 			obj_data['_drill_COBa_y'].push(yy);
 		}
-		
-		// > 终点值
-		obj_data['_drill_COBa_x'].push( orgX );
-		obj_data['_drill_COBa_y'].push( orgY );
 	}
 	
 	// > 延迟	
