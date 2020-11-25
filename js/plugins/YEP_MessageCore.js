@@ -13,7 +13,7 @@ Yanfly.Message.version = 1.19;
 
 //=============================================================================
  /*:
- * @plugindesc v1.19 [v1.0]  对话框 - 消息核心
+ * @plugindesc v1.19 [v1.1]  对话框 - 消息核心
  * @author Yanfly Engine Plugins（Mandarava修改支持中文换行）（drill_up翻译）
  *
  * @param ---对话框---
@@ -190,20 +190,27 @@ Yanfly.Message.version = 1.19;
  * ============================================================================
  *   插件扩展
  * ============================================================================
- * 该插件可以单独使用，如果与下列插件一起使用，效果会更好。
+ * 该插件可以单独使用，也可以被插件扩展，或者作用于指定子插件。
  * 被扩展：
- *   - Drill_DialogFilter 对话框-滤镜效果
+ *   - Drill_DialogFilter       对话框-滤镜效果
  *     通过该插件 姓名框 能产生滤镜效果，可以制作闪烁的姓名、模糊的姓名。
+ * 可作用于：
+ *   - Drill_DialogTextAlign    对话框-文本居中
+ *     目标插件需要该核心才能设置居中与右对齐。
  * 
  * ============================================================================
  *   设定注意事项
  * ============================================================================
  * 1.插件的作用域：地图界面、战斗界面、菜单界面。
  *   作用于所有窗口文本的地方。
- * 2.消息核心中的字体等设置，如果你没有把握，就不要去修改。
- *   这里设置的是所有消息窗口通用的字体。
- *   包括 对话框、战斗消息提示、帮助窗口 。
- *
+ * 2.了解更多窗口字符，可以去看看"关于窗口字符.docx"。
+ * 细节说明：
+ *   (1.消息核心中的 字体参数 等设置，如果你没有把握，就不要去修改。
+ *      这里设置的是所有消息窗口通用的字体。
+ *      包括 对话框、战斗消息提示、帮助窗口 。
+ *   (2.消息输入字符只在对话框中有效。
+ *      指代字符 与 部分效果字符 在所有支持窗口字符的窗口有效。
+ * 
  * ============================================================================
  *   rmmv默认特殊字符
  * ============================================================================
@@ -216,7 +223,7 @@ Yanfly.Message.version = 1.19;
  *   \\          替换为'\'反斜杠字符本身。
  * 
  * 效果字符
- *   \C[n]       之后文字显示为第n个颜色(rmmv默认颜色0-27，可扩展高级颜色)
+ *   \C[n]       之后文字显示为第n个颜色(rmmv默认颜色0-31，可扩展高级颜色)
  *   \I[n]       绘制第n个图标。
  *   \{          将字体放大一级。
  *   \}          将字体缩小一级。
@@ -228,8 +235,8 @@ Yanfly.Message.version = 1.19;
  *   \>          立刻显示后面文字。（一行内）
  *   \<          取消立刻显示。
  *   \^          显示文本后不等待输入。
- *
- * 其它字符
+ * 
+ * 效果字符（特殊）
  *   \$          打开金钱窗口。(对话中右上角出现一个金钱窗口,结束对话消失)
  *
  *
@@ -255,13 +262,23 @@ Yanfly.Message.version = 1.19;
  *   \it[x]      替换为第n个状态的名字 + 图标
  * 
  * 效果字符
- *   \fr         重设之后文字的字体设置。
+ *   \fr         重设之后文字的字体为默认。
  *   \fn<xx>     指定之后的文字字体，xx为字体名称。
  *   \fs[n]      指定之后的文字字体大小为n。
  *   \fb         之后的文字字体加粗。（如果要还原，就加 \fr ）
  *   \fi         之后的文字字体倾斜。（如果要还原，就加 \fr ）
- *   \oc[n]      之后的文字边为第n个颜色。(rmmv默认颜色0-27,不支持高级颜色)
- *   \ow[n]      之后的文字边厚度为n像素。(标准为1像素)
+ *   \oc[n]      之后的文字边线为第n个颜色。(rmmv默认颜色0-31,不支持高级颜色)
+ *   \ow[n]      之后的文字边线厚度为n像素。(标准为1像素)
+ *
+ * 效果字符（自动换行）
+ *   <WordWrap>  开启自动换行（最好用插件指令去开启）
+ *   <br>        开启自动换行时的 强制换行 字符。
+ *
+ * 效果字符（其它）
+ *   \px[n]      断行，设置当前字符偏移的x值，单位像素。
+ *   \py[n]      断行，设置当前字符偏移的y值，单位像素。
+ *   \af[n]      该字符把对话框脸图 换成第n个角色脸图。    (只对话框有效)
+ *   \pf[n]      该字符把对话框脸图 换成第n个队伍成员脸图。(只对话框有效)
  *
  * 消息输入字符
  *   \w[n]       等待 n 帧。
@@ -270,16 +287,6 @@ Yanfly.Message.version = 1.19;
  *   \n<xx>      建立一个靠左的姓名框，xx为框内的文本信息。
  *   \nc<xx>     建立一个居中的姓名框，xx为框内的文本信息。
  *   \nr<xx>     建立一个靠右的姓名框，xx为框内的文本信息。
- *
- * 自动换行
- *   <WordWrap>  开启自动换行（最好用插件指令去开启）
- *   <br>        开启自动换行时的 强制换行 字符。
- *
- * 其它字符
- *   \px[n]      断行，设置当前字符偏移的x值，单位像素。
- *   \py[n]      断行，设置当前字符偏移的y值，单位像素。
- *   \af[n]      该字符把对话框脸图 换成第n个角色脸图。    (只对话框有效)
- *   \pf[n]      该字符把对话框脸图 换成第n个队伍成员脸图。(只对话框有效)
  *
  *
  * ============================================================================
@@ -322,6 +329,11 @@ Yanfly.Message.version = 1.19;
  * ============================================================================
  *   Bug修复说明
  * ============================================================================
+ * [v1.1]
+ * 添加了部分对话框插件的兼容。
+ * [v1.0]
+ * 完成插件翻译。
+ * 
  * （自从上一次适配了1.50工程后，很久没更新了）
  * Version 1.19:
  * - Updated for RPG Maker MV version 1.5.0.
@@ -635,10 +647,16 @@ Window_Base.prototype.resetFontSettings = function() {
     this.contents.outlineWidth = $gameSystem.getMessageFontOutline();
 };
 
+//==============================
+// * 获取Ex文本的宽度
+//==============================
 Window_Base.prototype.textWidthEx = function(text) {
     return this.drawTextEx(text, 0, this.contents.height + this.lineHeight());
 };
 
+//==============================
+// * 转义字符操作
+//==============================
 Yanfly.Message.Window_Base_convertEscapeCharacters =
     Window_Base.prototype.convertEscapeCharacters;
 Window_Base.prototype.convertEscapeCharacters = function(text) {
@@ -648,6 +666,9 @@ Window_Base.prototype.convertEscapeCharacters = function(text) {
     return text;
 };
 
+//==============================
+// * 自动换行开关
+//==============================
 Window_Base.prototype.setWordWrap = function(text) {
     this._wordWrap = false;
     if (text.match(/<(?:WordWrap)>/i)) {
@@ -804,10 +825,24 @@ Window_Base.prototype.processEscapeCharacter = function(code, textState) {
     this.contents.outlineWidth = this.obtainEscapeParam(textState);
     break;
   case 'PX':
-    textState.x = this.obtainEscapeParam(textState);
+  
+	// > 不准套娃
+	if( $gameTemp._drill_COWA_bitmap_isCalculating == true ){ return; }
+    
+	var px = this.obtainEscapeParam(textState);
+	textState.x += px;
+	
+	//（居中/右对齐 宽度修正）
+	if( this._drill_COWA_drawingOption ){
+		this._drill_COWA_drawingOption['width'] -= px;
+	}
     break;
   case 'PY':
-    textState.y = this.obtainEscapeParam(textState);
+  
+	// > 不准套娃
+	if( $gameTemp._drill_COWA_bitmap_isCalculating == true ){ return; }
+	
+    textState.y += this.obtainEscapeParam(textState);
     break;
   default:
     Yanfly.Message.Window_Base_processEscapeCharacter.call(this,

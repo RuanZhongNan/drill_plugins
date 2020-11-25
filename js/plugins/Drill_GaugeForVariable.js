@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.7]        UI - 高级变量固定框
+ * @plugindesc [v1.8]        UI - 高级变量固定框
  * @author Drill_up
  * 
  * @Drill_LE_param "固定框样式-%d"
@@ -108,16 +108,25 @@
  * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 隐藏名称
  * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 显示参数数字
  * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 隐藏参数数字
- * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 修改段上限[300]
- * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 变量修改段上限[300]
- * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 修改额定值[300]
- * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 变量修改额定值[300]
  * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 修改名称[蔬菜]
+ * 
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 修改段上限[300]
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 添加段上限[+100]
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 变量修改段上限[21]
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 变量添加段上限[21]
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 修改额定值[300]
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 添加额定值[+100]
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 变量修改额定值[21]
+ * 插件指令：>高级变量框 : 框设置[1] : 槽[1] : 变量添加额定值[21]
  * 
  * 1.每个槽数据都对应1个参数条、1个参数数字、1个名称，你可以通过插件指令
  *   控制槽中的数据。
  * 2.注意，插件指令里面，修改的名字不能出现 空格 和 英文冒号。
  *   修改后参数永久有效。
+ * 3."修改段上限[300]"可以使得段上限的值设置为300，
+ *   "变量修改段上限[21]"可以使得段上限的值设置为 变量21 的值。
+ *   "添加段上限[+100]"表示在其基础上添加值，如果为[-100]，则表示减去。
+ *   "变量添加段上限[21]"表示在其基础上添加变量的值（变量可以为负数值）。
  * 
  * -----------------------------------------------------------------------------
  * ----插件性能
@@ -160,6 +169,8 @@
  * 添加了地图活动镜头缩放时的支持。
  * [v1.7]
  * 翻新了整体结构，使其基于更宽泛的参数条、参数数字核心。
+ * [v1.8]
+ * 添加了部分插件指令。
  * 
  * 
  * 
@@ -1326,6 +1337,15 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					$gameSystem._drill_GFV_bindTank[ id ]['commandParamChanged'] = true;
 				}
 			}
+			if( temp3.indexOf("修改名称[") != -1 ){
+				temp3 = temp3.replace("修改名称[","");
+				temp3 = temp3.replace("]","");
+				for(var j = 0; j< bind_ids.length; j++ ){
+					var id = bind_ids[j];
+					$gameSystem._drill_GFV_bindTank[ id ]['slot_list'][ Number(temp2)-1 ]['name'] = String(temp3);
+					$gameSystem._drill_GFV_bindTank[ id ]['commandParamChanged'] = true;
+				}
+			}
 			if( temp3.indexOf("变量修改段上限[") != -1 ){
 				temp3 = temp3.replace("变量修改段上限[","");
 				temp3 = temp3.replace("]","");
@@ -1360,12 +1380,37 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 					$gameSystem._drill_GFV_bindTank[ id ]['commandParamChanged'] = true;
 				}
 			}
-			if( temp3.indexOf("修改名称[") != -1 ){
-				temp3 = temp3.replace("修改名称[","");
+			if( temp3.indexOf("变量添加段上限[") != -1 ){
+				temp3 = temp3.replace("变量添加段上限[","");
 				temp3 = temp3.replace("]","");
 				for(var j = 0; j< bind_ids.length; j++ ){
 					var id = bind_ids[j];
-					$gameSystem._drill_GFV_bindTank[ id ]['slot_list'][ Number(temp2)-1 ]['name'] = String(temp3);
+					$gameSystem._drill_GFV_bindTank[ id ]['slot_list'][ Number(temp2)-1 ]['level_max'] += $gameVariables.value( Number(temp3) );
+					$gameSystem._drill_GFV_bindTank[ id ]['commandParamChanged'] = true;
+				}
+			}else if( temp3.indexOf("添加段上限[") != -1 ){
+				temp3 = temp3.replace("添加段上限[","");
+				temp3 = temp3.replace("]","");
+				for(var j = 0; j< bind_ids.length; j++ ){
+					var id = bind_ids[j];
+					$gameSystem._drill_GFV_bindTank[ id ]['slot_list'][ Number(temp2)-1 ]['level_max'] += Number(temp3);
+					$gameSystem._drill_GFV_bindTank[ id ]['commandParamChanged'] = true;
+				}
+			}
+			if( temp3.indexOf("变量添加额定值[") != -1 ){
+				temp3 = temp3.replace("变量添加额定值[","");
+				temp3 = temp3.replace("]","");
+				for(var j = 0; j< bind_ids.length; j++ ){
+					var id = bind_ids[j];
+					$gameSystem._drill_GFV_bindTank[ id ]['slot_list'][ Number(temp2)-1 ]['number_specified'] += $gameVariables.value( Number(temp3) );
+					$gameSystem._drill_GFV_bindTank[ id ]['commandParamChanged'] = true;
+				}
+			}else if( temp3.indexOf("添加额定值[") != -1 ){
+				temp3 = temp3.replace("添加额定值[","");
+				temp3 = temp3.replace("]","");
+				for(var j = 0; j< bind_ids.length; j++ ){
+					var id = bind_ids[j];
+					$gameSystem._drill_GFV_bindTank[ id ]['slot_list'][ Number(temp2)-1 ]['number_specified'] += Number(temp3);
 					$gameSystem._drill_GFV_bindTank[ id ]['commandParamChanged'] = true;
 				}
 			}

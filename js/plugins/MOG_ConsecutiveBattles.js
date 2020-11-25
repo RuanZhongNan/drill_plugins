@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc (v1.1)[v1.2]  战斗 - 车轮战
+ * @plugindesc (v1.1)[v1.3]  战斗 - 车轮战
  * @author Moghunter (Drill_up翻译+优化）
  *
  * @param 资源-波数框
@@ -125,7 +125,13 @@
  * 部署时勾选去除无关文件，本插件中相关的文件不会被去除。
  * [v1.2]
  * 修改了插件关联的资源文件夹。
+ * [v1.3]
+ * 修复了车轮战的敌人图形会盖在战斗肖像的上面的bug。
  */
+ //
+ //（mog对于图层都是乱画，战斗肖像每次都被盖在下面，经过修正，总算是对齐了）
+ //
+ //
 
 //=============================================================================
 // ** PLUGIN PARAMETERS
@@ -259,6 +265,7 @@ Spriteset_Battle.prototype.createEnemies = function() {
 // * create ConBat Field
 //==============================
 Spriteset_Battle.prototype.createConBatField = function() {
+	if( this._conBatField  != undefined ){ return; }
 	this._conBatField = new Sprite();
 	this._battleField.addChild(this._conBatField);
 	if (this._enemySprites && this._enemySprites[0]) {
@@ -349,19 +356,19 @@ Spriteset_Battle.prototype.removeEnemiesConBat = function() {
 
 
 //==============================
-// * create Enemies ConBat
+// * create Enemies ConBat（将敌人贴图获取后，重贴到_conBatField下）
 //==============================
-Spriteset_Battle.prototype.createEnemiesConBat = function() {
-    var enemies = $gameTroop.members();
-    var sprites = [];
-    for (var i = 0; i < enemies.length; i++) {
-        sprites[i] = new Sprite_Enemy(enemies[i]);
-    }
-    sprites.sort(this.compareEnemySprite.bind(this));
-    for (var j = 0; j < sprites.length; j++) {
-        this._conBatField.addChild(sprites[j]);
-    }
-    this._enemySprites = sprites;
+var _mog_consBat_sprtBat_createEnemies2 = Spriteset_Battle.prototype.createEnemies;
+Spriteset_Battle.prototype.createEnemies = function() {
+	_mog_consBat_sprtBat_createEnemies2.call(this);
+	if( this._conBatField == undefined ){ return; }
+			
+	for( var i=0; i < this._enemySprites.length; i++ ){
+		var e_sprite = this._enemySprites[i];
+		if( e_sprite && e_sprite instanceof Sprite_Enemy ){
+			this._conBatField.addChild( e_sprite );
+		}
+	}
 };
 
 //=============================================================================

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        系统 - 窗口辅助核心
+ * @plugindesc [v1.3]        系统 - 窗口辅助核心
  * @author Drill_up
  * 
  * @help  
@@ -20,8 +20,11 @@
  * ----设定注意事项
  * 1.插件的作用域：菜单界面、地图界面、战斗界面。
  *   作用于rmmv所有窗口，添加辅助功能。
- * 2.插件提供窗口"移动动画"、"布局"的配置功能。
- *   对部分插件还提供表达式功能。
+ * 细节：
+ *   (1.插件给 子插件 提供窗口"参数初始化"、"移动动画"、"布局"等函数。
+ *      对部分 子插件 还提供表达式功能。
+ *   (2.注意，表达式与窗口字符的作用范围不一样。
+ *      了解更多窗口字符，可以去看看"关于窗口字符.docx"。
  * 
  * -----------------------------------------------------------------------------
  * ----插件扩展
@@ -93,6 +96,8 @@
  * 优化了内部结构。
  * [v1.2]
  * 添加了帮助窗口换行的功能。
+ * [v1.3]
+ * 优化了内部结构。
  *
  */
  
@@ -114,8 +119,9 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			窗口辅助核心：
-//				帮助窗口换行
-//				绘制内容 DTLE 
+//				> 帮助窗口换行
+//				> 计算Ex文本高宽
+//				> 绘制内容 DTLE 
 //					->把指定的文字画在面板中
 //					->固定行间距/自适应行间距
 //					->表达式
@@ -124,14 +130,14 @@
 //						->对齐命令
 //						->条件字符		x
 //						->滤镜字符？
-//				数据修改 CPD
+//				> 数据修改 CPD
 //					->位置、高宽
 //					->移动动画
 //						->起点相对坐标/起点绝对坐标
 //						->匀速移动/弹性移动/不移动
 //					->布局设置
 //						->默认皮肤/单张背景贴图/隐藏布局
-//				贴图移动 SBM
+//				> 贴图移动 SBM
 //					->贴图移动动画
 //					->窗口移动动画
 //			
@@ -169,6 +175,94 @@ Window_Help.prototype.setItem = function(item) {
 };
 
 //=============================================================================
+// ** 计算Ex文本高宽
+//=============================================================================
+//==============================
+// * 计算 - 拦截文本绘制
+//==============================
+var _drill_COWA_bitmap_drawText = Bitmap.prototype.drawText;
+Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
+	
+	if( $gameTemp && $gameTemp._drill_COWA_bitmap_isCalculating == true ){ return; }	//（如果正在计算，则不绘制文字）
+	
+	_drill_COWA_bitmap_drawText.call( this,text, x, y, maxWidth, lineHeight, align );
+}
+//==============================
+// * 计算 - 拦截图标绘制
+//==============================
+var _drill_COWA_bitmap_drawIcon = Window_Base.prototype.drawIcon;
+Window_Base.prototype.drawIcon = function(iconIndex, x, y) {
+	
+	if( $gameTemp._drill_COWA_bitmap_isCalculating == true ){ return; }	//（如果正在计算，则不绘制图标）
+	
+	_drill_COWA_bitmap_drawIcon.call( this, iconIndex, x, y );
+}
+//==============================
+// * 计算 - 拦截换行符影响
+//==============================
+var _drill_COWA_processNewLine = Window_Base.prototype.processNewLine;
+Window_Base.prototype.processNewLine = function( textState ){
+	var xx = textState.x;
+	_drill_COWA_processNewLine.call( this, textState );
+	if( $gameTemp._drill_COWA_bitmap_isCalculating == true ){ textState.x = xx; }	//（如果正在计算，换行符不能影响宽度）
+}
+//==============================
+// * 计算 - 拦截对话框的暂停字符
+//==============================
+var _drill_COWA_startWait = Window_Message.prototype.startWait;
+Window_Message.prototype.startWait = function(count) {
+	_drill_COWA_startWait.call( this, count );
+	if( $gameTemp._drill_COWA_bitmap_isCalculating == true ){ this._waitCount = 0; }	//（如果正在计算，暂停符不能等待）
+}
+//==============================
+// * 计算 - 扩展文本宽度
+//			
+//			说明：1.注意，该函数不能在 drawTextEx函数中 套娃。
+//				  2.【修改 textState.x 的值时一定要谨慎，会无限套娃。】
+//				  3.一定要先计算宽度，后进行绘制，顺序不能反。
+//==============================
+Window_Base.prototype.drill_COWA_getTextExWidth = function( text ){
+	$gameTemp._drill_COWA_bitmap_isCalculating = true;
+	
+	// > 原装ex计算
+	var ww = this.drawTextEx( text, 0, this.contents.height+this.lineHeight() );
+	
+	// > 直接计算
+	//var textState = {};
+	//textState['index'] = 0;
+	//textState['x'] = 0;
+	//textState['y'] = 0;
+	//textState['left'] = 0;
+	//textState['text'] = this.convertEscapeCharacters(text);		//（指代字符）
+	////if( Imported.YEP_MessageCore == true ){
+	////	textState['text'] = this.convertExtraEscapeCharacters(textState['text']);	//（指代字符YEP）
+	////}
+	//textState.height = this.calcTextHeight(textState, false);
+	//this.resetFontSettings();
+	//alert( this.textWidth( textState.text ) );
+	//while (textState.index < textState.text.length) {
+	//	this.processCharacter(textState);					//（效果字符+一般字符）
+	//}
+	//var ww = textState.x ;		//（只有画出来了才有值）
+	
+	$gameTemp._drill_COWA_bitmap_isCalculating = false;
+	return ww;
+}
+//==============================
+// * 计算 - 扩展文本高度
+//			
+//			说明：1.注意，该函数不能在 drawTextEx函数中 套娃。
+//				  2.一定要先计算高度，后进行绘制，顺序不能反。
+//==============================
+Window_Base.prototype.drill_COWA_getTextExHeight = function( text ){
+	var textState = { 'index': 0, 'x': 0, 'y': 0, 'left': 0 };
+	textState.text = this.convertEscapeCharacters( text );
+	var hh = this.calcTextHeight(textState, false);		
+	return hh;
+}
+
+
+//=============================================================================
 // ** 绘制内容 DTLE
 // **
 // **		类型：装饰函数集
@@ -191,6 +285,7 @@ Window_Base.prototype.drill_COWA_drawTextListEx = function( context_list, option
 	
 	// > 默认值
 	options = this.drill_COWA_DTLE_checkOptions(options);
+	this._drill_COWA_drawingOption = options;	//当前绘制时的参数（文本居中 插件要用）
 	
 	// > 表达式 - 转义字符
 	if( options['convertEnabled'] == true ){
@@ -208,10 +303,29 @@ Window_Base.prototype.drill_COWA_drawTextListEx = function( context_list, option
 	this.drill_COWA_DTLE_startDraw( context_list, options );
 }
 //==============================
+// * DTLE - 开始绘制（不清理画布）（接口，单次调用）
+//==============================
+Window_Base.prototype.drill_COWA_drawTextListEx_notClean = function( context_list, options ){
+	// > 默认值
+	options = this.drill_COWA_DTLE_checkOptions(options);
+	this._drill_COWA_drawingOption = options;
+	// > 表达式 - 转义字符
+	if( options['convertEnabled'] == true ){
+		context_list = this.drill_COWA_convertEscapeCharacterInList( context_list );
+	}
+	// > 计算字符高宽
+	this.drill_COWA_DTLE_calculateHeightAndWidth( context_list, options );
+	// > 开始绘制
+	this.drill_COWA_DTLE_startDraw( context_list, options );
+}
+//==============================
 // * DTLE - 默认值
 //==============================
 Window_Base.prototype.drill_COWA_DTLE_checkOptions = function( options ){
 	if( options == undefined ){ options = {}; };
+	if( options['x'] == undefined ){ options['x'] = 0 };									//光标起始位置x
+	if( options['y'] == undefined ){ options['y'] = 0 };									//光标起始位置y
+	if( options['width'] == undefined ){ options['width'] = this.contentsWidth() };			//居中用宽度（默认为窗口画布宽度）
 	if( options['convertEnabled'] == undefined ){ options['convertEnabled'] = true };		//表达式开关
 	if( options['autoLineheight'] == undefined ){ options['autoLineheight'] = true };		//是否自适应行间距
 	if( options['lineheight'] == undefined ){ options['lineheight'] = 28 };					//行间距
@@ -231,10 +345,8 @@ Window_Base.prototype.drill_COWA_DTLE_calculateHeightAndWidth = function( contex
 	var width_list = [];
 	for (var i=0; i < context_list.length; i++) {
 		var temp_text = context_list[i];
-		var textState = { 'index': 0, 'x': 0, 'y': 0, 'left': 0 };
-		textState.text = this.convertEscapeCharacters( temp_text );
-		var hh = this.calcTextHeight(textState, false);									//计算字符高度
-		var ww = this.drawTextEx(textState.text,0,0) + this.standardPadding() * 2 ;		//计算字符宽度（只有画出来了才有值）
+		var ww = this.drill_COWA_getTextExWidth(temp_text);
+		var hh = this.drill_COWA_getTextExHeight(temp_text);
 		height_list.push(hh);
 		width_list.push(ww);
 	}
@@ -249,18 +361,19 @@ Window_Base.prototype.drill_COWA_DTLE_calculateHeightAndWidth = function( contex
 //			返回：无
 //==============================
 Window_Base.prototype.drill_COWA_DTLE_startDraw = function( context_list, options ){
-	var xx = 0 ;
-	var yy = 0 ;
+	var xx = options['x'] ;
+	var yy = options['y'] ;
+	var ww = options['width'] ;
 	for (var i=0; i < context_list.length; i++) {
 		var temp_text = context_list[i];
 		
 		// > 对齐方式
-		xx = 0;
+		xx = options['x'] ;
 		if( options['align'] == "居中" ){
-			xx = this.width/2 - this.drill_COWA_widthList[i]/2;
+			xx += ww/2 - this.drill_COWA_widthList[i]/2;
 		}
 		if( options['align'] == "右对齐" ){
-			xx = this.width - this.drill_COWA_widthList[i];
+			xx += ww - this.drill_COWA_widthList[i];
 		}
 		
 		// > 表达式 - 绘制字符
@@ -268,6 +381,11 @@ Window_Base.prototype.drill_COWA_DTLE_startDraw = function( context_list, option
 			this.drill_COWA_convertDrawCharacter( temp_text, yy );
 		}else{
 			this.drawTextEx(temp_text,xx,yy);
+		
+			// > 【对话框-文本居中】插件（绘制一次，行数+1，由于该方法把context切断了，所以就不能processNewLine了）
+			if( Imported.Drill_DialogTextAlign ){
+				this._drill_DTA_cur_line += 1;
+			}
 		}
 		
 		// > 划分行间距

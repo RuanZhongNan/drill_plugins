@@ -744,7 +744,9 @@ Scene_Drill_TBS.prototype.drill_updateLevel = function() {
 	
 	// > 跳出界面
 	if( this._drill_level >= this._drill_dataList.length -1 ){
-		Graphics.playVideo("");			//防止进入标题后，点击造成视频重播的情况
+		if( Graphics.isVideoPlaying() == true ){
+			Graphics.playVideo("");			//防止进入标题后，点击造成视频重播的情况
+		}
 		SceneManager.goto(Scene_Title);
 		return ;
 	}

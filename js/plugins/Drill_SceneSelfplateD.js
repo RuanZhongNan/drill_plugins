@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.7]        面板 - 全自定义信息面板D
+ * @plugindesc [v1.8]        面板 - 全自定义信息面板D
  * @author Drill_up
  * 
  * @Drill_LE_param "内容-%d"
@@ -25,7 +25,7 @@
  * ----插件扩展
  * 插件不能单独使用，必须基于 窗口辅助核心 插件。
  * 基于：
- *   - Drill_CoreOfWindowAuxiliary 系统 - 窗口辅助核心
+ *   - Drill_CoreOfWindowAuxiliary 系统 - 窗口辅助核心★★v1.3及以上★★
  *     必须基于该插件才能显示描述内容。
  *
  * -----------------------------------------------------------------------------
@@ -58,7 +58,7 @@
  *   (2.选项窗口和描述窗口支持所有文本的特殊字符：
  *       \c[n] 变颜色    \i[n] 显示图标    \{\} 字体变大变小
  *       \V[n] 显示变量  \N[n] 显示角色名  \G 显示货币单位
- *      其他特殊字符可以见插件"对话框-消息核心"。
+ *      其他特殊字符可见插件"对话框-消息核心"或文档"关于窗口字符.docx"。
  *   (3.内容可以包含表达式，用于特殊的功能显示。
  *      表达式介绍见"系统-窗口辅助核心"插件。
  * 内容锁定：
@@ -81,10 +81,17 @@
  * 先确保项目img文件夹下是否有Menu__self文件夹！
  * 要查看所有关联资源文件的插件，可以去看看"插件清单.xlsx"。
  * 如果没有文件夹，自己建立。需要配置下列资源文件：
- *
- * 资源-整体布局
- * 资源-选项窗口
- * 资源-描述窗口
+ * 
+ * 资源-整体布局           （默认为 信息面板D-整体布局）
+ * 资源-锁定的描述图       （默认为 信息面板D-锁定描述图）
+ * 选项窗口布局 资源-贴图  （默认为 单张背景贴图 - 背景贴图）
+ * 描述窗口布局 资源-贴图  （默认为 单张背景贴图 - 背景贴图）
+ * 
+ * 内容1 资源-描述图片     （默认为 空）
+ * 内容2 资源-描述图片     （默认为 空）
+ * 内容3 资源-描述图片     （默认为 空）
+ * ……
+ * 
  * 资源-左箭头
  * 资源-右箭头
  * 资源-上箭头
@@ -161,6 +168,8 @@
  * 改进了内容锁定功能。
  * [v1.7]
  * 添加了选项窗口名称居中的功能。
+ * [v1.8]
+ * 添加了 长文本选项 功能的支持。以及 菜单指针/边框 的控制关闭功能。
  * 
  *
  * @param ----杂项----
@@ -389,6 +398,21 @@
  * @min 1
  * @desc 选项窗口的列数。
  * @default 4
+ *
+ * @param 每条选项高度
+ * @parent ----选项窗口----
+ * @type number
+ * @min 1
+ * @desc 每条选项的高度。（宽度无法调整，宽度固定根据 列数和窗口宽度 自适应。）
+ * @default 36
+ * 
+ * @param 是否启用选项内容
+ * @parent ----选项窗口----
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，每条选项将会显示长文本的选项内容。
+ * @default false
  * 
  * @param 选项窗口对齐方式
  * @parent ----选项窗口----
@@ -421,6 +445,22 @@
  * @desc 控制窗口框架与窗口背景。
  * @default {"布局类型":"默认皮肤","---单张背景贴图---":"","资源-贴图":"信息面板D-选项窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
  *
+ * @param 是否启用mog菜单指针
+ * @parent ----选项窗口----
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，使用 MOG_MenuCursor 菜单指针插件，可以装饰选项窗口，你也可以关闭装饰。
+ * @default true
+ * 
+ * @param 是否启用mog菜单边框
+ * @parent ----选项窗口----
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，使用 MOG_CursorBorder 菜单边框插件，可以装饰选项窗口，你也可以关闭装饰。
+ * @default true
+ * 
  * @param ----描述窗口----
  * @default 
  * 
@@ -1016,8 +1056,12 @@
  * @param 选项名
  * @desc 当前的选项名字。
  * @default 未命名选项
+ * 
+ * @param ---选项内容---
+ * @default 
  *
  * @param 是否初始显示
+ * @parent ---选项内容---
  * @type boolean
  * @on 显示
  * @off 隐藏
@@ -1025,13 +1069,24 @@
  * @default true
  *
  * @param 是否初始锁定
+ * @parent ---选项内容---
  * @type boolean
  * @on 锁定
  * @off 解锁
  * @desc true - 锁定，false - 解锁
  * @default false
+ * 
+ * @param 选项内容
+ * @parent ---选项内容---
+ * @type note
+ * @desc 每个选项显示的长文本内容。（只有窗口模式有效，且需要启用 选项内容 。）
+ * @default "长文本选项描述"
+ *
+ * @param ---描述内容---
+ * @default 
  *
  * @param 资源-描述图片
+ * @parent ---描述内容---
  * @desc 该选项下的显示的描述图片。
  * @default 
  * @require 1
@@ -1039,11 +1094,13 @@
  * @type file
  * 
  * @param 描述内容
+ * @parent ---描述内容---
  * @type note
  * @desc 该选项下的描述窗口显示的内容。
  * @default "没有描述"
  *
  * @param 描述内容对齐方式
+ * @parent ---描述内容---
  * @type select
  * @option 左对齐
  * @value 左对齐
@@ -1055,6 +1112,7 @@
  * @default 左对齐
  *
  * @param 描述内容是否自适应行间距
+ * @parent ---描述内容---
  * @type boolean
  * @on 自适应
  * @off 固定行间距
@@ -1194,6 +1252,7 @@
 //			1.替换以下字符变成新面板：
 //				SSpD
 //				信息面板D
+//				Drill_SceneSelfplateD
 //
 //		★其它说明细节：
 //			1.【全局和存档两种数据都有保存，开关只用于切换显示哪种数据】。
@@ -1209,6 +1268,46 @@
 　　Imported.Drill_SceneSelfplateD = true;
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_SceneSelfplateD');
+	
+	//==============================
+	// * 变量获取 - 内容
+	//				（~struct~DrillSSpD）
+	//==============================
+	DrillUp.drill_SSpD_initContext = function( dataFrom ) {
+		var data = {};
+		
+		// > 选项名处理
+		var temp = String(dataFrom['选项名']);
+		temp = temp.replace(/\\\\/g,"\\");
+		data['name'] = temp;
+		
+		// > 选项内容处理
+		var temp = String(dataFrom['选项内容'] || " "+temp+" ");
+		temp = temp.substring(1,temp.length-1);
+		temp = temp.replace(/\\\\/g,"\\");		//（未分段，只是单长串字符串，包含 \\n ）
+		data['nameEx'] = temp;
+		
+		// > 显示处理
+		data['enabled'] = (dataFrom['是否初始显示'] || "false") == "true" ;
+		
+		// > 锁定处理
+		data['locked'] = (dataFrom['是否初始锁定'] || "false") == "true" ;
+		
+		// > 描述图片处理
+		data['pic'] = (dataFrom['资源-描述图片'] || "");
+		
+		// > 描述内容处理
+		var temp = String(dataFrom['描述内容']);
+		temp = temp.substring(1,temp.length-1);
+		temp = temp.replace(/\\\\/g,"\\");
+		temp = temp.split(/\\n/);
+		data['context'] = temp;
+		data['contextAlign'] = String(dataFrom['描述内容对齐方式'] || "左对齐");
+		data['contextAutoLineheight'] = String(dataFrom['描述内容是否自适应行间距'] || "true") === "true";	
+		data['contextLineheight'] = Number(dataFrom['描述内容固定行间距'] || 28);
+		
+		return data;
+	}
 
 	/*-----------------杂项------------------*/
     DrillUp.g_SSpD_layout = String(DrillUp.parameters['资源-整体布局'] || "");
@@ -1242,9 +1341,11 @@
 	DrillUp.g_SSpD_selWin_y = Number(DrillUp.parameters['选项窗口 Y'] || 120);
 	DrillUp.g_SSpD_selWin_width = Number(DrillUp.parameters['选项窗口宽度'] || 220);
 	DrillUp.g_SSpD_selWin_height = Number(DrillUp.parameters['选项窗口高度'] || 460);
-	DrillUp.g_SSpD_selWin_fontsize = Number(DrillUp.parameters['选项窗口字体大小'] || 22);
 	DrillUp.g_SSpD_selWin_col = Number(DrillUp.parameters['选项窗口列数'] || 1);
+	DrillUp.g_SSpD_selWin_itemHeight = Number(DrillUp.parameters['每条选项高度'] || 36);
+	DrillUp.g_SSpD_selWin_nameExEnabled = String(DrillUp.parameters['是否启用选项内容'] || "false") == "true";
     DrillUp.g_SSpD_selWin_align = String(DrillUp.parameters['选项窗口对齐方式'] || "左对齐");
+	DrillUp.g_SSpD_selWin_fontsize = Number(DrillUp.parameters['选项窗口字体大小'] || 22);
 	if( DrillUp.parameters['选项窗口移动动画'] != undefined ){
 		DrillUp.g_SSpD_selWin_slideAnim = JSON.parse( DrillUp.parameters['选项窗口移动动画'] );
 		DrillUp.g_SSpD_selWin_slideAnim['slideMoveType'] = String(DrillUp.g_SSpD_selWin_slideAnim['移动类型'] || "匀速移动");
@@ -1268,6 +1369,8 @@
 	}else{
 		DrillUp.g_SSpD_selWin_layout = {};
 	}
+	DrillUp.g_SSpD_selWin_menuCursorEnabled = String( DrillUp.parameters['是否启用mog菜单指针'] || "true") == "true";
+	DrillUp.g_SSpD_selWin_menuCursorBorderEnabled = String( DrillUp.parameters['是否启用mog菜单边框'] || "true") == "true";
 
 	/*-----------------描述窗口------------------*/
 	DrillUp.g_SSpD_descWin_x = Number(DrillUp.parameters['描述窗口 X'] || 285);
@@ -1324,37 +1427,12 @@
 	DrillUp.g_SSpD_context_list = {};
 	for (var i = 1; i <= DrillUp.g_SSpD_context_list_length ; i++ ) {
 		if( DrillUp.parameters['内容-' + String(i) ] != "" ){
-			DrillUp.g_SSpD_context_list[i] = JSON.parse(DrillUp.parameters['内容-' + String(i)] );
+			var data = JSON.parse(DrillUp.parameters['内容-' + String(i)] );
+			DrillUp.g_SSpD_context_list[i] = DrillUp.drill_SSpD_initContext( data );
 		}else{
 			DrillUp.g_SSpD_context_list[i] = "";
 		}
 		DrillUp.g_SSpD_context_list[i]['index'] = i;
-			
-		//描述内容处理
-		var temp = String(DrillUp.g_SSpD_context_list[i]['描述内容']);
-		temp = temp.substring(1,temp.length-1);
-		temp = temp.replace(/\\\\/g,"\\");
-		temp = temp.split(/\\n/);
-		DrillUp.g_SSpD_context_list[i]['context'] = temp;
-		DrillUp.g_SSpD_context_list[i]['contextAlign'] = String(DrillUp.g_SSpD_context_list[i]['描述内容对齐方式'] || "左对齐");
-		DrillUp.g_SSpD_context_list[i]['contextAutoLineheight'] = String(DrillUp.g_SSpD_context_list[i]['描述内容是否自适应行间距'] || "true") === "true";	
-		DrillUp.g_SSpD_context_list[i]['contextLineheight'] = Number(DrillUp.g_SSpD_context_list[i]['描述内容固定行间距'] || 28);
-		//alert(temp);
-		
-		//选项名处理
-		temp = String(DrillUp.g_SSpD_context_list[i]['选项名']);
-		temp = temp.replace(/\\\\/g,"\\");
-		DrillUp.g_SSpD_context_list[i]['name'] = temp;
-		
-		//显示处理
-		DrillUp.g_SSpD_context_list[i]['enabled'] = (DrillUp.g_SSpD_context_list[i]['是否初始显示'] || "false") == "true" ;
-		
-		//锁定处理
-		DrillUp.g_SSpD_context_list[i]['locked'] = (DrillUp.g_SSpD_context_list[i]['是否初始锁定'] || "false") == "true" ;
-		
-		//描述图片处理
-		DrillUp.g_SSpD_context_list[i]['pic'] = (DrillUp.g_SSpD_context_list[i]['资源-描述图片'] || "");
-		
 	};
 	
 	/*-----------------锁定内容------------------*/
@@ -1433,7 +1511,7 @@ var _drill_SSpD_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_SSpD_pluginCommand.call(this, command, args);
 	
-	if (command === '>信息面板D') {
+	if (command === ">信息面板D") {
 		if(args.length == 2){
 			var type = String(args[1]);
 			if( type == "打开面板" ){			//打开菜单
@@ -1442,7 +1520,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "显示全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpD_context_list_length; i++){
 					DrillUp.g_SSpD_context_list[i]['enabled'] = true;	//全局存储
-					if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+					$gameSystem.drill_SSpD_initDataIfNeed();
 					$gameSystem._drill_SSpD_context_list[i]['enabled'] = true;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
@@ -1450,7 +1528,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "隐藏全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpD_context_list_length; i++){
 					DrillUp.g_SSpD_context_list[i]['enabled'] = false;	//全局存储
-					if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+					$gameSystem.drill_SSpD_initDataIfNeed();
 					$gameSystem._drill_SSpD_context_list[i]['enabled'] = false;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
@@ -1458,7 +1536,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "锁定全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpD_context_list_length; i++){
 					DrillUp.g_SSpD_context_list[i]['locked'] = true;	//全局存储
-					if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+					$gameSystem.drill_SSpD_initDataIfNeed();
 					$gameSystem._drill_SSpD_context_list[i]['locked'] = true;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
@@ -1466,39 +1544,39 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 			if( type == "解锁全部" ){
 				for( var i = 1; i <= DrillUp.g_SSpD_context_list_length; i++){
 					DrillUp.g_SSpD_context_list[i]['locked'] = false;	//全局存储
-					if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+					$gameSystem.drill_SSpD_initDataIfNeed();
 					$gameSystem._drill_SSpD_context_list[i]['locked'] = false;	//正常存储
 				}
 				DataManager.forceSaveGlobalInfo();
 			}
 		}
 	}
-	if (command === '>信息面板D') {
+	if (command === ">信息面板D") {
 		if(args.length == 4){
 			var type = String(args[1]);
 			var temp1 = Number(args[3]);
 			if( type == "显示选项" ){
 				DrillUp.g_SSpD_context_list[temp1]['enabled'] = true;	//全局存储
 				DataManager.forceSaveGlobalInfo();
-				if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+				$gameSystem.drill_SSpD_initDataIfNeed();
 				$gameSystem._drill_SSpD_context_list[temp1]['enabled'] = true;	//正常存储
 			}
 			if( type == "隐藏选项" ){
 				DrillUp.g_SSpD_context_list[temp1]['enabled'] = false;	//全局存储
 				DataManager.forceSaveGlobalInfo();
-				if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+				$gameSystem.drill_SSpD_initDataIfNeed();
 				$gameSystem._drill_SSpD_context_list[temp1]['enabled'] = false;	//正常存储
 			}
 			if( type == "锁定选项" ){
 				DrillUp.g_SSpD_context_list[temp1]['locked'] = true;	//全局存储
 				DataManager.forceSaveGlobalInfo();
-				if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+				$gameSystem.drill_SSpD_initDataIfNeed();
 				$gameSystem._drill_SSpD_context_list[temp1]['locked'] = true;	//正常存储
 			}
 			if( type == "解锁选项" ){
 				DrillUp.g_SSpD_context_list[temp1]['locked'] = false;	//全局存储
 				DataManager.forceSaveGlobalInfo();
-				if( !$gameSystem._drill_SSpD_context_list ){ $gameSystem.drill_SSpD_dataInit(); }
+				$gameSystem.drill_SSpD_initDataIfNeed();
 				$gameSystem._drill_SSpD_context_list[temp1]['locked'] = false;	//正常存储
 			}
 			if( type == "选中页" ){
@@ -1523,7 +1601,6 @@ Scene_Menu.prototype.createCommandWindow = function() {
 Scene_Menu.prototype.drill_SSpD_menuCommand = function() {
     SceneManager.push(Scene_Drill_SSpD);
 };
-
 var _drill_SSpD_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
 Window_MenuCommand.prototype.addOriginalCommands = function() {
 	_drill_SSpD_addOriginalCommands.call(this);
@@ -1565,12 +1642,14 @@ Game_Temp.prototype.initialize = function() {
 //=============================================================================
 // ** 信息面板D
 //=============================================================================
+//==============================
+// * 信息面板D - 定义
+//==============================
 function Scene_Drill_SSpD() {
     this.initialize.apply(this, arguments);
 }
 Scene_Drill_SSpD.prototype = Object.create(Scene_MenuBase.prototype);
 Scene_Drill_SSpD.prototype.constructor = Scene_Drill_SSpD;
-
 //==============================
 // * 信息面板D - 初始化
 //==============================
@@ -1578,12 +1657,14 @@ Scene_Drill_SSpD.prototype.initialize = function() {
     Scene_MenuBase.prototype.initialize.call(this);
 	this._cur_index = -1;
 	//alert($gameSystem._drill_SSpD_context_list); //检查存档是否有记录
-	if (!$gameSystem._drill_SSpD_context_list) {$gameSystem.drill_SSpD_dataInit();};
+	$gameSystem.drill_SSpD_initDataIfNeed();
 };
 //==============================
-// * 信息面板D - 正常存储赋值
+// * 信息面板D - 读取 正常存储/全局存储 的值
 //==============================
-Game_System.prototype.drill_SSpD_dataInit = function() {
+Game_System.prototype.drill_SSpD_initDataIfNeed = function() {
+	if( $gameSystem._drill_SSpD_context_list != undefined ){ return; }
+	
 	this._drill_SSpD_context_list = JSON.parse(JSON.stringify( DrillUp.g_SSpD_context_list ));	//深拷贝数据（杜绝引用造成的修改）
 	
 	if( DrillUp.g_SSpD_title_data_global ){
@@ -1659,7 +1740,7 @@ Scene_Drill_SSpD.prototype.createSelect = function() {
 	this._window_select = new Drill_SSpD_SelectWindow(0, 0, 0, 0);
 	this._window_select.drill_COWA_changeParamData( data );			//辅助核心 - 控制窗口基本属性
 	this._window_select.refresh();
-	this._window_select.initSelect();
+	this._window_select.drill_initSelect();
 	
 	this._window_select.setHandler('cancel',   this.popScene.bind(this));//绑定退出界面事件
 	this.addChild(this._window_select);
@@ -1976,6 +2057,9 @@ if( typeof(_drill_mouse_getCurPos) == "undefined" ){	//防止重复定义
 //==========================================================================================
 // * 选项窗口
 //==========================================================================================
+//==============================
+// * 选项窗口 - 定义
+//==============================
 function Drill_SSpD_SelectWindow() {
 	this.initialize.apply(this, arguments);
 }
@@ -1983,17 +2067,15 @@ Drill_SSpD_SelectWindow.prototype = Object.create(Window_Selectable.prototype);
 Drill_SSpD_SelectWindow.prototype.constructor = Drill_SSpD_SelectWindow;
 Drill_SSpD_SelectWindow.lastTopRow = 0;
 Drill_SSpD_SelectWindow.lastIndex  = 0;
-
 //==============================
 // * 选项窗口 - 初始化
 //==============================
 Drill_SSpD_SelectWindow.prototype.initialize = function(x, y, width, height) {
 	Window_Selectable.prototype.initialize.call(this, x, y, width, height);
 	this.refresh();
-	this.initSelect();
 	this.activate();
+	this.drill_initSelect();
 };
-
 //==============================
 // * 选项窗口 - 窗口数据
 //==============================
@@ -2003,13 +2085,16 @@ Drill_SSpD_SelectWindow.prototype.maxCols = function() {
 Drill_SSpD_SelectWindow.prototype.maxItems = function() {
 	return this._list ? this._list.length : 0;
 };
+Drill_SSpD_SelectWindow.prototype.itemHeight = function() {
+	return DrillUp.g_SSpD_selWin_itemHeight;
+};
 
 //==============================
 // * 选项窗口 - 帧刷新
 //==============================
 Drill_SSpD_SelectWindow.prototype.update = function() {
 	Window_Selectable.prototype.update.call(this);
-	//...
+	//...（暂无）
 };
 
 //==============================
@@ -2033,18 +2118,19 @@ Drill_SSpD_SelectWindow.prototype.refresh = function() {
 	// > 待绘制的字符串
 	this._list = [];
 	for( var j=0; j< $gameTemp._drill_SSpD_visibleList.length ;j++ ){
-		if( $gameTemp._drill_SSpD_visibleList[j]['locked'] == false ){
-			this._list.push( $gameTemp._drill_SSpD_visibleList[j]['name'] );
-		}else{
+		if( $gameTemp._drill_SSpD_visibleList[j]['locked'] == true ){
 			this._list.push( DrillUp.g_SSpD_locked_name );
+			continue;
 		}
+		
+		if( DrillUp.g_SSpD_selWin_nameExEnabled == true ){
+			this._list.push( $gameTemp._drill_SSpD_visibleList[j]['nameEx'] );
+			continue;
+		}
+		
+		this._list.push( $gameTemp._drill_SSpD_visibleList[j]['name'] );
 	}
 	
-	// > 字符串宽度计算
-	this._list_width = [];
-	for( var i = 0; i < this._list.length; i++ ){
-		this._list_width[i] = this.drawTextEx( this._list[i], 0, 0 );	//计算字符宽度（只有画出来了才有值）
-	}
 	
 	this.createContents();
 	this.drawAllItems();	//绘制选项内容
@@ -2052,7 +2138,7 @@ Drill_SSpD_SelectWindow.prototype.refresh = function() {
 //==============================
 // * 选项窗口 - 设置选项
 //==============================
-Drill_SSpD_SelectWindow.prototype.initSelect = function() {
+Drill_SSpD_SelectWindow.prototype.drill_initSelect = function() {
 	if( Drill_SSpD_SelectWindow.lastIndex >= this._list.length ){
 		Drill_SSpD_SelectWindow.lastIndex = this._list.length-1;
 	}
@@ -2063,17 +2149,19 @@ Drill_SSpD_SelectWindow.prototype.initSelect = function() {
 // * 选项窗口 - 绘制选项
 //==============================
 Drill_SSpD_SelectWindow.prototype.drawItem = function(index) {
-    var str = this._list[index];
-    var str_width = this._list_width[index];
+    var name_str = this._list[index];
+	var name_str_list = name_str.split(/\\n/);
 	var rect = this.itemRectForText(index);
 	
-	var xx = rect.x;
-	if( DrillUp.g_SSpD_selWin_align == "居中" ){
-		xx += (rect.width - str_width) * 0.5;
-	}else if( DrillUp.g_SSpD_selWin_align == "右对齐" ){
-		xx += rect.width - str_width;
+	// > 绘制内容
+	var op = {
+		"align":DrillUp.g_SSpD_selWin_align,
+		"autoLineheight":true,
+		"x": rect.x,
+		"y": rect.y,
+		"width": rect.width,
 	}
-	this.drawTextEx( str, xx, rect.y );
+	this.drill_COWA_drawTextListEx_notClean(name_str_list,op);
 };
 //==============================
 // * 选项窗口 - 退出事件
@@ -2083,32 +2171,57 @@ Drill_SSpD_SelectWindow.prototype.processCancel = function() {
 	Drill_SSpD_SelectWindow.lastTopRow = this.topRow();
 	Drill_SSpD_SelectWindow.lastIndex = this.index();
 };
+//==============================
+// * 选项窗口 - 兼容mog菜单指针插件
+//==============================
+if( Imported.MOG_MenuCursor == true ){
+	var _drill_SSpD_mog_set_mcursor_data = Drill_SSpD_SelectWindow.prototype.need_set_mcursor_data;
+	Drill_SSpD_SelectWindow.prototype.need_set_mcursor_data = function() {
+		if( DrillUp.g_SSpD_selWin_menuCursorEnabled == false ){
+			return false;
+		}
+		return _drill_SSpD_mog_set_mcursor_data.call(this);
+	}
+}
+//==============================
+// * 选项窗口 - 兼容mog菜单边框插件
+//==============================
+if( Imported.MOG_CursorBorder == true ){
+	var _drill_SSpD_mog_createSprSelMenu = Drill_SSpD_SelectWindow.prototype.createSprSelMenu;
+	Drill_SSpD_SelectWindow.prototype.createSprSelMenu = function() {
+		if( DrillUp.g_SSpD_selWin_menuCursorBorderEnabled == false ){
+			return ;
+		}
+		_drill_SSpD_mog_createSprSelMenu.call(this);
+	}
+}
 
 
 //==========================================================================================
 // * 显示窗口
 //==========================================================================================
+//==============================
+// * 显示窗口 - 定义
+//==============================
 function Drill_SSpD_DescWindow() {
     this.initialize.apply(this, arguments);
 }
 Drill_SSpD_DescWindow.prototype = Object.create(Window_Base.prototype);
 Drill_SSpD_DescWindow.prototype.constructor = Drill_SSpD_DescWindow;
-
 //==============================
 // * 显示窗口 - 初始化
 //==============================
 Drill_SSpD_DescWindow.prototype.initialize = function(x, y, width, height) {
     Window_Base.prototype.initialize.call(this, x,y,width,height);
+	//...（暂无）
 };
-
 //==============================
 // * 显示窗口 - 帧刷新
 //==============================
 Drill_SSpD_DescWindow.prototype.update = function() {
 	Window_Base.prototype.update.call(this);
-    //...
+	//...（暂无）
 };
-	
 //==============================
 // * 显示窗口 - 重绘内容
 //==============================

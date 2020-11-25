@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        战斗UI - 角色肖像
+ * @plugindesc [v1.3]        战斗UI - 角色肖像
  * @author Drill_up
  * 
  * @Drill_LE_param "角色肖像-%d"
@@ -81,7 +81,9 @@
  * 修改了插件关联的资源文件夹。
  * [v1.2]
  * 添加了最大值编辑的支持。
- *
+ * [v1.3]
+ * 添加了长期保持角色在战斗界面的功能。
+ * 
  *
  * @param ----常规----
  * @desc 
@@ -146,6 +148,14 @@
  * @min 1
  * @desc 从偏移的位置到原位置所需的时间，单位帧。（1秒60帧）
  * @default 30
+ *
+ * @param 是否保持角色肖像不消失
+ * @parent ----常规----
+ * @type boolean
+ * @on 保持
+ * @off 关闭
+ * @desc 进入菜单选择或者在战斗时，角色肖像会自动消失，该选项强制不消失。
+ * @default false
  *
  *
  * @param ----角色肖像1至20----
@@ -785,13 +795,16 @@
 //插件记录：
 //		★大体框架与功能如下：
 //			角色肖像：
-//				->根据生命/魔法值显示不同肖像
-//				->支持滤镜
-//				->肖像gif设置
-//				->背景图也弄成gif
-//				->前视图呼吸效果
-//				->角色肖像切换指令
-//				->前视图的滤镜扩展	x
+//				->条件
+//					->根据生命/魔法值切换
+//					->角色肖像插件指令
+//				->角色肖像
+//					->前视图gif
+//					->背景图gif
+//					->前视图呼吸效果
+//					->支持滤镜
+//					->长期保持显示状态
+//					->前视图的滤镜扩展	x
 //
 //		★私有类如下：
 //			* Drill_AP_Sprite【单角色肖像】
@@ -829,6 +842,7 @@
 　　var DrillUp = DrillUp || {}; 
 	DrillUp.parameters = PluginManager.parameters('Drill_ActorPortraiture');
 	
+	/*-----------------默认位置------------------*/
 	DrillUp.g_AP_layer = Number(DrillUp.parameters["图片层级"] || 100); 
 	DrillUp.g_AP_p_x = Number(DrillUp.parameters["平移-前视图 X"] || 335);
 	DrillUp.g_AP_p_y = Number(DrillUp.parameters["平移-前视图 Y"] || -20);
@@ -840,10 +854,11 @@
 	DrillUp.g_AP_b_silde_x = Number(DrillUp.parameters["背景图起点 X"] || -60);
 	DrillUp.g_AP_b_silde_y = Number(DrillUp.parameters["背景图起点 Y"] || 0);
 	DrillUp.g_AP_b_silde_time = Number(DrillUp.parameters["背景图移动时长"] || 30);
+	DrillUp.g_AP_noDeactive = String(DrillUp.parameters["是否保持角色肖像不消失"] || "false") == "true";
 	
+	/*-----------------角色肖像------------------*/
 	DrillUp.g_AP_list_length = 60;
 	DrillUp.g_AP_condition_list_length = 6;
-	
 	DrillUp.g_AP_list = [];
 	for (var i = 0; i < DrillUp.g_AP_list_length; i++) {
 		if( DrillUp.parameters['角色肖像-' + String(i+1) ] != "" ){
@@ -917,7 +932,7 @@ var _drill_AP_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_AP_pluginCommand.call(this, command, args);
 	
-	if (command === '>角色肖像') { // >角色肖像 : 我方 : 1 : 强制处于条件 : 1
+	if (command === ">角色肖像") { // >角色肖像 : 我方 : 1 : 强制处于条件 : 1
 		if(args.length == 8){
 			var group = String(args[1]);
 			var temp1 = Number(args[3]);
@@ -967,7 +982,7 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
 var _drill_AP_layer_createLowerLayer = Spriteset_Battle.prototype.createLowerLayer;
 Spriteset_Battle.prototype.createLowerLayer = function() {
     _drill_AP_layer_createLowerLayer.call(this);
-	if( !this._drill_battleUpArea ){
+	if(!this._drill_battleUpArea ){
 		this._drill_battleUpArea = new Sprite();
 		this._battleField.addChild(this._drill_battleUpArea);
 	}
@@ -991,6 +1006,9 @@ Spriteset_Battle.prototype.createLowerLayer = function() {
 	this.drill_AP_createLayer();	
 	this.drill_AP_createSprite();	
 }
+//==============================
+// * 战斗角色初始化
+//==============================
 Spriteset_Battle.prototype.drill_AP_createLayer = function() {
 	this._drill_AP_actorLayer = new Sprite();
 	this._drill_AP_actorLayer.zIndex = DrillUp.g_AP_layer;
@@ -1025,7 +1043,7 @@ Spriteset_Battle.prototype.drill_AP_createSprite = function() {
 }
 
 //==============================
-// * 帧刷新
+// * 战斗 - 帧刷新
 //==============================
 var _drill_AP_s_update = Scene_Battle.prototype.update;
 Scene_Battle.prototype.update = function() {
@@ -1036,14 +1054,17 @@ Scene_Battle.prototype.update = function() {
 // * 帧刷新 - 判断当前选中角色
 //==============================
 Scene_Battle.prototype.drill_AP_updateActor = function() {
-	if (!this._spriteset._drill_AP_spriteTank ) { return }
-	if (!this._spriteset._drill_AP_dataTank ) { return }
+	if( !this._spriteset._drill_AP_spriteTank ){ return }
+	if( !this._spriteset._drill_AP_dataTank ){ return }
+	if( !BattleManager.actor() ){ return false; }
 	
-	if ( this.drill_AP_isActorVisible() == false ) {		//未激活时，隐藏所有肖像
-		for(var i=0; i < this._spriteset._drill_AP_spriteTank.length; i++){
-			this._spriteset._drill_AP_spriteTank[i].deactive();
+	if( DrillUp.g_AP_noDeactive == false ){	//（强制永久保持）
+		if ( this.drill_AP_isActorVisible() == false ) {		//未激活时，隐藏所有肖像
+			for(var i=0; i < this._spriteset._drill_AP_spriteTank.length; i++){
+				this._spriteset._drill_AP_spriteTank[i].deactive();
+			}
+			return;
 		}
-		return;
 	}
 	
 	var cur_Actor = BattleManager.actor();			//激活当前选中的肖像
@@ -1062,11 +1083,10 @@ Scene_Battle.prototype.drill_AP_updateActor = function() {
 // * 帧刷新 - 判断图片显示
 //==============================
 Scene_Battle.prototype.drill_AP_isActorVisible = function() {
-	if (!BattleManager.actor() ) { return false; }
-	if (this._enemyWindow.active) { return false; }
-	if (this._partyCommandWindow.active) { return false; }
-	if ( $gameSystem.isSideView() && this._actorWindow.active ) { return false; }	//选择角色时，SV模式隐藏，第一人称不需要隐藏
-	if (!BattleManager.isInputting()) { return false; }
+	if( this._enemyWindow.active ){ return false; }
+	if( this._partyCommandWindow.active ){ return false; }
+	if( $gameSystem.isSideView() && this._actorWindow.active ){ return false; }	//选择角色时，SV模式隐藏，第一人称不需要隐藏
+	if(!BattleManager.isInputting() ){ return false; }
 	return true;
 }
 
@@ -1083,15 +1103,16 @@ Scene_Battle.prototype.drill_AP_isActorVisible = function() {
 //					4.条件变化和gif的控制都由内部处理。
 //	
 //=============================================================================
+//==============================
+// * 角色肖像 - 定义
+//==============================
 function Drill_AP_Sprite() {
     this.initialize.apply(this, arguments);
 };
-
 Drill_AP_Sprite.prototype = Object.create(Sprite.prototype);
 Drill_AP_Sprite.prototype.constructor = Drill_AP_Sprite;
-
 //==============================
-// * 初始化
+// * 角色肖像 - 初始化
 //==============================
 Drill_AP_Sprite.prototype.initialize = function( data ) {
     Sprite.prototype.initialize.call(this);

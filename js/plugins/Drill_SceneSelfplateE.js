@@ -43,7 +43,11 @@
  *      你还可以设置开始播放的额外延迟时间。
  *   (2.内容遮罩控制内容的整体透明度，白色表示不透明部分，黑色表示
  *      透明部分。
- *   (3.内容可以包含表达式，用于特殊的功能显示。
+ *   (3.内容支持所有文本的特殊字符：
+ *       \c[n] 变颜色    \i[n] 显示图标    \{\} 字体变大变小
+ *       \V[n] 显示变量  \N[n] 显示角色名  \G 显示货币单位
+ *      其他特殊字符可见插件"对话框-消息核心"或文档"关于窗口字符.docx"。
+ *   (4.内容可以包含表达式，用于特殊的功能显示。
  *      表达式介绍见"系统-窗口辅助核心"插件。
  * 设计：
  *   (1.该面板为一个超长画布，适合图文故事背景、卷轴书画、名单列表，
@@ -612,7 +616,10 @@
 //				->退出滚轴按键
 //
 //		★必要注意事项：
-//			暂无
+//			1.替换以下字符变成新面板：
+//				SSpE
+//				信息面板E
+//				Drill_SceneSelfplateE
 //
 //		★其它说明细节：
 //			1.滚轴核心自动添补了所有默认值，即使缺项，也不会造成插件报错。
@@ -630,6 +637,7 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_SceneSelfplateE');
 	
+	/*-----------------杂项------------------*/
     DrillUp.g_SSpE_layout = String(DrillUp.parameters['资源-整体布局'] || "");
     DrillUp.g_SSpE_contextMask = String(DrillUp.parameters['资源-内容遮罩'] || "");
 	DrillUp.g_SSpE_add_to_menu = String(DrillUp.parameters['是否添加到主菜单'] || "true") === "true";	
@@ -639,9 +647,9 @@
     DrillUp.g_SSpE_opacityShow = String(DrillUp.parameters['是否初始阶段渐变显示'] || "true") == "true";
     DrillUp.g_SSpE_opacitySpeed = Number(DrillUp.parameters['渐变速度'] || 2);
 
+	/*-----------------阶段------------------*/
 	DrillUp.g_SSpE_list_length = 40;
 	DrillUp.g_SSpE_list = [];
-	
 	for (var i = 0; i < DrillUp.g_SSpE_list_length; i++) {
 		if( DrillUp.parameters['阶段-' + String(i+1) ] != "" &&
 			DrillUp.parameters['阶段-' + String(i+1) ] != undefined ){
@@ -701,7 +709,7 @@ var _drill_SSpE_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_SSpE_pluginCommand.call(this, command, args);
 	
-	if (command === '>信息面板E') {
+	if (command === ">信息面板E") {
 		if(args.length == 2){
 			var type = String(args[1]);
 			if( type == "打开面板" ){			//打开菜单
@@ -722,7 +730,6 @@ Scene_Menu.prototype.createCommandWindow = function() {
 Scene_Menu.prototype.drill_SSpE_menuCommand = function() {
     SceneManager.push(Scene_Drill_SSpE);
 };
-
 var _drill_SSpE_addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
 Window_MenuCommand.prototype.addOriginalCommands = function() {
 	_drill_SSpE_addOriginalCommands.call(this);
@@ -754,22 +761,23 @@ Window_TitleCommand.prototype.makeCommandList = function() {
 //=============================================================================
 // ** 信息面板E
 //=============================================================================
+//==============================
+// * 信息面板E - 定义
+//==============================
 function Scene_Drill_SSpE() {
     this.initialize.apply(this, arguments);
 }
 Scene_Drill_SSpE.prototype = Object.create(Scene_MenuBase.prototype);
 Scene_Drill_SSpE.prototype.constructor = Scene_Drill_SSpE;
-
 //==============================
-// * 面板 - 初始化
+// * 信息面板E - 初始化
 //==============================
 Scene_Drill_SSpE.prototype.initialize = function() {
     Scene_MenuBase.prototype.initialize.call(this);
-	
+	//...（暂无）
 };
-
 //==============================
-// * 面板 - 创建
+// * 信息面板E - 创建
 //==============================
 Scene_Drill_SSpE.prototype.create = function() {
     Scene_MenuBase.prototype.create.call(this);
@@ -782,7 +790,7 @@ Scene_Drill_SSpE.prototype.create = function() {
 }
 
 //==============================
-// * 面板 - 帧刷新
+// * 信息面板E - 帧刷新
 //==============================
 Scene_Drill_SSpE.prototype.update = function() { 
 	Scene_MenuBase.prototype.update.call(this);	

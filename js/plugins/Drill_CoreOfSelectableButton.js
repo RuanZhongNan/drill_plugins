@@ -1162,12 +1162,16 @@
 //					->固定位置
 //					->单一切换
 //					->切换时亮光动画	x
+//				->额外文本域		?
+//					->高宽划分			?
+//					->子插件文本编写	?
 //				->窗口refresh
 //					->按钮名称
 //					->按钮贴图
 //					->选中的按钮（实时刷）
 //				->选中的按钮
 //					->指针		x
+//						->连接MenuCursor插件	x
 //					->鼠标再点击进入
 //					->鼠标接近自动选中
 //					->变化方式
@@ -1256,6 +1260,9 @@ if( Imported.Drill_CoreOfBallistics ){
 		}else{
 			data['btn_slideAnim'] = {};
 		}
+		// > 额外文本域
+		
+		
 		// > 排列
 		data['arrange_mode'] = String( dataFrom["排列方式"] || "直线排列");
 		data['arrange_spacing'] = Number( dataFrom["直线间距"] || 10);
