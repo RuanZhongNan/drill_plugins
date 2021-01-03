@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.4]        物体 - 移动路线核心
+ * @plugindesc [v1.5]        物体 - 移动路线核心
  * @author Drill_up
  *
  *
@@ -57,11 +57,15 @@
  *   (2."遇障碍结束"表示：如果移动遇到障碍，则当前这条指令直接无效，
  *      进入下一条指令。功能与"无法移动时跳过指令"相似，但是这里的
  *      指令不会产生过多的等待时间。
+ *   (3.">>上一条指令再执行n次"指令可以实现上一条移动路线指令执行多次。
+ * 设计：
+ *   (1.该核心提供了接近鼠标、接近位置功能，你可以通过这种方式，实现
+ *      鼠标控制特定的事件。
  * 
  * -----------------------------------------------------------------------------
  * ----激活条件
  * 以下为移动路线脚本快速指令，以及一些新加的功能指令：
- *
+ * 
  * 移动路线脚本：>上移n步
  * 移动路线脚本：>下移n步
  * 移动路线脚本：>左移n步
@@ -89,39 +93,56 @@
  * 移动路线脚本：>随机移动(只纵向)
  * 
  * 移动路线脚本：>接近玩家
- * 移动路线脚本：>远离玩家
  * 移动路线脚本：>接近玩家n步
- * 移动路线脚本：>远离玩家n步
  * 移动路线脚本：>接近玩家(只横向)
- * 移动路线脚本：>远离玩家(只横向)
  * 移动路线脚本：>接近玩家(只纵向)
+ * 移动路线脚本：>远离玩家
+ * 移动路线脚本：>远离玩家n步
+ * 移动路线脚本：>远离玩家(只横向)
  * 移动路线脚本：>远离玩家(只纵向)
  * 
+ * 移动路线脚本：>接近鼠标
+ * 移动路线脚本：>接近鼠标n步
+ * 移动路线脚本：>接近鼠标(只横向)
+ * 移动路线脚本：>接近鼠标(只纵向)
+ * 移动路线脚本：>远离鼠标
+ * 移动路线脚本：>远离鼠标n步
+ * 移动路线脚本：>远离鼠标(只横向)
+ * 移动路线脚本：>远离鼠标(只纵向)
+ * 
  * 移动路线脚本：>接近事件[10]
- * 移动路线脚本：>远离事件[10]
  * 移动路线脚本：>接近事件[10]n步
- * 移动路线脚本：>远离事件[10]n步
  * 移动路线脚本：>接近事件[10](只横向)
- * 移动路线脚本：>远离事件[10](只横向)
  * 移动路线脚本：>接近事件[10](只纵向)
- * 移动路线脚本：>远离事件[10](只纵向)
  * 移动路线脚本：>接近事件变量[10]
- * 移动路线脚本：>远离事件变量[10]
  * 移动路线脚本：>接近事件变量[10]n步
- * 移动路线脚本：>远离事件变量[10]n步
  * 移动路线脚本：>接近事件变量[10](只横向)
- * 移动路线脚本：>远离事件变量[10](只横向)
  * 移动路线脚本：>接近事件变量[10](只纵向)
+ * 移动路线脚本：>远离事件[10]
+ * 移动路线脚本：>远离事件[10]n步
+ * 移动路线脚本：>远离事件[10](只横向)
+ * 移动路线脚本：>远离事件[10](只纵向)
+ * 移动路线脚本：>远离事件变量[10]
+ * 移动路线脚本：>远离事件变量[10]n步
+ * 移动路线脚本：>远离事件变量[10](只横向)
  * 移动路线脚本：>远离事件变量[10](只纵向)
  * 
- * 移动路线脚本：>接近鼠标
- * 移动路线脚本：>远离鼠标
- * 移动路线脚本：>接近鼠标n步
- * 移动路线脚本：>远离鼠标n步
- * 移动路线脚本：>接近鼠标(只横向)
- * 移动路线脚本：>远离鼠标(只横向)
- * 移动路线脚本：>接近鼠标(只纵向)
- * 移动路线脚本：>远离鼠标(只纵向)
+ * 移动路线脚本：>接近位置[30,32]
+ * 移动路线脚本：>接近位置[30,32]n步
+ * 移动路线脚本：>接近位置[30,32](只横向)
+ * 移动路线脚本：>接近位置[30,32](只纵向)
+ * 移动路线脚本：>接近位置变量[25,26]
+ * 移动路线脚本：>接近位置变量[25,26]n步
+ * 移动路线脚本：>接近位置变量[25,26](只横向)
+ * 移动路线脚本：>接近位置变量[25,26](只纵向)
+ * 移动路线脚本：>远离位置[30,32]
+ * 移动路线脚本：>远离位置[30,32]n步
+ * 移动路线脚本：>远离位置[30,32](只横向)
+ * 移动路线脚本：>远离位置[30,32](只纵向)
+ * 移动路线脚本：>远离位置变量[25,26]
+ * 移动路线脚本：>远离位置变量[25,26]n步
+ * 移动路线脚本：>远离位置变量[25,26](只横向)
+ * 移动路线脚本：>远离位置变量[25,26](只纵向)
  * 
  * 1."接近事件"后的数字，表示事件id。
  *   "接近事件变量"后的数字，表示变量的值对应的事件id。
@@ -202,6 +223,8 @@
  * 添加了地图活动镜头的缩放兼容。
  * [v1.4]
  * 修复了插件导致 事件跳跃 插件不能跳跃的bug。
+ * [v1.5]
+ * 添加了 位置 移动路线指令。
  *
  */
  
@@ -234,13 +257,16 @@
 //					->清除记忆
 //				->嵌套跳转
 //					->进入下一个移动指令
-//			
-//				->脚本转义
-//				->识别障碍
-//				->接近/远离
-//					->接近鼠标
-//					->接近(只横向)
-//				->保持距离
+//				->脚本转义（指令集）
+//					->遇障碍结束
+//					->接近/远离
+//						->接近玩家
+//						->接近鼠标
+//						->接近事件
+//						->接近位置
+//						->接近(只横向)
+//						->接近(只纵向)
+//					->保持距离
 //
 //		★必要注意事项：
 //			1.initMembers函数中，this.event()未加载完全，还没有值。
@@ -267,10 +293,12 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_CoreOfMoveRoute');
 	
+	/*-----------------杂项------------------*/
     DrillUp.g_COMR_towardStop = String(DrillUp.parameters["接近到重叠位置时是否停下"] || "true") === "true";
     DrillUp.g_COMR_towardRandom = String(DrillUp.parameters["接近/远离时是否随机"] || "true") === "true";
     DrillUp.g_COMR_remainRoute = String(DrillUp.parameters["是否开启路线记忆"] || "true") === "true";
 	
+	/*-----------------临时全局变量------------------*/
 	DrillUp.g_COMR_errorMsgTank = [];				//脚本拦截容器
 	DrillUp.g_COMR_skip_checkDevOpen = false;		//嵌套跳转开关
 
@@ -279,7 +307,7 @@
 // ** 物体
 //=============================================================================
 //==============================
-// * 物体 - 初始化
+// * 物体初始化
 //==============================
 var _drill_COMR_c_initialize = Game_Character.prototype.initialize;
 Game_Character.prototype.initialize = function() {
@@ -383,26 +411,6 @@ Game_Character.prototype.processMoveCommand = function(command) {
 // ** 路线记忆
 //=============================================================================
 //==============================
-// * 路线记忆 - 索引初始化
-//==============================
-Game_Event.prototype.drill_COMR_mrListInit = function() {
-	var data = this._drill_COMR;
-	if( data['remain_mrListNeedInit'] == false ){ return }
-	
-	data['remain_mrList'] = [];
-	data['remain_mrListNeedInit'] = false;
-	var ev_data = this.event();
-	if( ev_data ){
-		var pages = ev_data.pages;
-		for (var i = 0; i < pages.length; i++) {
-			var page = pages[i];
-			var mr = {};
-			mr._index = 0;
-			data['remain_mrList'][i] = mr;
-		}
-	}
-}
-//==============================
 // * 路线记忆 - 刷新事件页
 //==============================
 var _drill_COMR_ev_refresh = Game_Event.prototype.refresh;
@@ -419,6 +427,26 @@ Game_Event.prototype.refresh = function() {
 	
 	// > 修正索引
 	this.drill_COMR_mrsChangeIndex();
+}
+//==============================
+// * 路线记忆 - 索引初始化
+//==============================
+Game_Event.prototype.drill_COMR_mrListInit = function() {
+	var data = this._drill_COMR;
+	if( data['remain_mrListNeedInit'] == false ){ return }
+	data['remain_mrListNeedInit'] = false;
+	
+	data['remain_mrList'] = [];
+	var ev_data = this.event();
+	if( ev_data ){
+		var pages = ev_data.pages;
+		for (var i = 0; i < pages.length; i++) {
+			var page = pages[i];
+			var mr = {};
+			mr._index = 0;
+			data['remain_mrList'][i] = mr;	//（容器中暂时只有 mr:{ _index:0 } 一个参数）
+		}
+	}
 }
 //==============================
 // * 路线记忆 - 修正索引
@@ -459,14 +487,14 @@ var _drill_COMR_c_onKeyDown = Graphics._onKeyDown;
 Graphics._onKeyDown = function( event ){
 	_drill_COMR_c_onKeyDown.call(this,event);
 	
-    if (!event.ctrlKey && !event.altKey && Utils.isOptionValid('test') ) {		//测试状态才激活
-		if( event.keyCode == 119 ){ // F8
-			DrillUp.g_COMR_skip_checkDevOpen = true;
-		}
-		if( event.keyCode == 123 ){ // F12
-			DrillUp.g_COMR_skip_checkDevOpen = true;
-		}
-    }
+    //if( !event.ctrlKey && !event.altKey ){		//测试状态才激活
+	//	if( event.keyCode == 119 ){ // F8
+	//		DrillUp.g_COMR_skip_checkDevOpen = true;
+	//	}
+	//	if( event.keyCode == 123 ){ // F12
+	//		DrillUp.g_COMR_skip_checkDevOpen = true;
+	//	}
+    //}
 };
 //==============================
 // * 嵌套 - 进入下一个移动指令
@@ -519,7 +547,7 @@ Game_Character.prototype.drill_COMR_skipToNext = function() {
 // ** 脚本转义
 //=============================================================================
 //==============================
-// * 路线 - 事件默认路线
+// * 脚本转义 - 事件默认路线
 //==============================
 var _drill_COMR_setMoveRoute = Game_Character.prototype.setMoveRoute;
 Game_Character.prototype.setMoveRoute = function( moveRoute ) {
@@ -527,7 +555,7 @@ Game_Character.prototype.setMoveRoute = function( moveRoute ) {
 	_drill_COMR_setMoveRoute.call(this, moveRoute);
 };
 //==============================
-// * 路线 - 函数设置路线
+// * 脚本转义 - 函数设置路线
 //==============================
 var _drill_COMR_forceMoveRoute = Game_Character.prototype.forceMoveRoute;
 Game_Character.prototype.forceMoveRoute = function(moveRoute) {
@@ -535,11 +563,11 @@ Game_Character.prototype.forceMoveRoute = function(moveRoute) {
 	_drill_COMR_forceMoveRoute.call(this, moveRoute);
 };
 //==============================
-// * 路线 - 修改路线内容
+// * 脚本转义 - 修改路线内容
 //==============================
 Game_Character.prototype.drill_COMR_scriptTransform = function(route_list) {
 	
-	// >特殊指令 - 上一个脚本执行N次
+	// > 特殊指令 - 上一个脚本执行N次
 	var last_route = null;
 	var route_list_ex = [];
 	for(var k=0; k<route_list.length; k++){
@@ -561,7 +589,7 @@ Game_Character.prototype.drill_COMR_scriptTransform = function(route_list) {
 		last_route = temp_route;
 	}
 	
-	// >普通指令
+	// > 普通指令
 	var r_list = [];
 	for(var k=0; k < route_list_ex.length; k++){
 		var temp_route = route_list_ex[k];
@@ -755,6 +783,80 @@ Game_Character.prototype.drill_COMR_scriptTransform = function(route_list) {
 				var _script = "this.moveAwayFromCharacter($gameMap.event($gameVariables.value("+Number(RegExp.$2)+")));";
 				r_list.push({code:45,parameters:[_script] });
 			//-----------------------------------------------------------------------------
+			} else if (temp_script.match( /^(接近位置|>接近位置)\[(\d+),(\d+)\](\d+)步/ )) {
+				for (var i=0; i < Number(RegExp.$4); i++){
+					var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+					var _script = "this.moveTowardCharacter( "+pos+" );";
+					r_list.push({code:45,parameters:[_script] });
+				}
+			} else if (temp_script.match( /^(接近位置|>接近位置)\[(\d+),(\d+)\]\(只横向\)/ )) {
+				var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+				var _script = "this.drill_COMR_moveTowardCharacter_X( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(接近位置|>接近位置)\[(\d+),(\d+)\]\(只纵向\)/ )) {
+				var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+				var _script = "this.drill_COMR_moveTowardCharacter_Y( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(接近位置|>接近位置)\[(\d+),(\d+)\]/ )) {
+				var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+				var _script = "this.moveTowardCharacter( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(远离位置|>远离位置)\[(\d+),(\d+)\](\d+)步/ )) {
+				for (var i=0; i < Number(RegExp.$4); i++){
+					var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+					var _script = "this.moveAwayFromCharacter( "+pos+" );";
+					r_list.push({code:45,parameters:[_script] });
+				}
+			} else if (temp_script.match( /^(远离位置|>远离位置)\[(\d+),(\d+)\]\(只横向\)/ )) {
+				var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+				var _script = "this.drill_COMR_moveAwayCharacter_X( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(远离位置|>远离位置)\[(\d+),(\d+)\]\(只纵向\)/ )) {
+				var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+				var _script = "this.drill_COMR_moveAwayCharacter_Y( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(远离位置|>远离位置)\[(\d+),(\d+)\]/ )) {
+				var pos = "{'x':"+Number(RegExp.$2)+",'y':"+Number(RegExp.$3)+"}"
+				var _script = "this.moveAwayFromCharacter( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			//-----------------------------------------------------------------------------
+			} else if (temp_script.match( /^(接近位置变量|>接近位置变量)\[(\d+),(\d+)\](\d+)步/ )) {
+				for (var i=0; i < Number(RegExp.$4); i++){
+					var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+					var _script = "this.moveTowardCharacter( "+pos+" );";
+					r_list.push({code:45,parameters:[_script] });
+				}
+			} else if (temp_script.match( /^(接近位置变量|>接近位置变量)\[(\d+),(\d+)\]\(只横向\)/ )) {
+				var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+				var _script = "this.drill_COMR_moveTowardCharacter_X( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(接近位置变量|>接近位置变量)\[(\d+),(\d+)\]\(只纵向\)/ )) {
+				var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+				var _script = "this.drill_COMR_moveTowardCharacter_Y( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(接近位置变量|>接近位置变量)\[(\d+),(\d+)\]/ )) {
+				var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+				var _script = "this.moveTowardCharacter( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(远离位置变量|>远离位置变量)\[(\d+),(\d+)\](\d+)步/ )) {
+				for (var i=0; i < Number(RegExp.$4); i++){
+					var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+					var _script = "this.moveAwayFromCharacter( "+pos+" );";
+					r_list.push({code:45,parameters:[_script] });
+				}
+			} else if (temp_script.match( /^(远离位置变量|>远离位置变量)\[(\d+),(\d+)\]\(只横向\)/ )) {
+				var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+				var _script = "this.drill_COMR_moveAwayCharacter_X( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(远离位置变量|>远离位置变量)\[(\d+),(\d+)\]\(只纵向\)/ )) {
+				var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+				var _script = "this.drill_COMR_moveAwayCharacter_Y( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			} else if (temp_script.match( /^(远离位置变量|>远离位置变量)\[(\d+),(\d+)\]/ )) {
+				var pos = "{'x':$gameVariables.value("+Number(RegExp.$2)+"),'y':$gameVariables.value("+Number(RegExp.$3)+")}"
+				var _script = "this.moveAwayFromCharacter( "+pos+" );";
+				r_list.push({code:45,parameters:[_script] });
+			//-----------------------------------------------------------------------------
 			} else if (temp_script.match( /^(接近鼠标|>接近鼠标)(\d+)步/ )) {
 				for (var i=0; i < Number(RegExp.$2); i++){
 					var _script = "this.drill_COMR_moveTowardMouse();";
@@ -812,7 +914,7 @@ Game_Character.prototype.drill_COMR_scriptTransform = function(route_list) {
 };
 
 //=============================================================================
-// * 识别障碍
+// * 遇障碍结束
 //=============================================================================
 //==============================
 // * 路线动作 - 直线移动
@@ -1014,6 +1116,7 @@ Game_Character.prototype.drill_COMR_mouseKeepDistance = function(distance) {
 	this.drill_COMR_keepDistance(m,distance);
 }
 
+
 //=============================================================================
 // ** 鼠标 - 获取点
 //=============================================================================
@@ -1032,9 +1135,8 @@ Game_Character.prototype.drill_COMR_getMousePoint = function() {
 	
 	return m;
 }
-
 //=============================================================================
-// ** 获取鼠标位置（输入设备核心的片段）
+// ** 鼠标 - 获取鼠标位置（输入设备核心的片段）
 //=============================================================================
 if( typeof(_drill_mouse_getCurPos) == "undefined" ){	//防止重复定义
 

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.0]        对话框 - 文本居中
+ * @plugindesc [v1.1]        对话框 - 文本居中
  * @author Drill_up
  * 
  * 
@@ -11,7 +11,7 @@
  * =============================================================================
  * +++ Drill_DialogTextAlign +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 使得你可以控制指定行的文字居中，并且支持图标、不同字体大小的居中。
@@ -49,6 +49,9 @@
  *   \dal       当前行中，该字符之后的文字左对齐。
  *   \dac       当前行中，该字符之后的文字居中。
  *   \dar       当前行中，该字符之后的文字右对齐。
+ *   (dal全称为：Drill_Align_Left，即左对齐)
+ *   (dac全称为：Drill_Align_Center，即居中)
+ *   (dar全称为：Drill_Align_Right，即右对齐)
  * 
  * 注意，同一行不能出现两个以上 居中/右对齐 字符。
  * 
@@ -78,6 +81,8 @@
  * ----更新日志
  * [v1.0]
  * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修复了对话框中 使用姓名框+改变对话框宽度 时，卡死的bug。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -110,13 +115,16 @@
 //			  所以需要额外进行一次捕获。
 //			2.修改 textState.x 时，【千万注意！】
 //			  宽度计算也基于此 textState.x 参数，如果套娃了，会无限叠加错位。
+//			3.对话框 改变宽度 时，【不能马上计算宽度（绘制）】，否则会出现死循环。
+//			  从函数的角度来看，这个看似简单的问题已经深入到了一个更深层次的死锁问题了，
+//			  即使代码都有注释，且是我熟悉的地方，但是我发现无法深入，因为太复杂了。最后，用update绕开了死循环问题。
 //			
 //		★其它说明细节：
 //			1.居中要一个非常麻烦的变量：字符宽度，而这个宽度，必须先绘制一次之后，才能得到。
 //			  经过多次套娃与反套娃，终于实现了效果。
 //			  不过理解时可能比较绕。具体去窗口辅助核心去看看。
 //			2. \px[100] 字符也是个影响因素，只不过是最外层的影响因素，最后考虑。
-//
+//		
 //		★存在的问题：
 //			1.设置多行时，超过6行，右对齐和居中会产生偏移位置。（套娃bug，已发现并解决）
 //			2.信息面板k中，移动选项光标时，计算的字符长度会变长，原因不明。可以确定不是套娃问题。（行数+1的问题，这里又是比较绕的地方了）
@@ -201,24 +209,37 @@ Window_Base.prototype.drawTextEx = function(text, x, y) {
 //==============================
 var _drill_DTA_newPage = Window_Message.prototype.newPage;
 Window_Message.prototype.newPage = function(textState) {
+	_drill_DTA_newPage.call( this, textState );
 	
-	// > 强制计算并获取到宽度
-	this._drill_DTA_cur_line = 0;
-	this._drill_DTA_textList = [];
-	this._drill_DTA_widthList = [];
+	// > 强制清理
+	this.drill_DTA_clearList();
 	
 	// > 统计宽度（对话框的文本每页是固定的，所以不需要那么麻烦）
 	var new_text = String($gameMessage.allText());
 	var temp_textList = new_text.split(/[\n\r]+/g);
 	for( var i=0; i < temp_textList.length; i++ ){
 		var temp_text = temp_textList[i];
-		var temp_ww = this.drill_COWA_getTextExWidth( temp_text );
-		this._drill_DTA_textList.push( temp_text );
-		this._drill_DTA_widthList.push( temp_ww );
+		this._drill_DTA_textList.push( temp_text );		//不能马上绘制，否则会出现死循环
 	}
-	
-	_drill_DTA_newPage.call( this, textState );
 }
+//==============================
+// ** 宽度计算 - 对话框 延迟计算宽度
+//==============================
+var _drill_DTA_m_update = Window_Message.prototype.update;
+Window_Message.prototype.update = function() {
+	_drill_DTA_m_update.call( this );
+	
+	if( this._drill_DTA_textList.length > 0 &&
+		this._drill_DTA_widthList.length == 0 &&
+		this.contents && this.contents.isReady() ){
+		for( var i=0; i < this._drill_DTA_textList.length; i++ ){
+			var temp_text = this._drill_DTA_textList[i];
+			var temp_ww = this.drill_COWA_getTextExWidth( temp_text );	//（计算长度时有可能会影响文本颜色，目前没有解决方法）
+			this._drill_DTA_widthList.push( temp_ww );
+		}
+	}
+}
+
 
 
 //=============================================================================

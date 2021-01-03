@@ -3,14 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        系统 - 滚轴核心
+ * @plugindesc [v1.2]        系统 - 滚轴核心
  * @author Drill_up
  * 
  * @help  
  * =============================================================================
  * +++ Drill_CoreOfScreenRoller +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 能够将图片、文字、GIF以滚动的方式播放。
@@ -61,6 +61,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 优化了内部接口的结构。
+ * [v1.2]
+ * 修复了 子插件 的画布文字错位的bug。
  *
  */
  
@@ -437,6 +439,7 @@ Drill_COSR_WindowSprite.prototype.initialize = function( data ) {
 	this._drill_fontSize = data['text_fontSize'];
 	var context_list = data['text_context'];
 	var options = {
+		"width":Graphics.boxWidth,
 		"convertEnabled":data['text_convertEnabled'],
 		"autoLineheight":data['text_autoLineheight'],
 		"lineheight":data['text_lineheight'],

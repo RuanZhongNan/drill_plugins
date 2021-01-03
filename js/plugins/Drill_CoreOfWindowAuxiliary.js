@@ -3,14 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        系统 - 窗口辅助核心
+ * @plugindesc [v1.4]        系统 - 窗口辅助核心
  * @author Drill_up
  * 
  * @help  
  * =============================================================================
  * +++ Drill_CoreOfWindowAuxiliary +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 该插件为基础核心，单用没有任何效果。
@@ -98,6 +98,8 @@
  * 添加了帮助窗口换行的功能。
  * [v1.3]
  * 优化了内部结构。
+ * [v1.4]
+ * 修复了对话框中 使用姓名框+改变对话框宽度 时，卡死的bug。
  *
  */
  
@@ -215,6 +217,36 @@ Window_Message.prototype.startWait = function(count) {
 	if( $gameTemp._drill_COWA_bitmap_isCalculating == true ){ this._waitCount = 0; }	//（如果正在计算，暂停符不能等待）
 }
 //==============================
+// * 计算 - 拦截文本清理
+//==============================
+var _drill_COWA_bitmap_clearRect = Bitmap.prototype.clearRect;
+Bitmap.prototype.clearRect = function(x, y, width, height) {
+	
+	if( $gameTemp && $gameTemp._drill_COWA_bitmap_isCalculating == true ){ return; }	//（如果正在计算，则不准清理）
+	
+	_drill_COWA_bitmap_clearRect.call( this, x, y, width, height );
+}
+//==============================
+// * 计算 - 拦截文本重建
+//==============================
+var _drill_COWA_createContents = Window_Base.prototype.createContents;
+Window_Base.prototype.createContents = function() {
+	
+	if( $gameTemp && $gameTemp._drill_COWA_bitmap_isCalculating == true ){ return; }	//（如果正在计算，也不准重建bitmap）
+	
+	_drill_COWA_createContents.call( this );
+}
+//==============================
+// * 计算 - 拦截字体颜色重置
+//==============================
+var _drill_COWA_resetTextColor = Window_Base.prototype.resetTextColor;
+Window_Base.prototype.resetTextColor = function() {
+	
+	if( $gameTemp && $gameTemp._drill_COWA_bitmap_isCalculating == true ){ return; }	//（如果正在计算，也不准重置颜色）
+	
+	_drill_COWA_resetTextColor.call( this );
+}
+//==============================
 // * 计算 - 扩展文本宽度
 //			
 //			说明：1.注意，该函数不能在 drawTextEx函数中 套娃。
@@ -222,6 +254,7 @@ Window_Message.prototype.startWait = function(count) {
 //				  3.一定要先计算宽度，后进行绘制，顺序不能反。
 //==============================
 Window_Base.prototype.drill_COWA_getTextExWidth = function( text ){
+	if( this.contents == undefined ){ return 0; }
 	$gameTemp._drill_COWA_bitmap_isCalculating = true;
 	
 	// > 原装ex计算

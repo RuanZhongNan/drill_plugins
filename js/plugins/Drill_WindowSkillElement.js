@@ -3,8 +3,80 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        控件 - 技能窗口块元素
+ * @plugindesc [v1.4]        控件 - 技能窗口块元素
  * @author Drill_up
+ * 
+ *
+ * @help  
+ * =============================================================================
+ * +++ Drill_WindowSkillElement +++
+ * 作者：Drill_up
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
+ * https://rpg.blue/thread-409713-1-1.html
+ * =============================================================================
+ * 使得你可以针对技能窗口 内部元素 进行全自定义美化。
+ * 详细配置方法去看看"关于技能窗口块元素.docx"。
+ * ★★必须放在 全自定义技能界面、战斗角色窗口 插件的后面★★
+ * 
+ * -----------------------------------------------------------------------------
+ * ----插件扩展
+ * 该插件能单独使用，它只针对技能窗口 内部元素 进行美化。
+ * 被扩展：
+ *   - Drill_X_ElementSkillImage.js 控件-技能块元素的背景图片[扩展]
+ *     通过该插件可以使得块元素中不同的技能，拥有不同的背景。
+ *
+ * -----------------------------------------------------------------------------
+ * ----设定注意事项
+ * 1.插件的作用域：菜单界面、战斗界面
+ *   作用于技能界面的技能窗口，和战斗界面的技能窗口。
+ * 
+ * -----------------------------------------------------------------------------
+ * ----关联文件
+ * 资源路径：img/Menu__ui_skillElement （Menu后面有两个下划线）
+ * 先确保项目img文件夹下是否有Menu__ui_skillElement文件夹！
+ * 要查看所有关联资源文件的插件，可以去看看"插件清单.xlsx"。
+ * 如果没有，需要自己建立。需要配置资源文件：
+ *
+ * 资源-元素背景
+ * 
+ * 
+ * -----------------------------------------------------------------------------
+ * ----插件性能
+ * 测试仪器：   4G 内存，Intel Core i5-2520M CPU 2.5GHz 处理器
+ *              Intel(R) HD Graphics 3000 集显 的垃圾笔记本
+ *              (笔记本的3dmark综合分：571，鲁大师综合分：48456)
+ * 总时段：     20000.00ms左右
+ * 对照表：     0.00ms  - 40.00ms （几乎无消耗）
+ *              40.00ms - 80.00ms （低消耗）
+ *              80.00ms - 120.00ms（中消耗）
+ *              120.00ms以上      （高消耗）
+ * 工作类型：   持续执行
+ * 时间复杂度： o(n^2)*o(贴图处理) 每帧
+ * 测试方法：   在不同界面进行测试。
+ * 测试结果：   战斗界面中，平均消耗为：【49.87ms】
+ *              菜单界面中，平均消耗为：【40.75ms】
+ * 
+ * 1.插件只在自己作用域下工作消耗性能，在其它作用域下是不工作的。
+ *   测试结果并不是精确值，范围在给定值的10ms范围内波动。
+ *   更多了解插件性能，可以去看看"关于插件性能.docx"。
+ * 2.该插件根据技能选项建立了m*n个贴图，贴图数量与窗口高宽有关。
+ *   刷新起来相对消耗适中。如果窗口很大，显示了许多技能，那么消耗
+ *   也会上去。
+ * 
+ * -----------------------------------------------------------------------------
+ * ----更新日志
+ * [v1.0]
+ * 完成插件ヽ(*。>Д<)o゜
+ * [v1.1]
+ * 修复了在mog的战斗窗口中，宽度修改不了的bug。
+ * [v1.2]
+ * 修改了内部结构。
+ * [v1.3]
+ * 修改了插件关联的资源文件夹。
+ * [v1.4]
+ * 添加了自定义字符串控制技能名的功能。
+ * 
+ * 
  *
  * @param ----窗口----
  * @default 
@@ -23,14 +95,6 @@
  * @on 应用
  * @off 关闭
  * @desc true - 应用，false - 关闭。
- * @default true
- * 
- * @param 是否开启闪烁指针
- * @parent ----窗口----
- * @type boolean
- * @on 开启
- * @off 关闭
- * @desc 窗口选中项的闪烁的白色方块的开关。(mog的菜单选项外框也会被隐藏。)
  * @default true
  *
  * @param ----元素组----
@@ -236,50 +300,8 @@
  * @min 0
  * @desc 消耗值为零的文本颜色，你可以输入100、200设置高级颜色，但前提是你使用了高级文本颜色插件。
  * @default 23
- *
- * @help  
- * =============================================================================
- * +++ Drill_WindowSkillElement +++
- * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
- * https://rpg.blue/thread-409713-1-1.html
- * =============================================================================
- * 使得你可以针对技能窗口 内部元素 进行全自定义美化。
- * 详细配置方法去看看"关于技能窗口块元素.docx"。
- * ★★必须放在 全自定义技能界面、战斗角色窗口 插件的后面★★
  * 
- * -----------------------------------------------------------------------------
- * ----插件扩展
- * 该插件能单独使用，它只针对技能窗口 内部元素 进行美化。
- * 被扩展：
- *   - Drill_X_ElementSkillImage.js 控件-技能块元素的背景图片[扩展]
- *     通过该插件可以使得块元素中不同的技能，拥有不同的背景。
- *
- * -----------------------------------------------------------------------------
- * ----设定注意事项
- * 1.插件的作用域：菜单界面、战斗界面
- *   作用于技能界面的技能窗口，和战斗界面的技能窗口。
  * 
- * -----------------------------------------------------------------------------
- * ----关联文件
- * 资源路径：img/Menu__ui_skillElement （Menu后面有两个下划线）
- * 先确保项目img文件夹下是否有Menu__ui_skillElement文件夹！
- * 要查看所有关联资源文件的插件，可以去看看"插件清单.xlsx"。
- * 如果没有，需要自己建立。需要配置资源文件：
- *
- * 资源-元素背景
- *
- *
- * -----------------------------------------------------------------------------
- * ----更新日志
- * [v1.0]
- * 完成插件ヽ(*。>Д<)o゜
- * [v1.1]
- * 修复了在mog的战斗窗口中，宽度修改不了的bug。
- * [v1.2]
- * 修改了内部结构。
- * [v1.3]
- * 修改了插件关联的资源文件夹。
  */
  
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -290,6 +312,13 @@
 //		全局存储变量	无
 //		覆盖重写方法	Window_BattleSkill.prototype.drawAllItems
 //						Window_BattleSkill.prototype.drawItem
+//
+//		工作类型		持续执行
+//		时间复杂度		o(贴图处理)*o(n^2)
+//		性能测试因素	技能面板
+//		性能测试消耗	菜单：10.75ms，战斗：39.87ms
+//		最坏情况		暂无
+//		备注			这里测的值都偏低，由于都藏在400ms这种大消耗的函数中，所以不好找。
 //
 //插件记录：
 //		★大体框架与功能如下：
@@ -327,9 +356,11 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_WindowSkillElement');
 
+	/*-----------------窗口------------------*/
 	DrillUp.g_WSE_use_in_menu = String(DrillUp.parameters['是否应用于菜单技能窗口'] || "true") === "true";	
 	DrillUp.g_WSE_use_in_battle = String(DrillUp.parameters['是否应用于战斗技能窗口'] || "true") === "true";	
-	DrillUp.g_WSE_use_cursorRect = String(DrillUp.parameters['是否开启闪烁指针'] || "true") === "true";	
+	
+	/*-----------------元素组------------------*/
     DrillUp.g_WSE_selected_pos_x = Number(DrillUp.parameters['选中元素偏移 X'] || 0);
     DrillUp.g_WSE_selected_pos_y = Number(DrillUp.parameters['选中元素偏移 Y'] || -20);
     DrillUp.g_WSE_selected_size_x = Number(DrillUp.parameters['选中元素缩放 X'] || 1.00);
@@ -340,6 +371,7 @@
     DrillUp.g_WSE_spacing = Number(DrillUp.parameters['元素横向间距'] || 12);
 	DrillUp.g_WSE_is_strict = String(DrillUp.parameters['是否严格控制元素的区域'] || "true") === "true";	
 	
+	/*-----------------背景块------------------*/
     DrillUp.g_WSE_src_background = String(DrillUp.parameters['资源-元素背景'] || "");
     DrillUp.g_WSE_icon_x = Number(DrillUp.parameters['平移-图标 X'] || 134);
     DrillUp.g_WSE_icon_y = Number(DrillUp.parameters['平移-图标 Y'] || 18);
@@ -350,6 +382,7 @@
     DrillUp.g_WSE_skill_width = Number(DrillUp.parameters['技能块宽度'] || 88);
     DrillUp.g_WSE_skill_align = String(DrillUp.parameters['技能名对齐方式'] || 'left');
 	
+	/*-----------------消耗块------------------*/
     DrillUp.g_WSE_cost_x = Number(DrillUp.parameters['平移-消耗块 X'] || 42);
     DrillUp.g_WSE_cost_y = Number(DrillUp.parameters['平移-消耗块 Y'] || 31);
     DrillUp.g_WSE_cost_fontsize = Number(DrillUp.parameters['消耗值字体大小'] || 20);
@@ -371,17 +404,25 @@ ImageManager.load_MenuSkillElement = function(filename) {
 //=============================================================================
 // ** 窗口初始化（追加分配）
 //=============================================================================
+//==============================
+// * 初始化 - 函数捕获
+//==============================
 var _drill_WSE_menu_initialize = Window_SkillList.prototype.initialize;
 var _drill_WSE_battle_initialize = Window_BattleSkill.prototype.initialize;
-
+//==============================
+// * 初始化 - 菜单
+//==============================
 if( DrillUp.g_WSE_use_in_menu ){
+	//==============================
+	// * 初始化 - rmmv技能窗口
+	//==============================
 	Window_SkillList.prototype.initialize = function(x, y, width, height) {
 		_drill_WSE_menu_initialize.call(this, x, y, width, height);
 		this.drill_WSE_skillSpriteInit();
 	};
-	Window_BattleSkill.prototype.initialize = function(x, y, width, height) {
-		_drill_WSE_battle_initialize.call(this, x, y, width, height);
-	};
+	//==============================
+	// * 初始化 - mog技能窗口
+	//==============================
 	if(Imported.MOG_SceneSkill){
 		var _drill_WSE_MOG_menu_initialize = Window_SkillListM.prototype.initialize;
 		Window_SkillListM.prototype.initialize = function(x, y, width, height) {
@@ -390,14 +431,23 @@ if( DrillUp.g_WSE_use_in_menu ){
 		};
 	}
 }
-
+//==============================
+// * 初始化 - 战斗界面
+//==============================
 if( DrillUp.g_WSE_use_in_battle ){
 	
+	//==============================
+	// * 初始化 - mog战斗技能窗口
+	//==============================
 	if( Imported.MOG_BattleHud ){	//mog角色窗口设置必须实时初始化
 		Window_BattleSkill.prototype.initialize = function(x, y, width, height) {
 			_drill_WSE_battle_initialize.call(this, x, y, Moghunter.bhud_skill_width, Moghunter.bhud_skill_height);
 			this.drill_WSE_skillSpriteInit();
 		};
+		
+	//==============================
+	// * 初始化 - rmmv战斗技能窗口
+	//==============================
 	}else{
 		Window_BattleSkill.prototype.initialize = function(x, y, width, height) {
 			_drill_WSE_battle_initialize.call(this, x, y, width, height);
@@ -405,28 +455,31 @@ if( DrillUp.g_WSE_use_in_battle ){
 		};
 	}
 }
-
 //==============================
-// * 窗口sprite初始化
+// * 初始化 - 执行初始化
 //==============================
 Window_SkillList.prototype.drill_WSE_skillSpriteInit = function() {
-	this._drill_sprites = [];
-	this._drill_bitmaps = [];
-	this._drill_bitmap_back = ImageManager.load_MenuSkillElement(DrillUp.g_WSE_src_background);
 	
-	//这里建立sprite层，根据rect的大小固定创建 sprite
+	// > 私有函数初始化
+	this._drill_WSE_spriteTank = [];
+	this._drill_WSE_bitmapTank = [];
+	this._drill_WSE_bitmapBackground = ImageManager.load_MenuSkillElement(DrillUp.g_WSE_src_background);
 	
-	if( !this._optionField ){		//选项层
-		this._optionField = new Sprite();
-		this.addChild(this._optionField);
+	// > 创建选项层
+	if( this._drill_selectable_layer == undefined ){	
+		this._drill_selectable_layer = new Sprite();
+		this.addChild(this._drill_selectable_layer);		//（这里建立sprite层，根据rect的大小固定创建 sprite）
 	}
-	for( var j = 0; j < this.maxPageItems(); j++ ){	//画面就出现n*m矩阵，多余的部分不画。
+	// > 创建贴图
+	for( var j = 0; j < this.maxPageItems(); j++ ){		//（窗口只划分n*m矩阵，多余的部分不画）
 		var rect = this.itemRect( j );
 		var temp_sprite = new Sprite();
 		temp_sprite.x = this.standardPadding() + rect.x;
 		temp_sprite.y = this.standardPadding() + rect.y;
 		temp_sprite._org_x = temp_sprite.x;
 		temp_sprite._org_y = temp_sprite.y;
+		temp_sprite.zIndex = 100;		//（菜单选项框的zIndex为 10，滚动条不在该layer中）
+										//（滚动条放入任何一个layer都会出现诡异bug，影响这个插件第7个sprite）
 		
 		if( DrillUp.g_WSE_is_strict ){
 			var temp_bitmap = new Bitmap( rect.width , rect.height );
@@ -436,11 +489,15 @@ Window_SkillList.prototype.drill_WSE_skillSpriteInit = function() {
 		temp_bitmap.fontSize = this.standardFontSize();
 		
 		temp_sprite.bitmap = temp_bitmap;
-		this._drill_bitmaps.push(temp_bitmap);
-		this._drill_sprites.push(temp_sprite);
-		this._optionField.addChild(temp_sprite);	
+		this._drill_WSE_bitmapTank.push(temp_bitmap);
+		this._drill_WSE_spriteTank.push(temp_sprite);
+		this._drill_selectable_layer.addChild(temp_sprite);	
 		
 	}
+	
+	// > 层级排序
+	this._drill_selectable_layer.children.sort(function(a, b){return a.zIndex-b.zIndex});
+		
 }
 
 //=============================================================================
@@ -504,12 +561,11 @@ var _drill_WSE_menu_drawAllItems = Window_SkillList.prototype.drawAllItems;
 var _drill_WSE_battle_drawAllItems = Window_BattleSkill.prototype.drawAllItems;
 
 if( DrillUp.g_WSE_use_in_menu ){
+	
 	Window_SkillList.prototype.drawAllItems = function() {
 		this.drill_WSE_drawAllItems();
 	};
-	Window_BattleSkill.prototype.drawAllItems = function() {
-		_drill_WSE_battle_drawAllItems.call( this );
-	};
+	
 	if(Imported.MOG_SceneSkill){
 		Window_SkillListM.prototype.drawAllItems = function() {
 			this.drill_WSE_drawAllItems();
@@ -531,9 +587,9 @@ Window_SkillList.prototype.drill_WSE_drawAllItems = function() {
 	
 	for (var i = 0; i < this.maxPageItems(); i++) {
 		var index = topIndex + i;
-		var cur_bitmap = this._drill_bitmaps[i];
-		if (index < this.maxItems()) {
-			this.drawItem(index,cur_bitmap);
+		var cur_bitmap = this._drill_WSE_bitmapTank[i];
+		if( index < this.maxItems() ){
+			this.drawItem( index,cur_bitmap );
 		}else{
 			cur_bitmap.clear();
 		}
@@ -547,12 +603,11 @@ var _drill_WSE_menu_drawItem = Window_SkillList.prototype.drawItem;
 var _drill_WSE_battle_drawItem = Window_BattleSkill.prototype.drawItem;
 
 if( DrillUp.g_WSE_use_in_menu ){
+	
 	Window_SkillList.prototype.drawItem = function(index,cur_bitmap) {
 		this.drill_WSE_drawItem(index,cur_bitmap);
 	};
-	Window_BattleSkill.prototype.drawItem = function(index,cur_bitmap) {
-		_drill_WSE_battle_drawItem.call( this,index,cur_bitmap );
-	};
+	
 	if(Imported.MOG_SceneSkill){
 		Window_SkillListM.prototype.drawItem = function(index,cur_bitmap) {
 			this.drill_WSE_drawItem(index,cur_bitmap);
@@ -569,21 +624,22 @@ if( DrillUp.g_WSE_use_in_battle ){
 //==============================
 // * bitmap绘制
 //==============================
-Window_SkillList.prototype.drill_WSE_drawItem = function(index,cur_bitmap) {
+Window_SkillList.prototype.drill_WSE_drawItem = function( index,cur_bitmap ){
     var skill = this._data[index];
-    if (skill) {
+    if( skill ){
         var rect = this.itemRect(index);
         rect.width -= this.textPadding();
 		cur_bitmap._disabled = !this.isEnabled(skill);
 		cur_bitmap.paintOpacity = this.isEnabled(skill) ? 255 : this.translucentOpacity();	//	不可用的技能透明度控制
 		cur_bitmap.clear();
-        this.drill_WSE_s_drawBlock(cur_bitmap, skill );
+        this.drill_WSE_s_drawBlock( cur_bitmap, skill );
 		cur_bitmap.paintOpacity = 255 ;
     }
 };
-Window_SkillList.prototype.drill_WSE_s_drawBlock = function(cur_bitmap, skill ) {
+Window_SkillList.prototype.drill_WSE_s_drawBlock = function( cur_bitmap, skill ){
 	
-    if (skill) {
+    if( this._drill_WSE_lastSkill != skill ){
+		this._drill_WSE_lastSkill = skill;
 		cur_bitmap.drill_elements_drawText = null;	//绘制颜色特殊位置修正
         this.resetTextColor();
         
@@ -605,7 +661,14 @@ Window_SkillList.prototype.drill_WSE_s_drawBlock = function(cur_bitmap, skill ) 
 				cur_bitmap.drill_elements_drawText = true;
 			}
 		}
-		cur_bitmap.drawText( String(skill.name), name_x, name_y, name_width, this.lineHeight(), name_align);
+		var skill_name = String(skill.name)
+		if( Imported.Drill_CoreOfString == true ){
+			// > 指代字符（提前转换）
+			skill_name = skill_name.replace(/[\\]?\\STR\[(\d+)\]/gi, function() {
+				return $gameStrings.convertedValue( parseInt(arguments[1]) );
+			}.bind(this));
+		}
+		cur_bitmap.drawText( skill_name, name_x, name_y, name_width, this.lineHeight(), name_align);
 		cur_bitmap.textColor = "#ffffff" ;
 		
 		var cost_x = DrillUp.g_WSE_cost_x;		// 绘制消耗值
@@ -637,9 +700,9 @@ Window_SkillList.prototype.drill_WSE_s_drawBackground = function(cur_bitmap, ski
 	//绘制背景（背景后期可能会扩展，这里从单独拿出来）
 	var back_x = 0;
 	var back_y = 0;
-	var back_w = this._drill_bitmap_back.width;
-	var back_h = this._drill_bitmap_back.height;
-	cur_bitmap.blt( this._drill_bitmap_back,  back_x, back_y, back_w, back_h,  0,0, back_w, back_h);
+	var back_w = this._drill_WSE_bitmapBackground.width;
+	var back_h = this._drill_WSE_bitmapBackground.height;
+	cur_bitmap.blt( this._drill_WSE_bitmapBackground,  back_x, back_y, back_w, back_h,  0,0, back_w, back_h);
 }
 Window_SkillList.prototype.drill_WSE_s_drawIcon = function(cur_bitmap, skill ) {
 	
@@ -664,13 +727,12 @@ var _drill_WSE_menu_update = Window_SkillList.prototype.update;
 var _drill_WSE_battle_update = Window_BattleSkill.prototype.update;
 
 if( DrillUp.g_WSE_use_in_menu ){
+	
 	Window_SkillList.prototype.update = function() {
 		_drill_WSE_menu_update.call(this);
 		this.drill_WSE_skillSpriteUpdate();
 	}
-	Window_BattleSkill.prototype.update = function() {
-		_drill_WSE_battle_update.call(this);
-	};
+	
 	if(Imported.MOG_SceneSkill){
 		var _drill_WSE_MOG_menu_update = Window_SkillListM.prototype.update;
 		Window_SkillListM.prototype.update = function(x, y, width, height) {
@@ -691,8 +753,8 @@ if( DrillUp.g_WSE_use_in_battle ){
 // * sprite动作
 //==============================
 Window_SkillList.prototype.drill_WSE_skillSpriteUpdate = function() {
-	for(var i = 0;i< this._drill_sprites.length; i++){
-		var temp_sprite = this._drill_sprites[i];
+	for(var i = 0; i< this._drill_WSE_spriteTank.length; i++){
+		var temp_sprite = this._drill_WSE_spriteTank[i];
 		if(  this._index == i + this.topIndex() 
 			&& !(temp_sprite.bitmap._disabled) ){
 			this.drill_WSE_button_move_to(temp_sprite,
@@ -756,31 +818,4 @@ if(Imported.MOG_SceneSkill){
 	Window_SkillListM.prototype.drill_WSE_scale_move_to = Window_SkillList.prototype.drill_WSE_scale_move_to;
 }
 
-
-//==============================
-// * 窗口指针闪烁块（覆写分配）
-//==============================
-var _drill_WSE_menu_cursorRect = Window_SkillList.prototype.isCursorVisible;
-var _drill_WSE_battle_cursorRect = Window_BattleSkill.prototype.isCursorVisible;
-
-if( !DrillUp.g_WSE_use_cursorRect ){
-	if( DrillUp.g_WSE_use_in_menu ){
-		Window_SkillList.prototype.isCursorVisible = function() {
-			return false;
-		}
-		Window_BattleSkill.prototype.isCursorVisible = function() {
-			_drill_WSE_battle_cursorRect.call(this);
-		};
-		if(Imported.MOG_SceneSkill){
-			Window_SkillListM.prototype.isCursorVisible = function(x, y, width, height) {
-				return false;
-			};
-		}
-	}
-	if( DrillUp.g_WSE_use_in_battle ){
-		Window_BattleSkill.prototype.isCursorVisible = function() {
-			return false;
-		}
-	}
-}
 

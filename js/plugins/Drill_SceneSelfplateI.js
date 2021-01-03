@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        面板 - 全自定义信息面板I
+ * @plugindesc [v1.2]        面板 - 全自定义信息面板I
  * @author Drill_up
  * 
  * @Drill_LE_param "内容-%d"
@@ -15,7 +15,7 @@
  * =============================================================================
  * +++ Drill_SceneSelfplateI +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 可全部自定义的信息面板I。
@@ -148,6 +148,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 添加了 长文本选项 功能的支持。以及 菜单指针/边框 的控制关闭功能。
+ * [v1.2]
+ * 添加了drill指针的控制。
  * 
  *
  * @param ----杂项----
@@ -271,14 +273,14 @@
  * @parent ----描述窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 510
  *
  * @param 描述窗口高度
  * @parent ----描述窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 360
  *
  * @param 描述窗口字体大小
@@ -1027,13 +1029,13 @@
  * @param 选项窗口宽度
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 816
  *
  * @param 选项窗口高度
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 80
  *
  * @param 选项窗口列数
@@ -1082,21 +1084,114 @@
  * @desc 控制窗口框架与窗口背景。
  * @default {"布局类型":"单张背景贴图","---单张背景贴图---":"","资源-贴图":"信息面板I-选项窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
  * 
- * @param 是否启用mog菜单指针
+ * @param 选项窗口指针与边框
+ * @type struct<DrillCursor>
+ * @desc 窗口的指针设置与选项边框设置。
+ * @default {}
+ * 
+ * 
+ */
+/*~struct~DrillCursor:
+ *
+ * @param ---drill插件---
+ * @default 
+ * 
+ * @param 是否启用菜单指针
+ * @parent ---drill插件---
  * @type boolean
  * @on 启用
  * @off 关闭
- * @desc true - 启用，false - 关闭，使用 MOG_MenuCursor 菜单指针插件，可以装饰选项窗口，你也可以关闭装饰。
+ * @desc true - 启用，false - 关闭，菜单指针可以指向你当前选中的项。需要Drill_MenuCursor插件支持。
+ * @default true
+ * 
+ * @param 是否锁定菜单指针样式
+ * @parent 是否启用菜单指针
+ * @type boolean
+ * @on 锁定
+ * @off 不锁定
+ * @desc true - 锁定，false - 不锁定，窗口可以指定一个指针样式来装饰。需要Drill_MenuCursor插件支持。
+ * @default false
+ * 
+ * @param 锁定的菜单指针样式
+ * @parent 是否启用菜单指针
+ * @type number
+ * @min 1
+ * @desc 锁定时，指定的指针样式id，具体见Drill_MenuCursor插件中对应的配置。
+ * @default 1
+ * 
+ * @param 是否启用闪烁白矩形
+ * @parent ---drill插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，你可以开关rmmv默认选项的白色闪烁矩形。需要Drill_MenuCursorBorder插件支持。
+ * @default true
+ * 
+ * @param 是否启用菜单边框
+ * @parent ---drill插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，菜单选项边框装饰当前选中的矩形项。需要Drill_MenuCursorBorder插件支持。
+ * @default true
+ * 
+ * @param 是否锁定菜单边框样式
+ * @parent 是否启用菜单边框
+ * @type boolean
+ * @on 锁定
+ * @off 不锁定
+ * @desc true - 锁定，false - 不锁定，窗口可以指定一个选项边框样式来装饰。需要Drill_MenuCursorBorder插件支持。
+ * @default false
+ * 
+ * @param 锁定的菜单边框样式
+ * @parent 是否启用菜单边框
+ * @type number
+ * @min 1
+ * @desc 锁定时，指定的矩形边框样式id，具体见Drill_MenuCursorBorder插件中对应的配置。
+ * @default 1
+ * 
+ * @param 是否启用滚动条
+ * @parent ---drill插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，你可以关闭装饰当前窗口的菜单滚动条。需要Drill_MenuScrollBar插件支持。
+ * @default true
+ * 
+ * @param 是否锁定滚动条样式
+ * @parent 是否启用滚动条
+ * @type boolean
+ * @on 锁定
+ * @off 不锁定
+ * @desc true - 锁定，false - 不锁定，窗口可以指定一个滚动条样式来装饰。需要Drill_MenuScrollBar插件支持。
+ * @default false
+ * 
+ * @param 锁定的滚动条样式
+ * @parent 是否启用滚动条
+ * @type number
+ * @min 1
+ * @desc 锁定时，指定的滚动条样式id，具体见Drill_MenuScrollBar插件中对应的配置。
+ * @default 1
+ *
+ * @param ---mog插件---
+ * @default 
+ * 
+ * @param 是否启用mog菜单指针
+ * @parent ---mog插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，使用 MOG_MenuCursor 菜单指针插件（旧插件），可以装饰选项窗口，你也可以关闭装饰。
  * @default true
  * 
  * @param 是否启用mog菜单边框
+ * @parent ---mog插件---
  * @type boolean
  * @on 启用
  * @off 关闭
- * @desc true - 启用，false - 关闭，使用 MOG_CursorBorder 菜单边框插件，可以装饰选项窗口，你也可以关闭装饰。
+ * @desc true - 启用，false - 关闭，使用 MOG_CursorBorder 菜单边框插件（旧插件），可以装饰选项窗口，你也可以关闭装饰。
  * @default true
- * 
- * 
+ *
  */
 /*~struct~DrillCommandButton:
  * 
@@ -1182,6 +1277,26 @@
 	
 	
 	//==============================
+	// * 变量获取 - 指针与边框
+	//				（~struct~DrillCursor）
+	//==============================
+	DrillUp.drill_SSpI_initMenuCursor = function( dataFrom ) {
+		var data = {};
+		data['mog_enabled'] = String( dataFrom["是否启用mog菜单指针"] || "true") == "true";
+		data['mog_borderEnabled'] = String( dataFrom["是否启用mog菜单边框"] || "true") == "true";
+		data['MCu_enabled'] = String( dataFrom["是否启用菜单指针"] || "true") == "true";
+		data['MCu_lock'] = String( dataFrom["是否锁定菜单指针样式"] || "false") == "true";
+		data['MCu_style'] = Number( dataFrom["锁定的菜单指针样式"] || 1);
+		data['MCB_rectEnabled'] = String( dataFrom["是否启用闪烁白矩形"] || "true") == "true";
+		data['MCB_enabled'] = String( dataFrom["是否启用菜单边框"] || "true") == "true";
+		data['MCB_lock'] = String( dataFrom["是否锁定菜单边框样式"] || "false") == "true";
+		data['MCB_style'] = Number( dataFrom["锁定的菜单边框样式"] || 1);
+		data['MSB_enabled'] = String( dataFrom["是否启用滚动条"] || "true") == "true";
+		data['MSB_lock'] = String( dataFrom["是否锁定滚动条样式"] || "false") == "true";
+		data['MSB_style'] = Number( dataFrom["锁定的滚动条样式"] || 1);
+		return data;
+	}
+	//==============================
 	// * 变量获取 - 选项窗口参数（必须写在前面）
 	//==============================
 	DrillUp.drill_SSpI_initCommandWindow = function( dataFrom ) {
@@ -1216,8 +1331,13 @@
 			data['layoutX'] = Number( layout["贴图位置修正 X"] || -100);
 			data['layoutY'] = Number( layout["贴图位置修正 Y"] || 0);
 		}
-		data['menuCursorEnabled'] = String( dataFrom["是否启用mog菜单指针"] || "true") == "true";
-		data['menuCursorBorderEnabled'] = String( dataFrom["是否启用mog菜单边框"] || "true") == "true";
+		if( dataFrom["选项窗口指针与边框"] != "" &&
+			dataFrom["选项窗口指针与边框"] != undefined ){
+			var cursor = JSON.parse( dataFrom["选项窗口指针与边框"] );
+			data['cursor'] = DrillUp.drill_SSpI_initMenuCursor( cursor );
+		}else{
+			data['cursor'] = DrillUp.drill_SSpI_initMenuCursor( {} );
+		}
 		return data;
 	}
 	//==============================
@@ -1297,14 +1417,14 @@
 		var data = JSON.parse( DrillUp.parameters["选项窗口"] );
 		DrillUp.g_SSpI_command_window = DrillUp.drill_SSpI_initCommandWindow( data );
 	}else{
-		DrillUp.g_SSpI_command_window = {};
+		DrillUp.g_SSpI_command_window = DrillUp.drill_SSpI_initCommandWindow( {} );
 	}
 	if( DrillUp.parameters["选项按钮组"] != undefined &&
 		DrillUp.parameters["选项按钮组"] != "" ){
 		var data = JSON.parse( DrillUp.parameters["选项按钮组"] );
 		DrillUp.g_SSpI_command_button = DrillUp.drill_SSpI_initCommandButton( data );
 	}else{
-		DrillUp.g_SSpI_command_button = {};
+		DrillUp.g_SSpI_command_button = DrillUp.drill_SSpI_initCommandButton( {} );
 	}
 
 	/*-----------------描述窗口------------------*/
@@ -1939,27 +2059,75 @@ Drill_SSpI_SelectWindow.prototype.processCancel = function() {
 	Drill_SSpI_SelectWindow.lastIndex = this.index();
 };
 //==============================
-// * 选项窗口 - 兼容mog菜单指针插件
+// * 选项窗口 - 兼容 - mog菜单指针插件
 //==============================
 if( Imported.MOG_MenuCursor == true ){
 	var _drill_SSpI_mog_set_mcursor_data = Drill_SSpI_SelectWindow.prototype.need_set_mcursor_data;
 	Drill_SSpI_SelectWindow.prototype.need_set_mcursor_data = function() {
-		if( DrillUp.g_SSpI_command_window['menuCursorEnabled'] == false ){
+		if( DrillUp.g_SSpI_command_window['cursor']['mog_enabled'] == false ){
 			return false;
 		}
 		return _drill_SSpI_mog_set_mcursor_data.call(this);
 	}
 }
 //==============================
-// * 选项窗口 - 兼容mog菜单边框插件
+// * 选项窗口 - 兼容 - mog菜单边框插件
 //==============================
 if( Imported.MOG_CursorBorder == true ){
 	var _drill_SSpI_mog_createSprSelMenu = Drill_SSpI_SelectWindow.prototype.createSprSelMenu;
 	Drill_SSpI_SelectWindow.prototype.createSprSelMenu = function() {
-		if( DrillUp.g_SSpI_command_window['menuCursorBorderEnabled'] == false ){
+		if( DrillUp.g_SSpI_command_window['cursor']['mog_borderEnabled'] == false ){
 			return ;
 		}
 		_drill_SSpI_mog_createSprSelMenu.call(this);
+	}
+}
+//==============================
+// * 选项窗口 - 兼容 - Drill_MenuCursor菜单指针插件
+//==============================
+if( Imported.Drill_MenuCursor == true ){
+	Drill_SSpI_SelectWindow.prototype.drill_MCu_cursorEnabled = function() {
+		return DrillUp.g_SSpI_command_window['cursor']['MCu_enabled'];
+	}
+	Drill_SSpI_SelectWindow.prototype.drill_MCu_cursorStyleId = function() {
+		if( DrillUp.g_SSpI_command_window['cursor']['MCu_lock'] == true ){
+			return DrillUp.g_SSpI_command_window['cursor']['MCu_style'];
+		}else{
+			return $gameSystem._drill_MCu_style;
+		}
+	}
+}
+//==============================
+// * 选项窗口 - 兼容 - Drill_MenuCursorBorder菜单边框插件
+//==============================
+if( Imported.Drill_MenuCursorBorder == true ){
+	Drill_SSpI_SelectWindow.prototype.drill_MCB_glimmerRectVisible = function() {
+		return DrillUp.g_SSpI_command_window['cursor']['MCB_rectEnabled'];
+	}
+	Drill_SSpI_SelectWindow.prototype.drill_MCB_borderEnabled = function() {
+		return DrillUp.g_SSpI_command_window['cursor']['MCB_enabled'];
+	}
+	Drill_SSpI_SelectWindow.prototype.drill_MCB_borderStyleId = function() {
+		if( DrillUp.g_SSpI_command_window['cursor']['MCB_lock'] == true ){
+			return DrillUp.g_SSpI_command_window['cursor']['MCB_style'];
+		}else{
+			return $gameSystem._drill_MCB_style;
+		}
+	}
+}
+//==============================
+// * 选项窗口 - 兼容 - Drill_MenuScrollBar菜单滚动条插件
+//==============================
+if( Imported.Drill_MenuScrollBar == true ){
+	Drill_SSpI_SelectWindow.prototype.drill_MSB_scrollBarEnabled = function() {
+		return DrillUp.g_SSpI_command_window['cursor']['MSB_enabled'];
+	}
+	Drill_SSpI_SelectWindow.prototype.drill_MSB_scrollBarStyleId = function() {
+		if( DrillUp.g_SSpI_command_window['cursor']['MSB_lock'] == true ){
+			return DrillUp.g_SSpI_command_window['cursor']['MSB_style'];
+		}else{
+			return $gameSystem._drill_MSB_style;
+		}
 	}
 }
 

@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.1]        系统 - 按钮组核心
+ * @plugindesc [v1.2]        系统 - 按钮组核心
  * @author Drill_up
  * 
  * @Drill_LE_param "按钮组样式-%d"
@@ -15,7 +15,7 @@
  * =============================================================================
  * +++ Drill_CoreOfSelectableButton +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 能够将含选项的窗口，变成一系列灵活分布的按钮组。
@@ -26,9 +26,12 @@
  * 插件必须基于核心，并可以辅助扩展下列插件。
  * 基于：
  *   - Drill_CoreOfBallistics       系统 - 弹道核心
- * 作用于：
+ * 可作用于：
  *   - Drill_SceneMain              面板 - 全自定义主菜单面板
  *   - Drill_SceneSelfplateI        面板 - 全自定义信息面板I
+ * 可被扩展：
+ *   - Drill_MenuCursor             主菜单 - 多样式菜单指针
+ *     目标插件可以使得该 核心 支持按钮指针功能。
  * 
  * -----------------------------------------------------------------------------
  * ----设定注意事项
@@ -57,6 +60,10 @@
  *      轨迹，看到规划排列的红线。
  *   (3.注意按钮组的排列方式，你需要根据排列实际情况，配置合适的键
  *      盘模式。270度朝上的直线排列，使用的是反向上下切换键盘模式。
+ * 指针：
+ *   (1.从本质上说，指针就是一个贴图。
+ *      可以是圆环，可以是指向标，可以是大外框，还可以配置成gif。
+ *   (2.具体可以去看看”关于指针与边框.docx”。
  * 按钮变化效果：
  *   (1.按钮组中，所有按钮的变化效果都是独立的，插件会对当前
  *      选中的按钮进行透明度变化、摇晃效果、缩放效果等变化。
@@ -91,6 +98,8 @@
  * 完成插件ヽ(*。>Д<)o゜
  * [v1.1]
  * 添加了鼠标接近自动选中功能。以及键盘控制功能。
+ * [v1.2]
+ * 添加了多样式菜单指针的支持。
  * 
  * 
  * 
@@ -956,10 +965,28 @@
  * @param ---指针---
  * @desc 
  * 
- * @param 待填坑
+ * @param 是否显示菜单指针
  * @parent ---指针---
- * @desc 
+ * @type boolean
+ * @on 显示
+ * @off 不显示
+ * @desc true - 显示，false - 不显示，菜单指针可以指向你当前选中的按钮。需要Drill_MenuCursor插件支持。
+ * @default false
  * 
+ * @param 是否锁定菜单指针样式
+ * @parent ---指针---
+ * @type boolean
+ * @on 锁定
+ * @off 不锁定
+ * @desc true - 锁定，false - 不锁定，按钮组可以指定一个指针样式来装饰。需要Drill_MenuCursor插件支持。
+ * @default true
+ * 
+ * @param 菜单指针样式
+ * @parent 是否锁定菜单指针样式
+ * @type number
+ * @min 1
+ * @desc 锁定时，指定的指针样式id，具体见Drill_MenuCursor插件中对应的配置。
+ * @default 1
  * 
  * 
  * @param ---输入设备---
@@ -1170,8 +1197,8 @@
 //					->按钮贴图
 //					->选中的按钮（实时刷）
 //				->选中的按钮
-//					->指针		x
-//						->连接MenuCursor插件	x
+//					->指针
+//						->连接MenuCursor插件
 //					->鼠标再点击进入
 //					->鼠标接近自动选中
 //					->变化方式
@@ -1327,8 +1354,9 @@ if( Imported.Drill_CoreOfBallistics ){
 		data['selected_out_y'] = Number( dataFrom["平移-出列相对偏移 Y"] || 0);
 		data['selected_recoverImmediately'] = String( dataFrom["失去焦点后是否立刻复原"] || "false") == "true";
 		// > 指针
-		//	...
-		
+		data['cursor_enable'] = String( dataFrom["是否显示菜单指针"] || "false") == "true";
+		data['cursor_lockStyle'] = String( dataFrom["是否锁定菜单指针样式"] || "true") == "true";
+		data['cursor_style'] = Number( dataFrom["菜单指针样式"] || 0);
 		// > 激活
 		//		data['active_enableMouseOk']【鼠标ok点击】
 		//		data['active_hide']【激活后是否瞬间隐藏，克隆选中按钮用】
@@ -1626,16 +1654,26 @@ Drill_COSB_LayerSprite.prototype.drill_initWindow = function() {
 		}
 	}
 	
-	// > 特殊参数
+	// > 特殊参数（外部接口参数都在这里传，注意不要把sprite自己指针传给 window ）
+	//	
+	//		1."_drill_COSB_isOccupyed"表示这个窗口被按钮组占领了，
+	//			用于判断选项窗口是否被装饰。
+	temp_window._drill_COSB_isOccupyed = true;
 	//
-	//		1.当['btn_constructor'] == "Window_Selectable" 时，
+	//		2.当['btn_constructor'] == "Window_Selectable" 时，
 	//			在window上挂一个 ._drill_COSB_indexList 交错索引列表，可以使得按钮按 索引列表 的顺序对应 ，
 	//			如果没有该交错列表，那么则默认文档中的"关于按钮组核心.docx"顺序对应。
 	//
-	//		2."_drill_COSB_curStatus"用于监听窗口确认/取消情况。
+	//		3."_drill_COSB_curStatus"用于监听窗口确认/取消情况。
 	//			在 窗口未激活 + status为"cancel" 时，按钮处于 "激活前状态"。
 	//			在 窗口未激活 + status为"ok" 时，    按钮处于 "激活后状态"。
 	temp_window._drill_COSB_curStatus = "cancel";
+	//	
+	//		4."_drill_COSB_selectedBtnX"表示选中按钮的坐标，
+	//			给菜单指针用的。
+	temp_window._drill_COSB_selectedBtnX = 0;
+	temp_window._drill_COSB_selectedBtnY = 0;
+	temp_window._drill_COSB_forceCursorStyle = 0;
 	
 };
 //==============================
@@ -1983,6 +2021,7 @@ Drill_COSB_LayerSprite.prototype.drill_updateSprite = function() {
 	this.drill_updateButtonAttrInit();				//按钮 - 固定帧初始值
 	this.drill_updateButtonStartMove();				//按钮 - 起点移动
 	this.drill_updateButtonStreamlineMove();		//按钮 - 流线式移动
+	this.drill_updateButtonSelectionCursor();		//按钮 - 选中的按钮指针跟随
 	this.drill_updateButtonSelectionTransfer();		//按钮 - 选中非选中变换
 	this.drill_updateButtonActiveTransfer();		//按钮 - 激活后变换
 	this.drill_updateButtonAttrSet();				//按钮 - 固定帧赋值
@@ -2115,6 +2154,30 @@ Drill_COSB_LayerSprite.prototype.drill_updateButtonStreamlineMove = function() {
 	var temp_window = this._drill_window;
 	
 	//...
+}
+//==============================
+// * 帧刷新 - 按钮 选中的按钮指针跟随
+//==============================
+Drill_COSB_LayerSprite.prototype.drill_updateButtonSelectionCursor = function() {
+	var temp_data = this._drill_data;
+	var temp_window = this._drill_window;
+	if( temp_data['cursor_enable'] == false ){ return; }
+	
+	var btn_index = temp_window.index() - temp_window.topIndex();
+	if( btn_index == -1 ){ return; }
+	if( btn_index >= this._drill_button_spriteTank.length ){ return; }
+	var selected_sprite = this._drill_button_spriteTank[btn_index];
+	
+	if(!temp_window.isOpenAndActive() ){ return; } 	//（窗口未激活时，不操作）
+	
+	// > 将坐标赋值到窗口
+	temp_window._drill_COSB_selectedBtnX = this.drill_getSpriteAbsoluteX(selected_sprite);
+	temp_window._drill_COSB_selectedBtnY = this.drill_getSpriteAbsoluteY(selected_sprite);
+	if( temp_data['cursor_lockStyle'] == false ){
+		temp_window._drill_COSB_forceCursorStyle = 0;
+	}else{
+		temp_window._drill_COSB_forceCursorStyle = temp_data['cursor_style'];
+	}
 }
 //==============================
 // * 帧刷新 - 按钮 选中非选中变换
@@ -2423,6 +2486,15 @@ Drill_COSB_LayerSprite.prototype.drill_updateMouseWheelSelect = function() {
 }
 
 //==============================
+// * 获取 - 指定贴图的绝对坐标
+//==============================
+Drill_COSB_LayerSprite.prototype.drill_getSpriteAbsoluteX = function( sprite ){
+	return sprite.x + this._layer_context.x;
+}
+Drill_COSB_LayerSprite.prototype.drill_getSpriteAbsoluteY = function( sprite ){
+	return sprite.y + this._layer_context.y;
+}
+//==============================
 // * 判断 - 所有按钮加载完成
 //==============================
 Drill_COSB_LayerSprite.prototype.drill_isAllButtonReady = function(){	
@@ -2443,10 +2515,10 @@ Drill_COSB_LayerSprite.prototype.drill_isOnButton = function( sprite ) {
 	var pw = sprite.bitmap.width /2 + 10;
 	var ph = sprite.bitmap.height /2 + 10;
 	
-	if( TouchInput.x < sprite.x + this._layer_context.x - pw ){ return false };
-	if( TouchInput.x > sprite.x + this._layer_context.x + pw ){ return false };
-	if( TouchInput.y < sprite.y + this._layer_context.y - ph ){ return false };
-	if( TouchInput.y > sprite.y + this._layer_context.y + ph ){ return false };
+	if( TouchInput.x < this.drill_getSpriteAbsoluteX(sprite) - pw ){ return false };
+	if( TouchInput.x > this.drill_getSpriteAbsoluteX(sprite) + pw ){ return false };
+	if( TouchInput.y < this.drill_getSpriteAbsoluteY(sprite) - ph ){ return false };
+	if( TouchInput.y > this.drill_getSpriteAbsoluteY(sprite) + ph ){ return false };
 	return true;	
 };
 //==============================

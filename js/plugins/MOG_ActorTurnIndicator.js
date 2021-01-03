@@ -30,9 +30,15 @@
  * @default 0
  *
  * @param 混合模式
- * @type number
- * @min 0
- * @max 16
+ * @type select
+ * @option 普通
+ * @value 0
+ * @option 叠加
+ * @value 1
+ * @option 实色混合(正片叠底)
+ * @value 2
+ * @option 浅色
+ * @value 3
  * @desc pixi的渲染混合模式。0-普通,1-叠加。其他更详细相关介绍，去看看"pixi的渲染混合模式"。
  * @default 0
  * 

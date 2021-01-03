@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.7]        面板 - 全自定义商店界面
+ * @plugindesc [v1.8]        面板 - 全自定义商店界面
  * @author Drill_up
  * 
  * @Drill_LE_param "服务员-%d"
@@ -15,7 +15,7 @@
  * =============================================================================
  * +++ Drill_SceneShop +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 可全自定义的商店界面。
@@ -195,6 +195,8 @@
  * [v1.7]
  * 大幅度改进了内部结构，整理了插件说明。
  * 添加了"额外价格"的设置，加强了服务员的功能。
+ * [v1.8]
+ * 添加了drill指针的控制。
  * 
  *
  * @param ----杂项----
@@ -419,14 +421,14 @@
  * @parent ----帮助窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 400
  *
  * @param 帮助窗口高度
  * @parent ----帮助窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 100
  *
  * @param 帮助窗口字体大小
@@ -466,14 +468,14 @@
  * @parent ----金钱窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 200
  *
  * @param 金钱窗口高度
  * @parent ----金钱窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 80
  *
  * @param 金钱窗口字体大小
@@ -646,14 +648,14 @@
  * @parent ----购买窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 370
  *
  * @param 购买窗口高度
  * @parent ----购买窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 340
  *
  * @param 购买窗口列数
@@ -682,6 +684,12 @@
  * @desc 控制窗口框架与窗口背景。
  * @default {"布局类型":"单张背景贴图","---单张背景贴图---":"","资源-贴图":"商店界面-购买窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
  * 
+ * @param 购买窗口指针与边框
+ * @parent ----购买窗口----
+ * @type struct<DrillCursor>
+ * @desc 窗口的指针设置与选项边框设置。
+ * @default {}
+ * 
  *
  * @param ----持有数窗口----
  * @default 
@@ -700,14 +708,14 @@
  * @parent ----持有数窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 200
  *
  * @param 持有数窗口高度
  * @parent ----持有数窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 80
  *
  * @param 持有数窗口字体大小
@@ -747,14 +755,14 @@
  * @parent ----物品数量窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 370
  *
  * @param 物品数量窗口高度
  * @parent ----物品数量窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 130
  *
  * @param 物品数量窗口字体大小
@@ -794,14 +802,14 @@
  * @parent ----出售窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 370
  *
  * @param 出售窗口高度
  * @parent ----出售窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 340
  *
  * @param 出售窗口列数
@@ -830,6 +838,12 @@
  * @desc 控制窗口框架与窗口背景。
  * @default {"布局类型":"单张背景贴图","---单张背景贴图---":"","资源-贴图":"商店界面-出售窗口","贴图位置修正 X":"0","贴图位置修正 Y":"0"}
  * 
+ * @param 出售窗口指针与边框
+ * @parent ----出售窗口----
+ * @type struct<DrillCursor>
+ * @desc 窗口的指针设置与选项边框设置。
+ * @default {}
+ * 
  *
  * @param ----出售类型窗口----
  * @default 
@@ -848,14 +862,14 @@
  * @parent ----出售类型窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 230
  *
  * @param 出售类型窗口高度
  * @parent ----出售类型窗口----
  * @type number
  * @min 50
- * @desc 窗口将一个规划的矩形区域，矩形区域内控制文本显示，这里是矩形的宽度，注意，矩形和布局图片的宽高没有任何关系。
+ * @desc 窗口的高宽设置。注意，实际文本域的高宽要比该设置小一些，因为有内边距。具体去看看"窗口与布局.docx"。
  * @default 240
  * 
  * @param 出售类型窗口列数
@@ -895,6 +909,12 @@
  * @value right
  * @desc 选项文本的对齐方式，left - 左对齐，center- 居中，right - 右对齐。
  * @default left
+ * 
+ * @param 出售类型窗口指针与边框
+ * @parent ----出售类型窗口----
+ * @type struct<DrillCursor>
+ * @desc 窗口的指针设置与选项边框设置。
+ * @default {}
  *
  */
 /*~struct~DrillWindowMoving:
@@ -989,6 +1009,86 @@
  * @parent ---单张背景贴图---
  * @desc 修正图片的位置用。以窗口的点为基准，负数向上，正数向下，单位像素。
  * @default 0
+ *
+ */
+/*~struct~DrillCursor:
+ * 
+ * @param 是否启用菜单指针
+ * @parent ---drill插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，菜单指针可以指向你当前选中的项。需要Drill_MenuCursor插件支持。
+ * @default true
+ * 
+ * @param 是否锁定菜单指针样式
+ * @parent 是否启用菜单指针
+ * @type boolean
+ * @on 锁定
+ * @off 不锁定
+ * @desc true - 锁定，false - 不锁定，窗口可以指定一个指针样式来装饰。需要Drill_MenuCursor插件支持。
+ * @default false
+ * 
+ * @param 锁定的菜单指针样式
+ * @parent 是否启用菜单指针
+ * @type number
+ * @min 1
+ * @desc 锁定时，指定的指针样式id，具体见Drill_MenuCursor插件中对应的配置。
+ * @default 1
+ * 
+ * @param 是否启用闪烁白矩形
+ * @parent ---drill插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，你可以开关rmmv默认选项的白色闪烁矩形。需要Drill_MenuCursorBorder插件支持。
+ * @default true
+ * 
+ * @param 是否启用菜单边框
+ * @parent ---drill插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，菜单选项边框装饰当前选中的矩形项。需要Drill_MenuCursorBorder插件支持。
+ * @default true
+ * 
+ * @param 是否锁定菜单边框样式
+ * @parent 是否启用菜单边框
+ * @type boolean
+ * @on 锁定
+ * @off 不锁定
+ * @desc true - 锁定，false - 不锁定，窗口可以指定一个选项边框样式来装饰。需要Drill_MenuCursorBorder插件支持。
+ * @default false
+ * 
+ * @param 锁定的菜单边框样式
+ * @parent 是否启用菜单边框
+ * @type number
+ * @min 1
+ * @desc 锁定时，指定的矩形边框样式id，具体见Drill_MenuCursorBorder插件中对应的配置。
+ * @default 1
+ * 
+ * @param 是否启用滚动条
+ * @parent ---drill插件---
+ * @type boolean
+ * @on 启用
+ * @off 关闭
+ * @desc true - 启用，false - 关闭，你可以关闭装饰当前窗口的菜单滚动条。需要Drill_MenuScrollBar插件支持。
+ * @default true
+ * 
+ * @param 是否锁定滚动条样式
+ * @parent 是否启用滚动条
+ * @type boolean
+ * @on 锁定
+ * @off 不锁定
+ * @desc true - 锁定，false - 不锁定，窗口可以指定一个滚动条样式来装饰。需要Drill_MenuScrollBar插件支持。
+ * @default false
+ * 
+ * @param 锁定的滚动条样式
+ * @parent 是否启用滚动条
+ * @type number
+ * @min 1
+ * @desc 锁定时，指定的滚动条样式id，具体见Drill_MenuScrollBar插件中对应的配置。
+ * @default 1
  *
  */
 /*~struct~DrillSShWaitress:
@@ -1201,8 +1301,31 @@
 　　var Imported = Imported || {};
 　　Imported.Drill_SceneShop = true;
 　　var DrillUp = DrillUp || {}; 
-
     DrillUp.parameters = PluginManager.parameters('Drill_SceneShop');
+
+	
+	//==============================
+	// * 变量获取 - 指针与边框
+	//				（~struct~DrillCursor）
+	//==============================
+	DrillUp.drill_SSh_initMenuCursor = function( dataFrom ) {
+		var data = {};
+		//data['mog_enabled'] = String( dataFrom["是否启用mog菜单指针"] || "true") == "true";
+		//data['mog_borderEnabled'] = String( dataFrom["是否启用mog菜单边框"] || "true") == "true";
+		data['MCu_enabled'] = String( dataFrom["是否显示菜单指针"] || "true") == "true";
+		data['MCu_lock'] = String( dataFrom["是否锁定菜单指针样式"] || "false") == "true";
+		data['MCu_style'] = Number( dataFrom["锁定的菜单指针样式"] || 1);
+		data['MCB_rectEnabled'] = String( dataFrom["是否启用闪烁白矩形"] || "true") == "true";
+		data['MCB_enabled'] = String( dataFrom["是否启用菜单边框"] || "true") == "true";
+		data['MCB_lock'] = String( dataFrom["是否锁定菜单边框样式"] || "false") == "true";
+		data['MCB_style'] = Number( dataFrom["锁定的菜单边框样式"] || 1);
+		data['MSB_enabled'] = String( dataFrom["是否启用滚动条"] || "true") == "true";
+		data['MSB_lock'] = String( dataFrom["是否锁定滚动条样式"] || "false") == "true";
+		data['MSB_style'] = Number( dataFrom["锁定的滚动条样式"] || 1);
+		return data;
+	}
+
+	/*-----------------杂项------------------*/
     DrillUp.g_SSh_layout = String(DrillUp.parameters['资源-整体布局'] || "");
 	DrillUp.g_SSh_buyingPer = Number(DrillUp.parameters['默认购买倍率'] || 1);
 	DrillUp.g_SSh_sellingPer = Number(DrillUp.parameters['默认出售倍率'] || 0.5);
@@ -1235,7 +1358,8 @@
 	DrillUp.g_SSh_help_width = Number(DrillUp.parameters['帮助窗口宽度'] || 220);
 	DrillUp.g_SSh_help_height = Number(DrillUp.parameters['帮助窗口高度'] || 460);
 	DrillUp.g_SSh_help_fontsize = Number(DrillUp.parameters['帮助窗口字体大小'] || 22);
-	if( DrillUp.parameters['帮助窗口移动动画'] != undefined ){
+	if( DrillUp.parameters['帮助窗口移动动画'] != "" &&
+		DrillUp.parameters['帮助窗口移动动画'] != undefined ){
 		DrillUp.g_SSh_help_slideAnim = JSON.parse( DrillUp.parameters['帮助窗口移动动画'] );
 		DrillUp.g_SSh_help_slideAnim['slideMoveType'] = String(DrillUp.g_SSh_help_slideAnim['移动类型'] || "匀速移动");
 		DrillUp.g_SSh_help_slideAnim['slideTime'] = Number(DrillUp.g_SSh_help_slideAnim['移动时长'] || 20);
@@ -1248,7 +1372,8 @@
 	}else{
 		DrillUp.g_SSh_help_slideAnim = {};
 	}
-	if( DrillUp.parameters['帮助窗口布局'] != undefined ){
+	if( DrillUp.parameters['帮助窗口布局'] != "" &&
+		DrillUp.parameters['帮助窗口布局'] != undefined ){
 		DrillUp.g_SSh_help_layout = JSON.parse( DrillUp.parameters['帮助窗口布局'] );
 		DrillUp.g_SSh_help_layout['layoutType'] = String(DrillUp.g_SSh_help_layout['布局类型'] || "默认皮肤");
 		DrillUp.g_SSh_help_layout['layoutSrc'] = String(DrillUp.g_SSh_help_layout['资源-贴图'] || "");
@@ -1265,7 +1390,8 @@
 	DrillUp.g_SSh_gold_width = Number(DrillUp.parameters['金钱窗口宽度'] || 220);
 	DrillUp.g_SSh_gold_height = Number(DrillUp.parameters['金钱窗口高度'] || 460);
 	DrillUp.g_SSh_gold_fontsize = Number(DrillUp.parameters['金钱窗口字体大小'] || 22);
-	if( DrillUp.parameters['金钱窗口移动动画'] != undefined ){
+	if( DrillUp.parameters['金钱窗口移动动画'] != "" &&
+		DrillUp.parameters['金钱窗口移动动画'] != undefined ){
 		DrillUp.g_SSh_gold_slideAnim = JSON.parse( DrillUp.parameters['金钱窗口移动动画'] );
 		DrillUp.g_SSh_gold_slideAnim['slideMoveType'] = String(DrillUp.g_SSh_gold_slideAnim['移动类型'] || "匀速移动");
 		DrillUp.g_SSh_gold_slideAnim['slideTime'] = Number(DrillUp.g_SSh_gold_slideAnim['移动时长'] || 20);
@@ -1278,7 +1404,8 @@
 	}else{
 		DrillUp.g_SSh_gold_slideAnim = {};
 	}
-	if( DrillUp.parameters['金钱窗口布局'] != undefined ){
+	if( DrillUp.parameters['金钱窗口布局'] != "" &&
+		DrillUp.parameters['金钱窗口布局'] != undefined ){
 		DrillUp.g_SSh_gold_layout = JSON.parse( DrillUp.parameters['金钱窗口布局'] );
 		DrillUp.g_SSh_gold_layout['layoutType'] = String(DrillUp.g_SSh_gold_layout['布局类型'] || "默认皮肤");
 		DrillUp.g_SSh_gold_layout['layoutSrc'] = String(DrillUp.g_SSh_gold_layout['资源-贴图'] || "");
@@ -1296,7 +1423,8 @@
 	DrillUp.g_SSh_buy_height = Number(DrillUp.parameters['购买窗口高度'] || 460);
 	DrillUp.g_SSh_buy_col = Number(DrillUp.parameters['购买窗口列数'] || 1);
 	DrillUp.g_SSh_buy_fontsize = Number(DrillUp.parameters['购买窗口字体大小'] || 22);
-	if( DrillUp.parameters['购买窗口移动动画'] != undefined ){
+	if( DrillUp.parameters['购买窗口移动动画'] != "" &&
+		DrillUp.parameters['购买窗口移动动画'] != undefined ){
 		DrillUp.g_SSh_buy_slideAnim = JSON.parse( DrillUp.parameters['购买窗口移动动画'] );
 		DrillUp.g_SSh_buy_slideAnim['slideMoveType'] = String(DrillUp.g_SSh_buy_slideAnim['移动类型'] || "匀速移动");
 		DrillUp.g_SSh_buy_slideAnim['slideTime'] = Number(DrillUp.g_SSh_buy_slideAnim['移动时长'] || 20);
@@ -1309,7 +1437,8 @@
 	}else{
 		DrillUp.g_SSh_buy_slideAnim = {};
 	}
-	if( DrillUp.parameters['购买窗口布局'] != undefined ){
+	if( DrillUp.parameters['购买窗口布局'] != "" && 
+		DrillUp.parameters['购买窗口布局'] != undefined ){
 		DrillUp.g_SSh_buy_layout = JSON.parse( DrillUp.parameters['购买窗口布局'] );
 		DrillUp.g_SSh_buy_layout['layoutType'] = String(DrillUp.g_SSh_buy_layout['布局类型'] || "默认皮肤");
 		DrillUp.g_SSh_buy_layout['layoutSrc'] = String(DrillUp.g_SSh_buy_layout['资源-贴图'] || "");
@@ -1319,6 +1448,13 @@
 	}else{
 		DrillUp.g_SSh_buy_layout = {};
 	}
+	if( DrillUp.parameters['购买窗口指针与边框'] != "" && 
+		DrillUp.parameters['购买窗口指针与边框'] != undefined ){
+		var cursor = JSON.parse( DrillUp.parameters['购买窗口指针与边框'] );
+		DrillUp.g_SSh_buy_cursor = DrillUp.drill_SSh_initMenuCursor( cursor );
+	}else{
+		DrillUp.g_SSh_buy_cursor = null;
+	}
 	
 	/*-----------------持有数窗口参数------------------*/
 	DrillUp.g_SSh_status_x = Number(DrillUp.parameters['持有数窗口 X'] || 30);
@@ -1326,7 +1462,8 @@
 	DrillUp.g_SSh_status_width = Number(DrillUp.parameters['持有数窗口宽度'] || 220);
 	DrillUp.g_SSh_status_height = Number(DrillUp.parameters['持有数窗口高度'] || 460);
 	DrillUp.g_SSh_status_fontsize = Number(DrillUp.parameters['持有数窗口字体大小'] || 22);
-	if( DrillUp.parameters['持有数窗口移动动画'] != undefined ){
+	if( DrillUp.parameters['持有数窗口移动动画'] != "" &&
+		DrillUp.parameters['持有数窗口移动动画'] != undefined ){
 		DrillUp.g_SSh_status_slideAnim = JSON.parse( DrillUp.parameters['持有数窗口移动动画'] );
 		DrillUp.g_SSh_status_slideAnim['slideMoveType'] = String(DrillUp.g_SSh_status_slideAnim['移动类型'] || "匀速移动");
 		DrillUp.g_SSh_status_slideAnim['slideTime'] = Number(DrillUp.g_SSh_status_slideAnim['移动时长'] || 20);
@@ -1339,7 +1476,8 @@
 	}else{
 		DrillUp.g_SSh_status_slideAnim = {};
 	}
-	if( DrillUp.parameters['持有数窗口布局'] != undefined ){
+	if( DrillUp.parameters['持有数窗口布局'] != "" &&
+		DrillUp.parameters['持有数窗口布局'] != undefined ){
 		DrillUp.g_SSh_status_layout = JSON.parse( DrillUp.parameters['持有数窗口布局'] );
 		DrillUp.g_SSh_status_layout['layoutType'] = String(DrillUp.g_SSh_status_layout['布局类型'] || "默认皮肤");
 		DrillUp.g_SSh_status_layout['layoutSrc'] = String(DrillUp.g_SSh_status_layout['资源-贴图'] || "");
@@ -1356,7 +1494,8 @@
 	DrillUp.g_SSh_number_width = Number(DrillUp.parameters['物品数量窗口宽度'] || 220);
 	DrillUp.g_SSh_number_height = Number(DrillUp.parameters['物品数量窗口高度'] || 460);
 	DrillUp.g_SSh_number_fontsize = Number(DrillUp.parameters['物品数量窗口字体大小'] || 22);
-	if( DrillUp.parameters['物品数量窗口移动动画'] != undefined ){
+	if( DrillUp.parameters['物品数量窗口移动动画'] != "" &&
+		DrillUp.parameters['物品数量窗口移动动画'] != undefined ){
 		DrillUp.g_SSh_number_slideAnim = JSON.parse( DrillUp.parameters['物品数量窗口移动动画'] );
 		DrillUp.g_SSh_number_slideAnim['slideMoveType'] = String(DrillUp.g_SSh_number_slideAnim['移动类型'] || "匀速移动");
 		DrillUp.g_SSh_number_slideAnim['slideTime'] = Number(DrillUp.g_SSh_number_slideAnim['移动时长'] || 20);
@@ -1369,7 +1508,8 @@
 	}else{
 		DrillUp.g_SSh_number_slideAnim = {};
 	}
-	if( DrillUp.parameters['物品数量窗口布局'] != undefined ){
+	if( DrillUp.parameters['物品数量窗口布局'] != "" &&
+		DrillUp.parameters['物品数量窗口布局'] != undefined ){
 		DrillUp.g_SSh_number_layout = JSON.parse( DrillUp.parameters['物品数量窗口布局'] );
 		DrillUp.g_SSh_number_layout['layoutType'] = String(DrillUp.g_SSh_number_layout['布局类型'] || "默认皮肤");
 		DrillUp.g_SSh_number_layout['layoutSrc'] = String(DrillUp.g_SSh_number_layout['资源-贴图'] || "");
@@ -1387,7 +1527,8 @@
 	DrillUp.g_SSh_sell_height = Number(DrillUp.parameters['出售窗口高度'] || 460);
 	DrillUp.g_SSh_sell_col = Number(DrillUp.parameters['出售窗口列数'] || 1);
 	DrillUp.g_SSh_sell_fontsize = Number(DrillUp.parameters['出售窗口字体大小'] || 22);
-	if( DrillUp.parameters['出售窗口移动动画'] != undefined ){
+	if( DrillUp.parameters['出售窗口移动动画'] != "" &&
+		DrillUp.parameters['出售窗口移动动画'] != undefined ){
 		DrillUp.g_SSh_sell_slideAnim = JSON.parse( DrillUp.parameters['出售窗口移动动画'] );
 		DrillUp.g_SSh_sell_slideAnim['slideMoveType'] = String(DrillUp.g_SSh_sell_slideAnim['移动类型'] || "匀速移动");
 		DrillUp.g_SSh_sell_slideAnim['slideTime'] = Number(DrillUp.g_SSh_sell_slideAnim['移动时长'] || 20);
@@ -1400,7 +1541,8 @@
 	}else{
 		DrillUp.g_SSh_sell_slideAnim = {};
 	}
-	if( DrillUp.parameters['出售窗口布局'] != undefined ){
+	if( DrillUp.parameters['出售窗口布局'] != "" &&
+		DrillUp.parameters['出售窗口布局'] != undefined ){
 		DrillUp.g_SSh_sell_layout = JSON.parse( DrillUp.parameters['出售窗口布局'] );
 		DrillUp.g_SSh_sell_layout['layoutType'] = String(DrillUp.g_SSh_sell_layout['布局类型'] || "默认皮肤");
 		DrillUp.g_SSh_sell_layout['layoutSrc'] = String(DrillUp.g_SSh_sell_layout['资源-贴图'] || "");
@@ -1409,6 +1551,13 @@
 		DrillUp.g_SSh_sell_layout['layoutY'] = Number(DrillUp.g_SSh_sell_layout['贴图位置修正 Y'] || 0);
 	}else{
 		DrillUp.g_SSh_sell_layout = {};
+	}
+	if( DrillUp.parameters['出售窗口指针与边框'] != "" && 
+		DrillUp.parameters['出售窗口指针与边框'] != undefined ){
+		var cursor = JSON.parse( DrillUp.parameters['出售窗口指针与边框'] );
+		DrillUp.g_SSh_sell_cursor = DrillUp.drill_SSh_initMenuCursor( cursor );
+	}else{
+		DrillUp.g_SSh_sell_cursor = null;
 	}
 	
 	/*-----------------出售类型窗口参数------------------*/
@@ -1419,7 +1568,8 @@
 	DrillUp.g_SSh_category_col = Number(DrillUp.parameters['出售类型窗口列数'] || 1);
     DrillUp.g_SSh_category_align  = String(DrillUp.parameters['出售类型对齐方式'] || "left");
 	DrillUp.g_SSh_category_fontsize = Number(DrillUp.parameters['出售类型窗口字体大小'] || 22);
-	if( DrillUp.parameters['出售类型窗口移动动画'] != undefined ){
+	if( DrillUp.parameters['出售类型窗口移动动画'] != "" &&
+		DrillUp.parameters['出售类型窗口移动动画'] != undefined ){
 		DrillUp.g_SSh_category_slideAnim = JSON.parse( DrillUp.parameters['出售类型窗口移动动画'] );
 		DrillUp.g_SSh_category_slideAnim['slideMoveType'] = String(DrillUp.g_SSh_category_slideAnim['移动类型'] || "匀速移动");
 		DrillUp.g_SSh_category_slideAnim['slideTime'] = Number(DrillUp.g_SSh_category_slideAnim['移动时长'] || 20);
@@ -1432,7 +1582,8 @@
 	}else{
 		DrillUp.g_SSh_category_slideAnim = {};
 	}
-	if( DrillUp.parameters['出售类型窗口布局'] != undefined ){
+	if( DrillUp.parameters['出售类型窗口布局'] != "" &&
+		DrillUp.parameters['出售类型窗口布局'] != undefined ){
 		DrillUp.g_SSh_category_layout = JSON.parse( DrillUp.parameters['出售类型窗口布局'] );
 		DrillUp.g_SSh_category_layout['layoutType'] = String(DrillUp.g_SSh_category_layout['布局类型'] || "默认皮肤");
 		DrillUp.g_SSh_category_layout['layoutSrc'] = String(DrillUp.g_SSh_category_layout['资源-贴图'] || "");
@@ -1442,95 +1593,116 @@
 	}else{
 		DrillUp.g_SSh_category_layout = {};
 	}
-	
-	
-	/*-----------------服务员参数------------------*/
-	DrillUp.drill_SSh_convertWaitressAct = function( act ) {		//服务员行为数据转换
-		act['enable'] = String(act['是否启用该行为'] || "false") == "true" ;
-		act['sustain'] = Number(act['动作持续时间'] || 60);
-		act['delay'] = Number(act['动作延迟'] || 0);
-		act['se'] = String(act['资源-动作声音'] || "");
-		act['gif_src'] = JSON.parse( act['资源-动作GIF'] || []);
-		act['gif_src_file'] = "img/Menu__shop/";
-		act['gif_interval'] = Number(act['帧间隔'] || 4);
-		act['gif_back_run'] = String(act['是否倒放'] || "false") == "true" ;
-		act['gif_replay'] = String(act['GIF到末尾是否重播'] || "true") == "true" ;
+	if( DrillUp.parameters['出售类型窗口指针与边框'] != "" && 
+		DrillUp.parameters['出售类型窗口指针与边框'] != undefined ){
+		var cursor = JSON.parse( DrillUp.parameters['出售类型窗口指针与边框'] );
+		DrillUp.g_SSh_category_cursor = DrillUp.drill_SSh_initMenuCursor( cursor );
+	}else{
+		DrillUp.g_SSh_category_cursor = null;
 	}
 	
+	
+	//==============================
+	// * 变量获取 - 服务员行为
+	//				（~struct~DrillSShWaitressAct）
+	//==============================
+	DrillUp.drill_SSh_convertWaitressAct = function( dataFrom ) {		//服务员行为数据转换
+		var data = {};
+		data['enable'] = String(dataFrom['是否启用该行为'] || "false") == "true" ;
+		data['sustain'] = Number(dataFrom['动作持续时间'] || 60);
+		data['delay'] = Number(dataFrom['动作延迟'] || 0);
+		data['se'] = String(dataFrom['资源-动作声音'] || "");
+		data['gif_src'] = JSON.parse( dataFrom['资源-动作GIF'] || []);
+		data['gif_src_file'] = "img/Menu__shop/";
+		data['gif_interval'] = Number(dataFrom['帧间隔'] || 4);
+		data['gif_back_run'] = String(dataFrom['是否倒放'] || "false") == "true" ;
+		data['gif_replay'] = String(dataFrom['GIF到末尾是否重播'] || "true") == "true" ;
+		return data;
+	}
+	//==============================
+	// * 变量获取 - 服务员
+	//				（~struct~DrillSShWaitress）
+	//==============================
+	DrillUp.drill_SSh_convertWaitress = function( dataFrom ) {
+		var waitress = {}
+		waitress['x'] = Number(dataFrom['服务员 X'] || 580);
+		waitress['y'] = Number(dataFrom['服务员 Y'] || 200);
+		if( dataFrom['服务员移动动画'] != "" && 
+			dataFrom['服务员移动动画'] != undefined ){
+			var waitress_slide = JSON.parse( dataFrom['服务员移动动画'] );
+			waitress['slideMoveType'] = String(waitress_slide['移动类型'] || "匀速移动");
+			waitress['slideTime'] = Number(waitress_slide['移动时长'] || 20);
+			waitress['slideDelay'] = Number(waitress_slide['移动延迟'] || 0);
+			waitress['slidePosType'] = String(waitress_slide['坐标类型'] || "相对坐标");
+			waitress['slideX'] = Number(waitress_slide['起点-相对坐标 X'] || -100);
+			waitress['slideY'] = Number(waitress_slide['起点-相对坐标 Y'] || 0);
+			waitress['slideAbsoluteX'] = Number(waitress_slide['起点-绝对坐标 X'] || 0);
+			waitress['slideAbsoluteY'] = Number(waitress_slide['起点-绝对坐标 Y'] || 0);
+		}
+		if( dataFrom['行为-默认'] != "" && 
+			dataFrom['行为-默认'] != undefined ){
+			var act_default = JSON.parse( dataFrom['行为-默认'] || {} );
+			act_default['gif_src'] = JSON.parse( act_default['资源-动作GIF'] || []);
+			act_default['gif_src_file'] = "img/Menu__shop/";
+			act_default['gif_interval'] = Number(act_default['帧间隔'] || 4);
+			act_default['gif_back_run'] = String(act_default['是否倒放'] || "false") == "true" ;
+			waitress['act-default'] = act_default;
+		}else{
+			waitress['act-default'] = {};
+		}
+		if( dataFrom['行为-欢迎光临'] != "" && 
+			dataFrom['行为-欢迎光临'] != undefined ){
+			var act = JSON.parse( dataFrom['行为-欢迎光临'] || {} );
+			DrillUp.drill_SSh_convertWaitressAct( act );
+			waitress['act-welcome'] = act;
+		}else{
+			waitress['act-welcome'] = {};
+		}
+		if( dataFrom['行为-购买一个物品'] != "" && 
+			dataFrom['行为-购买一个物品'] != undefined ){
+			var act = JSON.parse( dataFrom['行为-购买一个物品'] || {} );
+			DrillUp.drill_SSh_convertWaitressAct( act );
+			waitress['act-buyOne'] = act;
+		}else{
+			waitress['act-buyOne'] = {};
+		}
+		if( dataFrom['行为-出售一个物品'] != "" && 
+			dataFrom['行为-出售一个物品'] != undefined ){
+			var act = JSON.parse( dataFrom['行为-出售一个物品'] || {} );
+			DrillUp.drill_SSh_convertWaitressAct( act );
+			waitress['act-sellOne'] = act;
+		}else{
+			waitress['act-sellOne'] = {};
+		}
+		if( dataFrom['行为-余额不足'] != "" && 
+			dataFrom['行为-余额不足'] != undefined ){
+			var act = JSON.parse( dataFrom['行为-余额不足'] || {} );
+			DrillUp.drill_SSh_convertWaitressAct( act );
+			waitress['act-goldNotEnough'] = act;
+		}else{
+			waitress['act-goldNotEnough'] = {};
+		}
+		if( dataFrom['行为-余额不足(交换物)'] != "" && 
+			dataFrom['行为-余额不足(交换物)'] != undefined ){
+			var act = JSON.parse( dataFrom['行为-余额不足(交换物)'] || {} );
+			DrillUp.drill_SSh_convertWaitressAct( act );
+			waitress['act-itemNotEnough'] = act;
+		}else{
+			waitress['act-itemNotEnough'] = {};
+		}
+		return waitress;
+	}
+	
+	/*-----------------服务员参数------------------*/
 	DrillUp.g_SSh_waitress_list_length = 30;
 	DrillUp.g_SSh_waitress_list = [];
 	for (var i = 0; i < DrillUp.g_SSh_waitress_list_length ; i++ ) {
-		if( DrillUp.parameters['服务员-' + String(i+1) ] != "" ){
+		if( DrillUp.parameters['服务员-' + String(i+1) ] != "" &&
+			DrillUp.parameters['服务员-' + String(i+1) ] != undefined ){
 			var waitress_params = JSON.parse(DrillUp.parameters['服务员-' + String(i+1)] );
-			var waitress = {}
-			waitress['x'] = Number(waitress_params['服务员 X'] || 580);
-			waitress['y'] = Number(waitress_params['服务员 Y'] || 200);
-			if( waitress_params['服务员移动动画'] != undefined && 
-				waitress_params['服务员移动动画'] != "" ){
-				var waitress_slide = JSON.parse( waitress_params['服务员移动动画'] );
-				waitress['slideMoveType'] = String(waitress_slide['移动类型'] || "匀速移动");
-				waitress['slideTime'] = Number(waitress_slide['移动时长'] || 20);
-				waitress['slideDelay'] = Number(waitress_slide['移动延迟'] || 0);
-				waitress['slidePosType'] = String(waitress_slide['坐标类型'] || "相对坐标");
-				waitress['slideX'] = Number(waitress_slide['起点-相对坐标 X'] || -100);
-				waitress['slideY'] = Number(waitress_slide['起点-相对坐标 Y'] || 0);
-				waitress['slideAbsoluteX'] = Number(waitress_slide['起点-绝对坐标 X'] || 0);
-				waitress['slideAbsoluteY'] = Number(waitress_slide['起点-绝对坐标 Y'] || 0);
-			}
-			if( waitress_params['行为-默认'] != undefined && 
-				waitress_params['行为-默认'] != "" ){
-				var act_default = JSON.parse( waitress_params['行为-默认'] || {} );
-				act_default['gif_src'] = JSON.parse( act_default['资源-动作GIF'] || []);
-				act_default['gif_src_file'] = "img/Menu__shop/";
-				act_default['gif_interval'] = Number(act_default['帧间隔'] || 4);
-				act_default['gif_back_run'] = String(act_default['是否倒放'] || "false") == "true" ;
-				waitress['act-default'] = act_default;
-			}else{
-				waitress['act-default'] = {};
-			}
-			if( waitress_params['行为-欢迎光临'] != undefined && 
-				waitress_params['行为-欢迎光临'] != "" ){
-				var act = JSON.parse( waitress_params['行为-欢迎光临'] || {} );
-				DrillUp.drill_SSh_convertWaitressAct( act );
-				waitress['act-welcome'] = act;
-			}else{
-				waitress['act-welcome'] = {};
-			}
-			if( waitress_params['行为-购买一个物品'] != undefined && 
-				waitress_params['行为-购买一个物品'] != "" ){
-				var act = JSON.parse( waitress_params['行为-购买一个物品'] || {} );
-				DrillUp.drill_SSh_convertWaitressAct( act );
-				waitress['act-buyOne'] = act;
-			}else{
-				waitress['act-buyOne'] = {};
-			}
-			if( waitress_params['行为-出售一个物品'] != undefined && 
-				waitress_params['行为-出售一个物品'] != "" ){
-				var act = JSON.parse( waitress_params['行为-出售一个物品'] || {} );
-				DrillUp.drill_SSh_convertWaitressAct( act );
-				waitress['act-sellOne'] = act;
-			}else{
-				waitress['act-sellOne'] = {};
-			}
-			if( waitress_params['行为-余额不足'] != undefined && 
-				waitress_params['行为-余额不足'] != "" ){
-				var act = JSON.parse( waitress_params['行为-余额不足'] || {} );
-				DrillUp.drill_SSh_convertWaitressAct( act );
-				waitress['act-goldNotEnough'] = act;
-			}else{
-				waitress['act-goldNotEnough'] = {};
-			}
-			if( waitress_params['行为-余额不足(交换物)'] != undefined && 
-				waitress_params['行为-余额不足(交换物)'] != "" ){
-				var act = JSON.parse( waitress_params['行为-余额不足(交换物)'] || {} );
-				DrillUp.drill_SSh_convertWaitressAct( act );
-				waitress['act-itemNotEnough'] = act;
-			}else{
-				waitress['act-itemNotEnough'] = {};
-			}
-			DrillUp.g_SSh_waitress_list[i] = waitress;
+			DrillUp.g_SSh_waitress_list[i] = DrillUp.drill_SSh_convertWaitress( waitress_params );
 		}else{
-			DrillUp.g_SSh_waitress_list[i] = {};
+			DrillUp.g_SSh_waitress_list[i] = DrillUp.drill_SSh_convertWaitress( {} );
 		}
 	};
 	
@@ -1563,7 +1735,7 @@ ImageManager.load_MenuShop = function(filename) {
 var _drill_SSh_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
 	_drill_SSh_pluginCommand.call(this, command, args);
-	if (command === '>商店界面') {
+	if( command === ">商店界面" ){
 		if(args.length >= 2){
 			var type = String(args[1]);
 			if( args[3] != undefined ){ var temp1 = String(args[3]); }
@@ -2286,6 +2458,49 @@ Scene_Shop.prototype.createBuyWindow = function() {
 	this._buyWindow.maxCols = function(){ return DrillUp.g_SSh_buy_col;}
 	this._buyWindow.hide = function(){ return null;}			//禁止rmmv默认控制隐藏
 	
+	// > 兼容Drill_MenuCursor菜单指针插件
+	if( Imported.Drill_MenuCursor == true && DrillUp.g_SSh_buy_cursor != null ){
+		this._buyWindow.drill_MCu_cursorEnabled = function(){
+			return DrillUp.g_SSh_buy_cursor['MCu_enabled'];
+		}
+		this._buyWindow.drill_MCu_cursorStyleId = function(){
+			if( DrillUp.g_SSh_buy_cursor['MCu_lock'] == true ){
+				return DrillUp.g_SSh_buy_cursor['MCu_style'];
+			}else{
+				return $gameSystem._drill_MCu_style;
+			}
+		}
+	}
+	// > 兼容Drill_MenuCursorBorder菜单边框插件
+	if( Imported.Drill_MenuCursorBorder == true && DrillUp.g_SSh_buy_cursor != null ){
+		this._buyWindow.drill_MCB_glimmerRectVisible = function() {
+			return DrillUp.g_SSh_buy_cursor['MCB_rectEnabled'];
+		}
+		this._buyWindow.drill_MCB_borderEnabled = function() {
+			return DrillUp.g_SSh_buy_cursor['MCB_enabled'];
+		}
+		this._buyWindow.drill_MCB_borderStyleId = function() {
+			if( DrillUp.g_SSh_buy_cursor['MCB_lock'] == true ){
+				return DrillUp.g_SSh_buy_cursor['MCB_style'];
+			}else{
+				return $gameSystem._drill_MCB_style;
+			}
+		}
+	}
+	// > 兼容Drill_MenuScrollBar菜单滚动条插件
+	if( Imported.Drill_MenuScrollBar == true && DrillUp.g_SSh_buy_cursor != null ){
+		this._buyWindow.drill_MSB_scrollBarEnabled = function() {
+			return DrillUp.g_SSh_buy_cursor['MSB_enabled'];
+		}
+		this._buyWindow.drill_MSB_scrollBarStyleId = function() {
+			if( DrillUp.g_SSh_buy_cursor['MSB_lock'] == true ){
+				return DrillUp.g_SSh_buy_cursor['MSB_style'];
+			}else{
+				return $gameSystem._drill_MSB_style;
+			}
+		}
+	}
+	
     this._buyWindow.setHelpWindow(this._helpWindow);
     this._buyWindow.setStatusWindow(this._statusWindow);
     this._buyWindow.setHandler('ok',     this.onBuyOk.bind(this));
@@ -2516,6 +2731,49 @@ Scene_Shop.prototype.createSellWindow = function() {
 	this._sellWindow.maxCols = function(){ return DrillUp.g_SSh_sell_col;}
 	this._sellWindow.hide = function(){ return null;}			//禁止rmmv默认控制隐藏
 	
+	// > 兼容Drill_MenuCursor菜单指针插件
+	if( Imported.Drill_MenuCursor == true && DrillUp.g_SSh_sell_cursor != null ){
+		this._sellWindow.drill_MCu_cursorEnabled = function(){
+			return DrillUp.g_SSh_sell_cursor['MCu_enabled'];
+		}
+		this._sellWindow.drill_MCu_cursorStyleId = function(){
+			if( DrillUp.g_SSh_sell_cursor['MCu_lock'] == true ){
+				return DrillUp.g_SSh_sell_cursor['MCu_style'];
+			}else{
+				return $gameSystem._drill_MCu_style;
+			}
+		}
+	}
+	// > 兼容Drill_MenuCursorBorder菜单边框插件
+	if( Imported.Drill_MenuCursorBorder == true && DrillUp.g_SSh_sell_cursor != null ){
+		this._sellWindow.drill_MCB_glimmerRectVisible = function() {
+			return DrillUp.g_SSh_sell_cursor['MCB_rectEnabled'];
+		}
+		this._sellWindow.drill_MCB_borderEnabled = function() {
+			return DrillUp.g_SSh_sell_cursor['MCB_enabled'];
+		}
+		this._sellWindow.drill_MCB_borderStyleId = function() {
+			if( DrillUp.g_SSh_sell_cursor['MCB_lock'] == true ){
+				return DrillUp.g_SSh_sell_cursor['MCB_style'];
+			}else{
+				return $gameSystem._drill_MCB_style;
+			}
+		}
+	}
+	// > 兼容Drill_MenuScrollBar菜单滚动条插件
+	if( Imported.Drill_MenuScrollBar == true && DrillUp.g_SSh_sell_cursor != null ){
+		this._sellWindow.drill_MSB_scrollBarEnabled = function() {
+			return DrillUp.g_SSh_sell_cursor['MSB_enabled'];
+		}
+		this._sellWindow.drill_MSB_scrollBarStyleId = function() {
+			if( DrillUp.g_SSh_sell_cursor['MSB_lock'] == true ){
+				return DrillUp.g_SSh_sell_cursor['MSB_style'];
+			}else{
+				return $gameSystem._drill_MSB_style;
+			}
+		}
+	}
+	
     this._sellWindow.setHelpWindow(this._helpWindow);
     this._sellWindow.setHandler('ok',     this.onSellOk.bind(this));
     this._sellWindow.setHandler('cancel', this.onSellCancel.bind(this));
@@ -2598,6 +2856,36 @@ Scene_Shop.prototype.createCategoryWindow = function() {
     this._categoryWindow = new Drill_SSh_SellCategoryWindow();
 	this._categoryWindow.drill_COWA_changeParamData( data );			//辅助核心 - 控制窗口基本属性
 	this._categoryWindow.maxCols = function(){ return DrillUp.g_SSh_category_col;}
+	
+	// > 兼容Drill_MenuCursor菜单指针插件
+	if( Imported.Drill_MenuCursor == true && DrillUp.g_SSh_category_cursor != null ){
+		this._categoryWindow.drill_MCu_cursorEnabled = function(){
+			return DrillUp.g_SSh_category_cursor['MCu_enabled'];
+		}
+		this._categoryWindow.drill_MCu_cursorStyleId = function(){
+			if( DrillUp.g_SSh_category_cursor['MCu_lock'] == true ){
+				return DrillUp.g_SSh_category_cursor['MCu_style'];
+			}else{
+				return $gameSystem._drill_MCu_style;
+			}
+		}
+	}
+	// > 兼容Drill_MenuCursorBorder菜单边框插件
+	if( Imported.Drill_MenuCursorBorder == true && DrillUp.g_SSh_category_cursor != null ){
+		this._categoryWindow.drill_MCB_glimmerRectVisible = function() {
+			return DrillUp.g_SSh_category_cursor['MCB_rectEnabled'];
+		}
+		this._categoryWindow.drill_MCB_borderEnabled = function() {
+			return DrillUp.g_SSh_category_cursor['MCB_enabled'];
+		}
+		this._categoryWindow.drill_MCB_borderStyleId = function() {
+			if( DrillUp.g_SSh_category_cursor['MCB_lock'] == true ){
+				return DrillUp.g_SSh_category_cursor['MCB_style'];
+			}else{
+				return $gameSystem._drill_MCB_style;
+			}
+		}
+	}
 	
     this._categoryWindow.setHelpWindow(this._helpWindow);
     this._categoryWindow.deactivate();

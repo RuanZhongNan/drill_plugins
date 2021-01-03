@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.3]        地图 - 自定义照明效果
+ * @plugindesc [v1.4]        地图 - 自定义照明效果
  * @author Drill_up,紫悠
  * 
  * @Drill_LE_param "光源-%d"
@@ -14,7 +14,7 @@
  * =============================================================================
  * +++ Drill_LayerIllumination +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 你可以用自己画的照明资源图片，然后绑定到玩家、事件身上。
@@ -209,6 +209,8 @@
  * [v1.3]
  * 重新整理了 黑暗层开关 与 地图注释锁定 的关系。
  * 注意，旧版本的指令不再有效。
+ * [v1.4]
+ * 修复了部分特殊情况下，黑暗层不显示的bug。
  * 
  * 
  * 
@@ -2016,10 +2018,15 @@ Game_Map.prototype.drill_LIl_setupIllumination = function() {
 				var temp2 = String(args[2]);
 				if( temp1 == "临时锁定"){
 					if( type == "黑暗层过渡时间"){		//（这个参数没有意义，地图切换不需要过渡。不过先放着）
-						this._drill_LIl_lock['sustainTime'] = Number(temp2);
+						this._drill_LIl_lock['sustainTime'] = Math.max( 1, Number(temp2) );
 					}
 					if( type == "黑暗层透明度"){
-						this._drill_LIl_lock['targetOpacity'] = Number(temp2);
+						temp2 = Number(temp2);
+						if( temp2 == 0 && this._drill_LIl_lock['enable'] == true ){
+							alert( "【Drill_LayerIllumination.js 地图 - 自定义照明效果】\n" +
+									"提示：你将临时锁定设为开启，又将当前地图的透明度设为了0。\n由于黑暗层是0为全亮，255为全黑，所以这样设置将没有任何效果，建议直接关闭。");
+						}
+						this._drill_LIl_lock['targetOpacity'] = temp2;
 					}
 					if( type == "黑暗层颜色"){
 						this._drill_LIl_lock['layerColor'] = temp2;
@@ -2301,7 +2308,12 @@ Scene_Map.prototype.drill_LIl_updateDarkLayer = function() {
 		$gameSystem._drill_LIl['curTime'] = $gameSystem._drill_LIl['sustainTime'];
 	}
 	
-	this._drill_LIl_darkSprite.opacity = $gameSystem._drill_LIl['targetOpacity'] * $gameSystem._drill_LIl['curTime'] / $gameSystem._drill_LIl['sustainTime'];
+	var oo = $gameSystem._drill_LIl['targetOpacity'] * $gameSystem._drill_LIl['curTime'] / $gameSystem._drill_LIl['sustainTime'];
+	if( isNaN(oo) ){
+		oo = $gameSystem._drill_LIl['targetOpacity'];
+	}
+	this._drill_LIl_darkSprite.opacity = oo;
+	
 };
 
 

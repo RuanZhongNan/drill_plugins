@@ -3,14 +3,14 @@
 //=============================================================================
 
 /*:
- * @plugindesc [v1.2]        控件 - 技能块元素的背景图片[扩展]
+ * @plugindesc [v1.3]        控件 - 技能块元素的背景图片[扩展]
  * @author Drill_up
  *
  * @help  
  * =============================================================================
  * +++ Drill_X_ElementSkillImage +++
  * 作者：Drill_up
- * 如果你有兴趣，也可以来看看我的mog中文全翻译插件哦ヽ(*。>Д<)o゜
+ * 如果你有兴趣，也可以来看看更多我写的drill插件哦ヽ(*。>Д<)o゜
  * https://rpg.blue/thread-409713-1-1.html
  * =============================================================================
  * 结合技能窗口块元素插件，可以设置不同的技能，拥有不同的背景。
@@ -37,7 +37,7 @@
  *
  * 技能注释：<技能背景:1>
  *
- * 技能背景的数字1对应你配置中的第1个技能背景。
+ * 1.技能背景的数字1对应你配置中的第1个技能背景。
  * 
  * -----------------------------------------------------------------------------
  * ----关联文件
@@ -50,6 +50,27 @@
  * 资源-技能背景2
  * 资源-技能背景3
  * ……
+ * 
+ * -----------------------------------------------------------------------------
+ * ----插件性能
+ * 测试仪器：   4G 内存，Intel Core i5-2520M CPU 2.5GHz 处理器
+ *              Intel(R) HD Graphics 3000 集显 的垃圾笔记本
+ *              (笔记本的3dmark综合分：571，鲁大师综合分：48456)
+ * 总时段：     20000.00ms左右
+ * 对照表：     0.00ms  - 40.00ms （几乎无消耗）
+ *              40.00ms - 80.00ms （低消耗）
+ *              80.00ms - 120.00ms（中消耗）
+ *              120.00ms以上      （高消耗）
+ * 工作类型：   持续执行
+ * 时间复杂度： o(n)*o(贴图处理) 每帧
+ * 测试方法：   在不同界面进行测试。
+ * 测试结果：   战斗界面中，平均消耗为：【9.56ms】
+ *              菜单界面中，平均消耗为：【8.83ms】
+ * 
+ * 1.插件只在自己作用域下工作消耗性能，在其它作用域下是不工作的。
+ *   测试结果并不是精确值，范围在给定值的10ms范围内波动。
+ *   更多了解插件性能，可以去看看"关于插件性能.docx"。
+ * 2.该插件只做存储图片功能，调用的频率不高，消耗不大。
  *
  * -----------------------------------------------------------------------------
  * ----更新日志
@@ -59,6 +80,8 @@
  * 修改了插件的内部结构。
  * [v1.2]
  * 修改了插件关联的资源文件夹。
+ * [v1.3]
+ * 修改了内部结构。
  *
  *
  * 
@@ -1719,6 +1742,13 @@
 //		全局存储变量	无
 //		覆盖重写方法	无（自己的插件方法半重写）
 //
+//		工作类型		持续执行
+//		时间复杂度		o(n)*o(贴图处理) 每帧
+//		性能测试因素	技能面板
+//		性能测试消耗	9.56ms
+//		最坏情况		无
+//		备注			无
+//
 //插件记录：
 //		★大体框架与功能如下：
 //			技能图片扩展：
@@ -1744,8 +1774,10 @@
 　　var DrillUp = DrillUp || {}; 
     DrillUp.parameters = PluginManager.parameters('Drill_X_ElementSkillImage');
 	
+	/*-----------------杂项------------------*/
 	DrillUp.g_XESI_hide_icon = String(DrillUp.parameters['是否隐藏技能图标'] || "true") === "true";	
 	
+	/*-----------------技能背景------------------*/
 	DrillUp.g_XESI_back_list_length = 200;
 	DrillUp.g_XESI_back_list = [];
 	for (var i = 0; i < DrillUp.g_XESI_back_list_length ; i++ ) {
@@ -1766,19 +1798,19 @@ var _drill_XESI_initialize = Game_Temp.prototype.initialize;
 Game_Temp.prototype.initialize = function() {
 	_drill_XESI_initialize.call(this);	//预加载（千万不要写入gameSystem里面！object不能存入存档里面！）
 	this._drill_XESI_ex_backs = [];
-	for (var i = 0; i < DrillUp.g_XESI_back_list.length ; i++ ) {
+	for( var i = 0; i < DrillUp.g_XESI_back_list.length ; i++ ){
 		this._drill_XESI_ex_backs.push( ImageManager.load_MenuSkillElement(DrillUp.g_XESI_back_list[i]) );
 	};
 }
 //=============================================================================
 // ** 绘制背景
 //=============================================================================
-Window_SkillList.prototype.drill_WSE_s_drawBackground = function(cur_bitmap, skill ) {
+Window_SkillList.prototype.drill_WSE_s_drawBackground = function( cur_bitmap, skill ){
 	
 	var note = String(skill.note);
 	var re_back = /<技能背景:([^<>]*?)>/; 				//正则获取（返回数组，第二个为匹配内容）
 	var back = (note.match(re_back)) || [];
-	if(back != "" && back != [] && $gameTemp._drill_XESI_ex_backs != null ){
+	if( back != "" && back != [] && $gameTemp._drill_XESI_ex_backs != null ){
 		var back_id = Number(back[1]) -1;
 		var back_x = 0;
 		var back_y = 0;
@@ -1788,9 +1820,9 @@ Window_SkillList.prototype.drill_WSE_s_drawBackground = function(cur_bitmap, ski
 	}else{
 		var back_x = 0;
 		var back_y = 0;
-		var back_w = this._drill_bitmap_back.width;
-		var back_h = this._drill_bitmap_back.height;
-		cur_bitmap.blt( this._drill_bitmap_back,  back_x, back_y, back_w, back_h,  0,0, back_w, back_h);
+		var back_w = this._drill_WSE_bitmapBackground.width;
+		var back_h = this._drill_WSE_bitmapBackground.height;
+		cur_bitmap.blt( this._drill_WSE_bitmapBackground,  back_x, back_y, back_w, back_h,  0,0, back_w, back_h);
 	}
 	
 }
@@ -1799,7 +1831,7 @@ Window_SkillList.prototype.drill_WSE_s_drawBackground = function(cur_bitmap, ski
 //=============================================================================
 var _drill_XESI_s_drawIcon = Window_SkillList.prototype.drill_WSE_s_drawIcon;
 Window_SkillList.prototype.drill_WSE_s_drawIcon = function(cur_bitmap, skill ) {
-	if(DrillUp.g_XESI_hide_icon){
+	if( DrillUp.g_XESI_hide_icon ){
 		
 	}else{
 		_drill_XESI_s_drawIcon.call(this,cur_bitmap, skill);
